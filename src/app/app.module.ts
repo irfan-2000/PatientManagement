@@ -5,16 +5,20 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-
+import { DoctorComponent } from './doctor/doctor.component';
+import { FormsModule } from '@angular/forms';
+import { FilterPipe } from './filter.pipe';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    SidebarComponent
+    SidebarComponent,
+    DoctorComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,CommonModule
+    AppRoutingModule,CommonModule,FormsModule
   ],
   providers: [
     provideClientHydration(withEventReplay())

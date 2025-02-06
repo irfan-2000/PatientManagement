@@ -1,0 +1,141 @@
+<div class="flex" >
+
+    <app-sidebar></app-sidebar>
+    <div class="p-6 bg-gray-100 min-h-screen">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+          <!-- FILTER INPUTS -->
+          <div class="p-3 bg-gray-200">
+            <div class="grid grid-cols-8 gap-2">
+              <input type="text" [(ngModel)]="filters.id" placeholder="ID" class="p-2 border rounded" />
+              <input type="text" [(ngModel)]="filters.name" placeholder="Doctor Name" class="p-2 border rounded" />
+              <input type="text" [(ngModel)]="filters.clinic" placeholder="Clinic" class="p-2 border rounded" />
+              <input type="text" [(ngModel)]="filters.email" placeholder="Email" class="p-2 border rounded" />
+              <input type="text" [(ngModel)]="filters.mobile" placeholder="Mobile" class="p-2 border rounded" />
+              <input type="text" [(ngModel)]="filters.specialization" placeholder="Specialization" class="p-2 border rounded" />
+              <select [(ngModel)]="filters.status" class="p-2 border rounded">
+                <option value="">All</option>
+                <option value="Active">Active</option>
+                <option value="InActive">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+
+          <div>
+            <button class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-700" >Add doctor</button>
+          </div>
+      
+          <!-- TABLE -->
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-blue-600 text-white">
+                <th class="p-3 text-left">ID</th>
+                <th class="p-3 text-left">Doctor</th>
+                <th class="p-3 text-left">Clinic</th>
+                <th class="p-3 text-left">Email</th>
+                <th class="p-3 text-left">Mobile</th>
+                <th class="p-3 text-left">Specialization</th>
+                <th class="p-3 text-left">Status</th>
+                <th class="p-3 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let doctor of doctors | filter:filters" class="border-b hover:bg-gray-100">
+                <td class="p-3">{{ doctor.id }}</td>
+                <td class="p-3 flex items-center space-x-3">
+                  <img [src]="doctor.img" alt="Doctor" class="w-10 h-10 rounded-full">
+                  <span>{{ doctor.name }}</span>
+                </td>
+                <td class="p-3">{{ doctor.clinic }}</td>
+                <td class="p-3">{{ doctor.email }}</td>
+                <td class="p-3">{{ doctor.mobile }}</td>
+                <td class="p-3">{{ doctor.specialization }}</td>
+                <td class="p-3">
+                  <span
+                    class="px-3 py-1 rounded-full text-white"
+                    [ngClass]="{'bg-green-500': doctor.status === 'Active',
+                      'bg-red-500': doctor.status === 'InActive'
+                    }"
+                  >
+                    {{ doctor.status }}
+                  </span>
+                </td>
+                <td class="p-3">
+                  <button class="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-700">Edit</button>
+                  <button class="bg-red-500 text-white px-3 py-1 ml-2 rounded-lg hover:bg-red-700">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+<!-- Overlay -->
+<div class="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
+  
+    <!-- Form Header -->
+    <h2 class="text-2xl font-semibold text-gray-700 border-b pb-3">Add Doctor</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      
+      <!-- Name -->
+      <div>
+        <label class="block text-gray-600 font-medium">Doctor Name</label>
+        <input type="text" [(ngModel)]="doctor.name" 
+               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+      </div>
+  
+      <!-- Email -->
+      <div>
+        <label class="block text-gray-600 font-medium">Email</label>
+        <input type="email" [(ngModel)]="doctor.email" 
+               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+      </div>
+  
+      <!-- Specialization -->
+      <div>
+        <label class="block text-gray-600 font-medium">Specialization</label>
+        <select [(ngModel)]="doctor.specialization" 
+                class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500">
+          <option value="" disabled>Select Specialization</option>
+          <option *ngFor="let spec of specializations" [value]="spec">{{ spec }}</option>
+        </select>
+      </div>
+  
+      <!-- Profile Picture -->
+      <div>
+        <label class="block text-gray-600 font-medium">Profile Picture</label>
+        <input type="file" (change)="onFileChange($event)" class="w-full p-2 border rounded">
+        <img *ngIf="doctor.img" [src]="doctor.img" 
+             alt="Preview" class="mt-2 w-24 h-24 rounded-full shadow-md">
+      </div>
+  
+      <!-- Qualifications (Dynamic Add) -->
+      <div class="col-span-2">
+        <label class="block text-gray-600 font-medium">Qualifications</label>
+        <div *ngFor="let qual of doctor.qualifications; let i = index" class="flex space-x-2 items-center">
+          <input type="text" [(ngModel)]="doctor.qualifications[i]"
+                 class="p-2 border rounded flex-grow">
+          <button *ngIf="i > 0" (click)="removeQualification(i)"
+                  class="text-red-500 text-xl hover:text-red-700">&times;</button>
+        </div>
+        <button (click)="addQualification()" class="text-blue-500 mt-2 flex items-center">
+          ➕ Add Qualification
+        </button>
+      </div>
+  
+      <!-- Checkbox -->
+      <div class="col-span-2 flex items-center space-x-2">
+        <input type="checkbox" [(ngModel)]="doctor.acceptedTerms" id="terms" class="w-4 h-4">
+        <label for="terms" class="text-gray-600">I accept the terms & conditions</label>
+      </div>
+  
+      <!-- Submit Button -->
+      <div class="col-span-2 flex justify-end">
+        <button (click)="submitForm()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">Submit</button>
+      </div>
+  
+    </div>
+  </div>
+  
+</div>
