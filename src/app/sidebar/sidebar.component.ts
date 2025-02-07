@@ -32,7 +32,13 @@ export class SidebarComponent
     this.activeSubmenu = this.activeSubmenu === submenu ? null : submenu;
   }
 
-
+  getNavClasses(menu: string){
+    return {
+      'flex items-center p-2 rounded-lg transition-all duration-100': true,
+      'text-gray-700 hover:bg-blue-50': this.activeMenu !== menu,
+      'bg-blue-500 text-white': this.activeMenu === menu
+    };
+  }
 
 
 

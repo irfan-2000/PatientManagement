@@ -15,7 +15,7 @@ export class DoctorComponent
 
   filters = { id: '', name: '', clinic: '', email: '', mobile: '', specialization: '', status: '' };
 
-
+  showForm = false;
 
   searchtxt: any = '';
   doctors = [
@@ -71,6 +71,11 @@ export class DoctorComponent
     }
   }
 
+  onFileImport(event: any) {
+    const file = new FileReader();
+    // Handle file import
+  }
+
   submitForm() {
     if (!this.doctor.acceptedTerms) {
       alert("Please accept the terms & conditions.");
@@ -78,8 +83,22 @@ export class DoctorComponent
     }
     
     console.log("Submitted Data:", this.doctor);
+    this.showForm = !this.showForm;
   }
 
+  cancelForm() {
+    // Clearing all the entered data
+    this.doctor = {
+      name: '',
+      email: '',
+      specialization: '',
+      img: '',
+      qualifications: [''],
+      acceptedTerms: false
+    };
+
+    this.showForm = !this.showForm;
+  }
 
 
 }
