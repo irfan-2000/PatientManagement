@@ -9,8 +9,6 @@ export class FilterPipe implements PipeTransform {
 
   transform(doctors: any[], filters: any): any[]
    {
-    console.log("called");
-
     if (!doctors || !filters) return doctors;
 
 return doctors.filter(doctor => 
