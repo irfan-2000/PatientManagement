@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 })
 export class SidebarComponent 
 {
-  isSidebarOpen = true; // Controls sidebar visibility
+  isSidebarOpen = false; // Controls sidebar visibility
   activeMenu: string | null = null; // Tracks active menu
   openSubmenu: string | null = null; // Tracks open submenu
   activeSubmenu: string | null = null; // Tracks active submenu item
