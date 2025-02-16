@@ -55,6 +55,7 @@ export class LoginComponent {
       if(response.status === 200)
       {
        localStorage.setItem('Token',response.token); 
+       localStorage.setItem('HospitalId',response.hosiptalId);
        this.router.navigate(['/doctor']);
       }
       if(response.status == 401)

@@ -6,6 +6,7 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { get } from 'http';
 import { json } from 'stream/consumers';
+import { DoctorServiceService } from '../doctor-service.service';
 
 
 @Component({
@@ -57,6 +58,7 @@ export class DoctorComponent
     }
   ];
 
+  constructor(private doctorservice:DoctorServiceService){}
 
   countries = [
     { name: 'United States', code: 'US' },
@@ -80,10 +82,10 @@ export class DoctorComponent
       Mobile: new FormControl('1234567899', [Validators.required,Validators.pattern('^[0-9]{10}$'),  // Only allows 10 digits
         Validators.maxLength(10)  
       ]),
-      Dob: new FormControl('', [Validators.required, this.DateValidator]),
+      Dob: new FormControl(new Date().toISOString().split('T')[0], [Validators.required, this.DateValidator]),
       Gender: new FormControl('M', Validators.required),
       Age: new FormControl('20', Validators.required),
-      countryCode: new FormControl(['', Validators.required]), 
+      Country: new FormControl('IN', Validators.required), 
       IsActive: new FormControl(true, Validators.required), // Default to true (Active)  
       PostalCode: new FormControl('wwe', Validators.required),
       Experience: new FormControl('0', [Validators.required,Validators.min(0),Validators.pattern('^[0-9]+$')]),
@@ -91,9 +93,9 @@ export class DoctorComponent
       City: new FormControl('qweqwe', Validators.required),
       Specialization: new FormControl<string[]>([], Validators.required),
       Qualifications: new FormArray([
-        new FormControl('', Validators.required),
-        new FormControl('', Validators.required),
-        new FormControl('', Validators.required)
+        new FormControl('wewqe', Validators.required),
+        new FormControl('qweqwe', Validators.required),
+        new FormControl('qweqweS', Validators.required)
       ]),
       IsAgreedTerms: new FormControl(false, Validators.requiredTrue),
     ProfileImage: new FormControl('', [Validators.required])    });
@@ -124,7 +126,7 @@ export class DoctorComponent
     // Return null if valid date
     return null;
   }
-  
+
   // Getter for easy access to qualifications
   get qualificationsArray()
    {
@@ -160,119 +162,110 @@ export class DoctorComponent
   }
 
 SubmitDoctorForm: object = {}
+async submitForm() {
+  this.ErrorMsg = "";
 
-  submitForm() 
-  {
-   this.ErrorMsg= "";
-    // Check if the form is valid
-    if (this.doctorForm.valid)
-       {
-      // Create a FormData object
-      const formData = new FormData();
-  
-      // Append form values to FormData
-      Object.keys(this.doctorForm.controls).forEach(key => {
-        const control = this.doctorForm.get(key);
-  
-        // Handle FormArray separately
-        if (control instanceof FormArray) {
-          const formArray = control as FormArray;
-          formArray.controls.forEach((formControl, index) => {
-            if (formControl instanceof FormControl) {
-              formData.append(`${key}[${index}]`, formControl.value);
-            }
-          });
-        } else if (control instanceof FormControl) {
-          formData.append(key, control.value);
-        }
-      });
+  // Check if the form is valid
+  if (this.doctorForm.valid) {
+    // Create a FormData object
+    const formData = new FormData();
 
-      
-
-  
-      // Append the file (if any)
-      const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-      if (fileInput.files && fileInput.files.length > 0) {
-        formData.append('ProfileImage', fileInput.files[0]);
-      }
-  
-      // Log the form data (for debugging)
-      console.log('Form Data:', this.doctorForm.value);
-
-      const temp = formData.get("Specialization"); // Example: "Cardiologist,Dermatologist"
-
-      const specializationIds = temp 
-          ? (temp as string).split(",") // Convert to array
-              .map(name => {
-                  const spec = this.specializations.find(spec => spec.Name === name.trim()); 
-                  return spec ? spec.SpecializationId : null; // Map to ID, return null if not found
-              })
-              .filter(id => id !== null) // Remove null values
-          : [];
-      
-      console.log(specializationIds);      
-       
-      try{
-
-        this.SubmitDoctorForm={
-          "Firstname":formData.get("FirstName"),
-          "LName":formData.get("LName"),
-          "Age":formData.get("Age"),
-          "Email":formData.get("Email"),
-          "Mobile":formData.get("Mobile"),
-          "Status":formData.get("IsActive"),
-          "Image" : this.UploadFile,
-          "Dob":formData.get("Dob"),
-          "Experience" : formData.get("Experience"),
-          "Gender":formData.get("Gender"),
-          "Full_Address":formData.get("Full_Address"),
-          "Country":formData.get("countryCode"),
-          "City":formData.get("City"),
-          "PostalCode":formData.get("PostalCode"),
-          "Qualification":formData.get("Qualification"),/// this will be array
-          "specializationIds" :specializationIds // this will be array
-          };
-
-          console.log("Final Submit Form:", JSON.stringify(this.SubmitDoctorForm, null, 2));
+    // Manually append form values
+    formData.append('FirstName', this.doctorForm.get('FirstName')?.value || '');
+formData.append('LastName', this.doctorForm.get('LastName')?.value || '');
+formData.append('Email', this.doctorForm.get('Email')?.value || '');
+formData.append('Mobile', this.doctorForm.get('Mobile')?.value || '');
+formData.append('Dob', this.doctorForm.get('Dob')?.value || '');
+formData.append('Age', this.doctorForm.get('Age')?.value || '');
+formData.append('Gender', this.doctorForm.get('Gender')?.value || '');
+formData.append('Experience', this.doctorForm.get('Experience')?.value || '');
+formData.append('Full_Address', this.doctorForm.get('Full_Address')?.value || '');
+formData.append('City', this.doctorForm.get('City')?.value || '');
+formData.append('Country', this.doctorForm.get('Country')?.value || '');
+formData.append('PostalCode', this.doctorForm.get('PostalCode')?.value || '');
+formData.append('IsActive', this.doctorForm.get('IsActive')?.value ? 'true' : 'false');   
+    // Append Qualifications (Assuming it's an array)
+    const qualifications = this.doctorForm.get('Qualifications')?.value || [];
+qualifications.forEach((qual: string | null, index: number) => {
+  formData.append(`Qualifications[${index}]`, qual ?? ""); // Use empty string if null
+});
 
 
-      }catch(error)
-      {
-          console.log(error);
-      }
-     
+    // Append Specializations (Assuming it's an array)
+    const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
 
-  
-      // Send formData to the backend API
-      // Example: this.http.post('your-api-endpoint', formData).subscribe(...);
-    } else 
-    {
-      this.ErrorMsg = "please Fill all the Fields";
+const specializationIds = selectedSpecializationNames
+  .map((name: string) => {
+    const specialization = this.specializations.find(spec => spec.Name === name);
+    return specialization ? specialization.SpecializationId : null;
+  })
+  .filter(id => id !== null); // Remove null values
 
-      // Collect error messages for invalid fields
-      const errorMessages: { [key: string]: string } = {};
-      Object.keys(this.doctorForm.controls).forEach(key => {
-        const control = this.doctorForm.get(key);
-  
-        // Handle FormArray separately
-        if (control instanceof FormArray) {
-          const formArray = control as FormArray;
-          formArray.controls.forEach((formControl, index) => {
-            if (formControl instanceof FormControl && formControl.invalid) {
-              errorMessages[`${key}[${index}]`] = this.getErrorMessage(formControl, `${key}[${index}]`);
-            }
-          });
-        } else if (control instanceof FormControl && control.invalid) {
-          errorMessages[key] = this.getErrorMessage(control, key);
-        }
-      });
-  
-      // Log or display the error messages
-      console.log('Form Errors:', errorMessages);
-      this.displayErrorMessages(errorMessages); // Call a method to display errors in the UI
+// Option 1: Send as a comma-separated string
+
+// Option 2: Send as a JSON array (Recommended)
+formData.append("Specialization", JSON.stringify(specializationIds));
+
+    // Append Profile Image (if any)
+  // Append Profile Image (if any)
+const fileInput = document.getElementById('profileImage') as HTMLInputElement;
+if (fileInput && fileInput.files && fileInput.files.length > 0) {
+  formData.append('ProfileImage', fileInput.files[0]);
+}
+
+    // Append Hospital ID
+    const hospitalId = localStorage.getItem('HospitalId');
+    if (hospitalId) {
+      formData.append('HospitalId', hospitalId);
     }
+
+    console.log('Form Data:', this.doctorForm.value);
+
+    // Log FormData for debugging
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    try {
+      // Send formData to the backend API
+      const response = await this.doctorservice.SubmitDoctorDetials(formData);
+
+      if (response.status === 200) {
+        // Success logic here
+      }
+      if (response.status == 401) {
+        return;
+      }
+    } catch (error: any) {
+      console.error('Error:', error);
+      this.ErrorMsg = "An error occurred while submitting the form.";
+    }
+  } else {
+    this.ErrorMsg = "Please fill all the fields.";
+
+    // Collect error messages for invalid fields
+    const errorMessages: { [key: string]: string } = {};
+    Object.keys(this.doctorForm.controls).forEach(key => {
+      const control = this.doctorForm.get(key);
+
+      // Handle FormArray separately
+      if (control instanceof FormArray) {
+        const formArray = control as FormArray;
+        formArray.controls.forEach((formControl, index) => {
+          if (formControl instanceof FormControl && formControl.invalid) {
+            errorMessages[`${key}[${index}]`] = this.getErrorMessage(formControl, `${key}[${index}]`);
+          }
+        });
+      } else if (control instanceof FormControl && control.invalid) {
+        errorMessages[key] = this.getErrorMessage(control, key);
+      }
+    });
+
+    // Log or display the error messages
+    console.log('Form Errors:', errorMessages);
+    this.displayErrorMessages(errorMessages); // Call a method to display errors in the UI
   }
-  
+}
 
 
 

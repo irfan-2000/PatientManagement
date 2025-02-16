@@ -185,9 +185,10 @@
 
 
 
-
+            <div>
+              
             <label for="country">Country</label>
-            <select id="country" formControlName="countryCode" class="form-control">
+            <select id="country" formControlName="Country" class="form-control">
               <option value="" disabled>Select a country</option>
               <option *ngFor="let country of countries" [value]="country.code">
                 {{ country.name }}
@@ -195,9 +196,12 @@
             </select>
           
             <!-- Display Selected Country Code -->
-            <div *ngIf="doctorForm.get('countryCode')?.value">
-              Selected Country Code: {{ doctorForm.get('countryCode')?.value }}
-            </div>
+               <div *ngIf="doctorForm.get('countryCode')?.value">
+                    Selected Country Code: {{ doctorForm.get('countryCode')?.value }}
+                </div>
+
+              </div>
+
 
 
 
@@ -242,7 +246,7 @@
         <!-- Profile Picture -->
         <div class="col-span-full">
           <label class="block text-gray-600 font-medium text-sm md:text-base">Profile Picture</label>
-          <input type="file" 
+          <input type="file" id="profileImage"
                  (change)="onFileChange($event)"
                  class="w-full p-1 border rounded text-sm md:text-base md:p-2">
           <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="Preview"

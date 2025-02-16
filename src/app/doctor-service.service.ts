@@ -8,6 +8,7 @@ import { error } from 'console';
 export class DoctorServiceService {
 
 private baseurl = "https://localhost:7203/api/"
+private doctorbaseurl = "https://localhost:7203/api/"
 
 constructor(private http:HttpClient  ){}
 
@@ -30,6 +31,20 @@ constructor(private http:HttpClient  ){}
     console.error("API Error",error);
     return error;
    });
+  }
+
+
+
+
+  SubmitDoctorDetials(formData:any):Promise<any>
+  {
+    return this.http.post<any>(`${this.doctorbaseurl}submitdoctordetails`,formData).toPromise()
+    .then((response:any)=>{
+      return response;
+    }).catch((error)=>{
+      console.error("API Error",error);
+      return error;
+    })
   }
  
 
