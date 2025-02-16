@@ -8,17 +8,26 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { DoctorComponent } from './doctor/doctor.component';
 import { FormsModule } from '@angular/forms';
 import { FilterPipe } from './filter.pipe';
+import { FormGroup } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'; // <-- Add this import
+import { RouterModule, Routes} from '@angular/router';
+import { MultiSelectModule } from '@syncfusion/ej2-angular-dropdowns';
+import { MultiselectComponent } from './multiselect/multiselect.component';  // ✅ Import MultiSelect
+
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SidebarComponent,
     DoctorComponent,
-    FilterPipe
+    FilterPipe,
+    MultiselectComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,CommonModule,FormsModule
+    AppRoutingModule,CommonModule,FormsModule,ReactiveFormsModule,HttpClientModule,RouterModule,
   ],
   providers: [
     provideClientHydration(withEventReplay())

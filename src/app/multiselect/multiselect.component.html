@@ -1,0 +1,33 @@
+<div class="multi-select-dropdown">
+    <div class="input-container">
+      @for (itemName of selectedItems; track itemName) 
+      {
+        <div class="selected-item">
+          {{ itemName }}
+          <button class="text-danger" (click)="removeItem(itemName, $event)">&times;</button>
+        </div>
+      }
+      <input type="text"
+             (focus)="showDropDown()"
+             (input)="filterItems($event)"
+             [placeholder]="isDropdownVisible ? '' : 'Select specializations...'">
+    </div>
+  
+    @if (isDropdownVisible)
+     {
+      <div class="dropdown-list">
+        @for (item of filteredItems; track item.SpecializationId)
+         {
+          <div class="dropdown-item" (click)="toggleItem(item)">
+            <span class="checkbox">
+              @if (selectedItems.includes(item.Name)) 
+              {
+                <span class="checkmark">✓</span>
+              }
+            </span>
+            <span>{{ item.Name }}</span>
+          </div>
+        }
+      </div>
+    }
+  </div>

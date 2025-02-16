@@ -5,9 +5,9 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { DoctorComponent } from './doctor/doctor.component';
 
 const routes: Routes = [
-{path:'login',component:LoginComponent},
+{path:'',component:LoginComponent},
 {path:'Side',component:SidebarComponent},
-{path:'',component:DoctorComponent}
+{path:'doctor',component:DoctorComponent}
 
 
 

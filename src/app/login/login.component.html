@@ -1,21 +1,22 @@
-<div class="flex h-screen w-full justify-center items-center bg-gray-100">
+<div  class="flex h-screen w-full justify-center items-center bg-gray-100">
     <!-- Login Box -->
     <div class="w-full max-w-md shadow-lg rounded-2xl p-6 bg-white">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Login</h2>
-      <form>
+      <form [formGroup]="loginForm"  (ngsubmit)="ValidateLogin()" >
         <div class="mb-4">
-          <label for="userId" class="block text-sm font-medium text-gray-700">User ID</label>
-          <input id="userId" type="text" placeholder="Enter your User ID"
+          <label for="userId"   class="block text-sm font-medium text-gray-700">User ID</label>
+          <input id="userId"   formControlName="UserId" type="text"  placeholder="Enter your User ID"
             class="mt-1 w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300" />
         </div>
         <div class="mb-4">
           <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-          <input id="password" type="password" placeholder="Enter your password"
+          <input id="password" formControlName="Password" type="password" placeholder="Enter your password"
             class="mt-1 w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300" />
         </div>
         <div class="mb-4">
           <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-          <select id="role" class="mt-1 w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
+          <select id="role" formControlName="Role"  class="mt-1 w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
+            <option value="" disabled>Select Role</option>
             <option value="doctor">Doctor</option>
             <option value="admin">Admin</option>
             <option value="staff">Staff</option>
@@ -24,7 +25,10 @@
         <div class="flex justify-between items-center mb-4">
           <a href="#" class="text-sm text-blue-600 hover:underline">Forgot Password?</a>
         </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+          <div>
+              <span class="text-danger"   *ngIf ="Showerror">{{ValidationErrorMsg}}</span>
+          </div>
+          <button type="submit" (click) ="ValidateLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
           Login
         </button>
       </form>
