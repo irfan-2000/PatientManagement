@@ -24,6 +24,8 @@
         (change)="onFileImport($event)"
       />
     </div>
+
+
     <div *ngIf="!showForm" class="bg-white shadow-lg rounded-lg overflow-hidden">
       <!-- FILTER INPUTS -->
       <div class="p-3 bg-gray-200">
@@ -96,6 +98,9 @@
       
     </div>
 
+
+
+    
     <div *ngIf="showForm" class="mx-auto p-6 bg-white rounded-lg shadow-lg mt-10 bg-red-500">
       <h2 class="font-semibold text-gray-700 border-b pb-3 text-xl md:text-2xl">Add Doctor</h2>
     
@@ -175,7 +180,7 @@
 
 
           <label class="inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" class="sr-only peer" checked>
+            <input type="checkbox" value="" class="sr-only peer" formControlName="IsActive" checked>
             <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300
              dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
              <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
@@ -257,38 +262,40 @@
         <div class="col-span-full">
           <label class="block text-gray-600 font-medium text-sm md:text-base">Qualifications</label>
           <div formArrayName="Qualifications">
-            <!-- Loop through each qualification control -->
-            <div *ngFor="let qual of qualificationsArray.controls; let i = index" class="flex space-x-2 mb-2 items-center">
-              <!-- Input field for qualification -->
-              <input
-                type="text"
-                [formControlName]="i"
-                class="p-1 border rounded flex-grow text-sm md:text-base md:p-2"
-                [ngClass]="{'border-red-500': qual.invalid && (qual.touched || qual.dirty)}"
-              >
-              <!-- Remove button (only show if there are more than 3 qualifications) -->
-              <button
-                *ngIf="i >= 3"
-                (click)="removeQualification(i)"
-                class="text-red-500 text-xl hover:text-red-700"
-              >
+            <div *ngFor="let qual of qualificationsArray.controls; let i = index" [formGroupName]="i"
+                 class="grid grid-cols-4 gap-2 items-center mb-2">
+              <!-- Qualification/Degree -->
+               {{qual}} 
+              <input type="text" formControlName="qualification" placeholder="Degree"
+                     class="p-1 border rounded text-sm md:text-base md:p-2"
+                     [ngClass]="{'border-red-500': qual.get('qualification')?.invalid && (qual.get('qualification')?.touched || qual.get('qualification')?.dirty)}">
+              
+              <!-- Institution -->
+              <input type="text" formControlName="institution" placeholder="Institution"
+                     class="p-1 border rounded text-sm md:text-base md:p-2"
+                     [ngClass]="{'border-red-500': qual.get('institution')?.invalid && (qual.get('institution')?.touched || qual.get('institution')?.dirty)}">
+              
+              <!-- Year of Graduation -->
+              <select formControlName="yearOfGraduation"
+              class="p-1 border rounded text-sm md:text-base md:p-2"
+              [ngClass]="{'border-red-500': qual.get('yearOfGraduation')?.invalid && (qual.get('yearOfGraduation')?.touched || qual.get('yearOfGraduation')?.dirty)}">
+        <option value="" disabled>Select Year</option>
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
+      
+              <!-- Remove button (only show if more than 3) -->
+              <button *ngIf="i >= 3" (click)="removeQualification(i)" class="text-red-500 text-xl hover:text-red-700">
                 &times;
               </button>
-              <!-- Error message for this specific qualification -->
-              <span *ngIf="qual.invalid && (qual.touched || qual.dirty)" class="text-red-500 text-sm">
-                Qualification {{i + 1}} is required.
-              </span>
             </div>
           </div>
-          <!-- Add qualification button -->
-          <button
-            (click)="addQualification()"
-            class="text-blue-500 mt-2 flex items-center text-sm md:text-base"
-          >
+        
+          <!-- Add Qualification button -->
+          <button (click)="addQualification()" class="text-blue-500 mt-2 flex items-center text-sm md:text-base">
             Add Qualification <i class="fa-solid fa-plus ml-2"></i>
           </button>
         </div>
-    
+        
         <!-- Terms & Conditions -->
         <div class="col-span-full flex items-center space-x-2">
           <input type="checkbox" formControlName="IsAgreedTerms" id="terms" class="w-4 h-4">

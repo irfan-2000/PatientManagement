@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormsModule } from '@angular/forms';  // <-- Import FormsModule
-import { FormGroup,FormControl,Validators } from '@angular/forms';
+import { FormBuilder,FormGroup,FormControl,Validators } from '@angular/forms';
 import { MultiSelectModule } from '@syncfusion/ej2-angular-dropdowns'
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
@@ -58,7 +58,7 @@ export class DoctorComponent
     }
   ];
 
-  constructor(private doctorservice:DoctorServiceService){}
+ // constructor(,private fb:FormGroup){}
 
   countries = [
     { name: 'United States', code: 'US' },
@@ -70,37 +70,82 @@ export class DoctorComponent
   ];
 
   ErrorMsg:string = ""
-  
+  years: number[] = [];
+
   specializations = [
-    {SpecializationId:1,Name: 'Cardiologist'},{ SpecializationId:2,Name:'Dermatologist'},{SpecializationId:2 ,Name:'Neurologist'}];
+    {SpecializationId:1,Name: 'Cardiologist'},{ SpecializationId:2,Name:'Dermatologist'},{SpecializationId:3 ,Name:'Neurologist'}];
   
-  
-    doctorForm = new FormGroup({
-      FirstName: new FormControl('adasd', Validators.required),
-      LastName: new FormControl('irfan@gmail.com', Validators.required),
-      Email: new FormControl('irfna@gmail.com', [Validators.required,Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]),
-      Mobile: new FormControl('1234567899', [Validators.required,Validators.pattern('^[0-9]{10}$'),  // Only allows 10 digits
-        Validators.maxLength(10)  
-      ]),
-      Dob: new FormControl(new Date().toISOString().split('T')[0], [Validators.required, this.DateValidator]),
-      Gender: new FormControl('M', Validators.required),
-      Age: new FormControl('20', Validators.required),
-      Country: new FormControl('IN', Validators.required), 
-      IsActive: new FormControl(true, Validators.required), // Default to true (Active)  
-      PostalCode: new FormControl('wwe', Validators.required),
-      Experience: new FormControl('0', [Validators.required,Validators.min(0),Validators.pattern('^[0-9]+$')]),
-      Full_Address: new FormControl('wqeqwe', Validators.required),
-      City: new FormControl('qweqwe', Validators.required),
-      Specialization: new FormControl<string[]>([], Validators.required),
-      Qualifications: new FormArray([
-        new FormControl('wewqe', Validators.required),
-        new FormControl('qweqwe', Validators.required),
-        new FormControl('qweqweS', Validators.required)
-      ]),
-      IsAgreedTerms: new FormControl(false, Validators.requiredTrue),
-    ProfileImage: new FormControl('', [Validators.required])    });
+    doctorForm: FormGroup;
+    constructor( private doctorservice:DoctorServiceService,private fb:FormBuilder) 
+    {
+      const currentYear = new Date().getFullYear();
+
+      this.years = Array.from(
+        { length: currentYear - 1979 }, (_, i) => 1980 + i);
+    
+
+      this.doctorForm = new FormGroup({
+        FirstName: new FormControl('adasd', Validators.required),
+        LastName: new FormControl('irfan@gmail.com', Validators.required),
+        Email: new FormControl('irfna@gmail.com', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")
+        ]),
+        Mobile: new FormControl('1234567899', [
+          Validators.required,
+          Validators.pattern('^[0-9]{10}$'),  // Only allows 10 digits
+          Validators.maxLength(10)
+        ]),
+        Dob: new FormControl(new Date().toISOString().split('T')[0], [
+          Validators.required,
+          this.DateValidator
+        ]),
+        Gender: new FormControl('M', Validators.required),
+        Age: new FormControl('20', Validators.required),
+        Country: new FormControl('IN', Validators.required),
+        IsActive: new FormControl(true, Validators.required), // Default to true (Active)
+        PostalCode: new FormControl('wwe', Validators.required),
+        Experience: new FormControl('0', [
+          Validators.required,
+          Validators.min(0),
+          Validators.pattern('^[0-9]+$')
+        ]),
+        Full_Address: new FormControl('wqeqwe', Validators.required),
+        City: new FormControl('qweqwe', Validators.required),
+        Specialization: new FormControl<string[]>([], Validators.required),
+        Qualifications: new FormArray([
+          this.createQualification()
+        ]),
+        IsAgreedTerms: new FormControl(false, Validators.requiredTrue),
+        ProfileImage: new FormControl('', [Validators.required])
+      });
 
 
+      
+      }
+  
+
+   createQualification(): FormGroup
+{
+    return new FormGroup({
+      qualification: new FormControl('', Validators.required),
+      institution: new FormControl('', Validators.required),
+      yearOfGraduation: new FormControl('', [Validators.required]) // Must be a 4-digit year
+    });
+  }
+   get qualificationsArray()
+   {
+    return this.doctorForm.get('Qualifications') as FormArray;
+  }
+
+  addQualification()
+   {
+    const qualifications = this.doctorForm.get('Qualifications') as FormArray;
+    qualifications.push(this.fb.group({
+      qualification: ['', Validators.required],
+      institution: ['', Validators.required],
+      yearOfGraduation: ['', Validators.required]
+    }));
+  }
+  
     DateValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
   
@@ -127,28 +172,30 @@ export class DoctorComponent
     return null;
   }
 
-  // Getter for easy access to qualifications
-  get qualificationsArray()
-   {
-    return this.doctorForm.get('Qualifications') as FormArray;
-  }
 
-  onSpecializationChange(selectedItems: string[]) {
+  onSpecializationChange(selectedItems: string[]) 
+  {
     this.doctorForm.controls['Specialization'].setValue(selectedItems);
   }
 
-  addQualification()
-   {
-    this.qualificationsArray.push(new FormControl('', Validators.required));
-  }
 
-  // Remove a qualification (keeping at least 3)
+    
+  
+
+  
   removeQualification(index: number) {
-    if (this.qualificationsArray.length > 3) {
+    debugger;
+    console.log('Before removing:', this.qualificationsArray.value);
+  
+    if (this.qualificationsArray.length > 3)
+       {
       this.qualificationsArray.removeAt(index);
+      console.log('After removing:', this.qualificationsArray.value);
+    } else {
+      console.warn("Cannot remove, must keep at least 3 qualifications.");
     }
   }
-
+  
   // Handle file selection for profile image
   onFileImport(event: any) {
     const file = event.target.files[0];
@@ -162,16 +209,19 @@ export class DoctorComponent
   }
 
 SubmitDoctorForm: object = {}
-async submitForm() {
+async submitForm()
+ {
   this.ErrorMsg = "";
 
   // Check if the form is valid
-  if (this.doctorForm.valid) {
+  if (this.doctorForm.valid)
+     {
+
     // Create a FormData object
     const formData = new FormData();
 
     // Manually append form values
-    formData.append('FirstName', this.doctorForm.get('FirstName')?.value || '');
+ formData.append('Firstname', this.doctorForm.get('FirstName')?.value || '');
 formData.append('LastName', this.doctorForm.get('LastName')?.value || '');
 formData.append('Email', this.doctorForm.get('Email')?.value || '');
 formData.append('Mobile', this.doctorForm.get('Mobile')?.value || '');
@@ -185,13 +235,32 @@ formData.append('Country', this.doctorForm.get('Country')?.value || '');
 formData.append('PostalCode', this.doctorForm.get('PostalCode')?.value || '');
 formData.append('IsActive', this.doctorForm.get('IsActive')?.value ? 'true' : 'false');   
     // Append Qualifications (Assuming it's an array)
-    const qualifications = this.doctorForm.get('Qualifications')?.value || [];
-qualifications.forEach((qual: string | null, index: number) => {
-  formData.append(`Qualifications[${index}]`, qual ?? ""); // Use empty string if null
-});
+//     const qualifications = this.doctorForm.get('Qualifications')?.value || [];
+// qualifications.forEach((qual: string | null, index: number) => {
+//   formData.append(`Qualifications[${index}]`, qual ?? ""); // Use empty string if null
+// });
+console.log("Raw Qualifications:", this.qualificationsArray.value);
+console.log("Type of Qualifications:", typeof this.qualificationsArray.value);
+console.log("JSON.stringify(Qualifications):", JSON.stringify(this.qualificationsArray.value));
+formData.append("Qualifications", JSON.stringify(this.qualificationsArray.value));
 
 
-    // Append Specializations (Assuming it's an array)
+// const hardcodedQualifications = [
+//   {
+//     "qualification": "MBBS",
+//     "institution": "Harvard Medical School",
+//     "yearOfGraduation": "2010"
+//   },
+//   {
+//     "qualification": "MD",
+//     "institution": "Johns Hopkins University",
+//     "yearOfGraduation": "2015"
+//   }
+// ];
+
+// formData.append("Qualifications",JSON.stringify(hardcodedQualifications));
+
+// Append Specializations (Assuming it's an array)
     const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
 
 const specializationIds = selectedSpecializationNames
@@ -199,12 +268,12 @@ const specializationIds = selectedSpecializationNames
     const specialization = this.specializations.find(spec => spec.Name === name);
     return specialization ? specialization.SpecializationId : null;
   })
-  .filter(id => id !== null); // Remove null values
+ // .filter((id: null) => id !== null); // Remove null values
 
 // Option 1: Send as a comma-separated string
 
 // Option 2: Send as a JSON array (Recommended)
-formData.append("Specialization", JSON.stringify(specializationIds));
+formData.append("Specialization", (specializationIds));
 
     // Append Profile Image (if any)
   // Append Profile Image (if any)
@@ -215,7 +284,8 @@ if (fileInput && fileInput.files && fileInput.files.length > 0) {
 
     // Append Hospital ID
     const hospitalId = localStorage.getItem('HospitalId');
-    if (hospitalId) {
+    if (hospitalId) 
+      {
       formData.append('HospitalId', hospitalId);
     }
 
@@ -228,9 +298,10 @@ if (fileInput && fileInput.files && fileInput.files.length > 0) {
 
     try {
       // Send formData to the backend API
-      const response = await this.doctorservice.SubmitDoctorDetials(formData);
+      const response = await this.doctorservice.SubmitDoctorDetails(formData);
 
-      if (response.status === 200) {
+      if (response.status === 200) 
+        {
         // Success logic here
       }
       if (response.status == 401) {
@@ -271,7 +342,8 @@ if (fileInput && fileInput.files && fileInput.files.length > 0) {
 
 
 // Helper function to get error messages
-getErrorMessage(control: FormControl, controlName: string): string {
+getErrorMessage(control: FormControl, controlName: string): string
+ {
   if (control.hasError('required')) {
     return `${controlName} is required.`;
   } else if (control.hasError('email')) {
@@ -294,7 +366,8 @@ getErrorMessage(control: FormControl, controlName: string): string {
 
   errorMessages: { [key: string]: string } = {}; // Variable to store error messages
 
-  displayErrorMessages(errorMessages: { [key: string]: string }) {
+  displayErrorMessages(errorMessages: { [key: string]: string }) 
+  {
     this.errorMessages = errorMessages; // Update the errorMessages variable
   }
 

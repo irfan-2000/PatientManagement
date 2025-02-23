@@ -13,7 +13,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http'; // <-- Add this import
 import { RouterModule, Routes} from '@angular/router';
 import { MultiSelectModule } from '@syncfusion/ej2-angular-dropdowns';
-import { MultiselectComponent } from './multiselect/multiselect.component';  // ✅ Import MultiSelect
+import { MultiselectComponent } from './multiselect/multiselect.component';
+import { ServicesComponent } from './services/services.component';
+import { PatientsComponent } from './patients/patients.component';  // ✅ Import MultiSelect
 
 
 @NgModule({
@@ -24,6 +26,8 @@ import { MultiselectComponent } from './multiselect/multiselect.component';  // 
     DoctorComponent,
     FilterPipe,
     MultiselectComponent,
+    ServicesComponent,
+    PatientsComponent,
   ],
   imports: [
     BrowserModule,

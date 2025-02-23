@@ -54,7 +54,7 @@ export class LoginComponent {
 
       if(response.status === 200)
       {
-       localStorage.setItem('Token',response.token); 
+      // localStorage.setItem('Token',response.token); 
        localStorage.setItem('HospitalId',response.hosiptalId);
        this.router.navigate(['/doctor']);
       }
@@ -69,6 +69,7 @@ export class LoginComponent {
       this.ValidationErrorMsg = error.error.message;  
     }
 
+    
   }
 
 

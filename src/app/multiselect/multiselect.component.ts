@@ -28,18 +28,25 @@ export class MultiselectComponent
     }
   }
 
-  filterItems(event: Event) {
+  filterItems(event: Event) 
+  {
+    
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredItems = this.items.filter(item => 
       item.Name.toLowerCase().includes(searchTerm)
     );
+    const ids = this.filteredItems.map(item => item.SpecializationId);
+    console.log("Duplicate IDs:", ids.filter((id, index) => ids.indexOf(id) !== index));
+    debugger
   }
 
-  toggleItem(item: any) {
+  toggleItem(item: any) 
+  {
     const itemName = item.Name;
     const index = this.selectedItems.indexOf(itemName);
     
-    if (index === -1) {
+    if (index === -1) 
+    {
       this.selectedItems.push(itemName);
     } else {
       this.selectedItems.splice(index, 1);
@@ -48,11 +55,17 @@ export class MultiselectComponent
     this.selectionChange.emit([...this.selectedItems]);
   }
 
+  trackByFn(index: number, item: any): any 
+  {debugger
+    return item.id; // Ensure each item has a unique 'id'
+  }
+
   showDropDown() {
     this.isDropdownVisible = true;
   }
 
-  removeItem(itemName: string, event: MouseEvent) {
+  removeItem(itemName: string, event: MouseEvent) 
+  {
     event.stopPropagation();
     const index = this.selectedItems.indexOf(itemName);
     

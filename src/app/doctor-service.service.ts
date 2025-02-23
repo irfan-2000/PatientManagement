@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
 
@@ -12,40 +12,57 @@ private doctorbaseurl = "https://localhost:7203/api/"
 
 constructor(private http:HttpClient  ){}
 
+ValidateLogin(logindata: any): Promise<any> 
+{
+  const { UserId, Password, Role } = logindata.value;
 
-  ValidateLogin(logindata:any):Promise<any>
+  const body = 
   {
-    const {UserId,Password,Role} = logindata.value;
-   console.log(UserId);
+    Id: UserId,
+    Password: Password,
+    Role: Role
+  };
 
-   const params = new HttpParams()
-   .set('Id',UserId)
-   .set('Password',Password)
-   .set("Role",Role);
+  // Set headers to send JSON
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-   return this.http.get<any>(`${this.baseurl}Validate`,{params}).toPromise()
-   .then((response:any)=>{
-    return response;
-   })
-   .catch((error)=>  {
-    console.error("API Error",error);
-    return error;
-   });
-  }
-
-
-
-
-  SubmitDoctorDetials(formData:any):Promise<any>
-  {
-    return this.http.post<any>(`${this.doctorbaseurl}submitdoctordetails`,formData).toPromise()
-    .then((response:any)=>{
-      return response;
-    }).catch((error)=>{
-      console.error("API Error",error);
+  return this.http.post<any>(`${this.baseurl}Validate`, JSON.stringify(body), { headers, withCredentials: true })
+    .toPromise()
+    .then((response: any) => response)
+    .catch((error) => {
+      console.error("API Error", error);
       return error;
-    })
-  }
- 
+    });
+}
+SubmitDoctorDetails(formData: FormData): Promise<any> 
+{
+  return this.http.post<any>(`${this.doctorbaseurl}submitdoctordetails`, formData, {
+      withCredentials: true // Ensures cookies (JWT) are sent
+  })
+  .toPromise()
+  .then((response: any) => response)
+  .catch((error) => {
+      console.error("API Error", error);
+      return error;
+  });
+}
+
+
+
+//   async logout() {
+//   try {
+//     const response = await this.http.post('/api/logout', {}).toPromise();
+//     if (response.status === 200) {
+//       // Clear any non-sensitive data from localStorage
+//       localStorage.removeItem('HospitalId');
+
+//       // Redirect to the login page
+//       this.router.navigate(['/login']);
+//     }
+//   } catch (error) {
+//     console.error('Logout failed', error);
+//   }
+// }
+  
 
 }
