@@ -2,40 +2,35 @@
   <app-sidebar></app-sidebar>
   <div class="p-2 bg-gray-add overflow-y-auto h-dvh w-dvw">
     <div class="px-3 mb-5 flex gap-2 justify-end">
-      <button
-        (click)="showForm = true"
+      <button (click)="showForm = true"
         class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3"
-        *ngIf="!showForm"
-      >
+        *ngIf="!showForm">
         Add Doctor <i class="fas fa-user-plus ml-3"></i>
       </button>
 
-      <button
-        (click)="fileInput.click()"
-        class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3"
-      >
+      <button (click)="fileInput.click()"
+        class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3">
         Import data <i class="fas fa-file-import ml-3"></i>
       </button>
-      <input
-        #fileInput
-        type="file"
-        accept=".json"
-        hidden
-        (change)="onFileImport($event)"
-      />
+      <input #fileInput type="file" accept=".json" hidden (change)="onFileImport($event)" />
     </div>
-
 
     <div *ngIf="!showForm" class="bg-white shadow-lg rounded-lg overflow-hidden">
       <!-- FILTER INPUTS -->
       <div class="p-3 bg-gray-200">
         <div class="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
-              <input type="text" [(ngModel)]="filters.id" placeholder="ID" class="p-1 border rounded text-sm md:text-base md:p-2" />
-              <input type="text" [(ngModel)]="filters.name" placeholder="Doctor Name" class="p-1 border rounded text-sm md:text-base md:p-2" />
-              <input type="text" [(ngModel)]="filters.clinic" placeholder="Clinic" class="p-1 border rounded text-sm md:text-base md:p-2" />
-              <input type="text" [(ngModel)]="filters.email" placeholder="Email" class="p-1 border rounded text-sm md:text-base md:p-2" />
-              <input type="text" [(ngModel)]="filters.mobile" placeholder="Mobile" class="p-1 border rounded text-sm md:text-base md:p-2" />
-              <input type="text" [(ngModel)]="filters.specialization" placeholder="Specialization" class="p-1 border rounded text-sm md:text-base md:p-2" />
+          <input type="text" [(ngModel)]="filters.id" placeholder="ID"
+            class="p-1 border rounded text-sm md:text-base md:p-2" />
+          <input type="text" [(ngModel)]="filters.name" placeholder="Doctor Name"
+            class="p-1 border rounded text-sm md:text-base md:p-2" />
+          <input type="text" [(ngModel)]="filters.clinic" placeholder="Clinic"
+            class="p-1 border rounded text-sm md:text-base md:p-2" />
+          <input type="text" [(ngModel)]="filters.email" placeholder="Email"
+            class="p-1 border rounded text-sm md:text-base md:p-2" />
+          <input type="text" [(ngModel)]="filters.mobile" placeholder="Mobile"
+            class="p-1 border rounded text-sm md:text-base md:p-2" />
+          <input type="text" [(ngModel)]="filters.specialization" placeholder="Specialization"
+            class="p-1 border rounded text-sm md:text-base md:p-2" />
           <select [(ngModel)]="filters.status" class="p-1 border rounded text-sm md:text-base md:p-2">
             <option value="">All</option>
             <option value="Active">Active</option>
@@ -45,13 +40,19 @@
       </div>
 
       <!-- TABLE -->
-      <div class="overflow-x-auto">
-        <table class="w-full border-collapse min-w-max">
-          <thead>
+      <div class="overflow-x-auto max-h-[82vh]">
+        <table class="w-full  border-collapse min-w-max">
+          <thead class="sticky top-0">
             <tr class="bg-blue-600 text-white">
-              <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">ID</th>
-              <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Doctor</th>
-              <th class="p-3 text-left whitespace-nowrap hidden md:table-cell">Clinic</th>
+              <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">
+                ID
+              </th>
+              <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">
+                Doctor
+              </th>
+              <th class="p-3 text-left whitespace-nowrap hidden md:table-cell">
+                Clinic
+              </th>
               <th class="p-3 text-left hidden lg:table-cell">Email</th>
               <th class="p-3 text-left hidden md:table-cell">Mobile</th>
               <th class="p-3 text-left hidden lg:table-cell">Specialization</th>
@@ -60,34 +61,35 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let doctor of doctors | filter:filters" class="border-b hover:bg-gray-100">
-              <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ doctor.id }}</td>
+            <tr *ngFor="let doctor of doctors | filter : filters" class="border-b hover:bg-gray-100">
+              <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">
+                {{ doctor.id }}
+              </td>
               <td class="p-2 md:flex md:items-center md:space-x-3">
-                <img [src]="doctor.img" alt="Doctor" class="w-10 h-10 rounded-full hidden md:block">
-                <span class="truncate text-sm md:text-base ">{{ doctor.name }}</span>
+                <img [src]="doctor.img" alt="Doctor" class="w-10 h-10 rounded-full hidden md:block" />
+                <span class="truncate text-sm md:text-base">{{
+                  doctor.name
+                  }}</span>
               </td>
               <td class="p-3 hidden md:table-cell">{{ doctor.clinic }}</td>
               <td class="p-3 hidden lg:table-cell">{{ doctor.email }}</td>
               <td class="p-3 hidden md:table-cell">{{ doctor.mobile }}</td>
-              <td class="p-3 hidden lg:table-cell">
-                
-                 
-              
-
-              </td>
+              <td class="p-3 hidden lg:table-cell"></td>
               <td class="p-3">
-                <span
-                  class="px-2 rounded-full text-white text-sm md:text-base"
-                  [ngClass]="{'bg-green-500': doctor.status === 'Active', 'bg-red-500': doctor.status === 'InActive'}"
-                >
+                <span class="px-2 rounded-full text-white text-sm md:text-base" [ngClass]="{
+                    'bg-green-500': doctor.status === 'Active',
+                    'bg-red-500': doctor.status === 'InActive'
+                  }">
                   {{ doctor.status }}
                 </span>
               </td>
               <td class="p-3">
-                <button class="bg-blue-500 text-white px-2 rounded-lg py-1 hover:bg-blue-700 text-center text-sm md:text-base md:px-3"> 
-                  <i class="fa-solid fa-pen"></i> 
+                <button
+                  class="bg-blue-500 text-white px-2 rounded-lg py-1 hover:bg-blue-700 text-center text-sm md:text-base md:px-3">
+                  <i class="fa-solid fa-pen"></i>
                 </button>
-                <button class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
+                <button
+                  class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </td>
@@ -95,231 +97,270 @@
           </tbody>
         </table>
       </div>
-      
     </div>
 
-
-
-    
     <div *ngIf="showForm" class="mx-auto p-6 bg-white rounded-lg shadow-lg mt-10 bg-red-500">
-      <h2 class="font-semibold text-gray-700 border-b pb-3 text-xl md:text-2xl">Add Doctor</h2>
-    
-      <form [formGroup]="doctorForm" class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
+      <h2 class="font-semibold text-gray-700 border-b pb-3 text-xl md:text-2xl">
+        Add Doctor
+      </h2>
+
+      <form [formGroup]="doctorForm"
+        class="formClass grid grid-cols-1 gap-x-10 gap-y-5 mt-4 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Activity status -->
+        <div class="flex gap-8 mb-6">
+          <p>Activity Status:</p>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="checkbox" value="" class="sr-only peer" formControlName="IsActive" checked />
+            <div
+              class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
+            </div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+              {{ doctorForm.get("IsActive")?.value ? "Active" : "Inactive" }}
+            </span>
+          </label>
+        </div>
+        <h2 class="font-semibold col-span-full text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-blue-500">
+          Personal details
+        </h2>
         <!-- First Name -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">First Name</label>
           <input type="text" formControlName="FirstName"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['FirstName']" class="text-red-500">{{ errorMessages['FirstName'] }}</span>
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['FirstName']" class="text-red-500">{{
+            errorMessages["FirstName"]
+            }}</span>
         </div>
-    
+
         <!-- Last Name -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Last Name</label>
           <input type="text" formControlName="LastName"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['LastName']" class="text-red-500">{{ errorMessages['LastName'] }}</span>
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['LastName']" class="text-red-500">{{
+            errorMessages["LastName"]
+            }}</span>
         </div>
-    
+
         <!-- Email -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Email</label>
           <input type="email" formControlName="Email"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['Email']" class="text-red-500">{{ errorMessages['Email'] }}</span>
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['Email']" class="text-red-500">{{
+            errorMessages["Email"]
+            }}</span>
         </div>
-    
+
         <!-- Mobile -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Mobile</label>
           <input class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2"
-                 pattern="[0-9]*" formControlName="Mobile" type="text" (keypress)="numbersOnly($event)"  maxlength="10"  autocomplete="off">
-          <span *ngIf="errorMessages['Mobile']" class="text-red-500">{{ errorMessages['Mobile'] }}</span>
+            pattern="[0-9]*" formControlName="Mobile" type="text" (keypress)="numbersOnly($event)" maxlength="10"
+            autocomplete="off" />
+          <span *ngIf="errorMessages['Mobile']" class="text-red-500">{{
+            errorMessages["Mobile"]
+            }}</span>
         </div>
-    
+
         <!-- Date of Birth -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Date of Birth</label>
           <input type="date" formControlName="Dob"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['Dob']" class="text-red-500">{{ errorMessages['Dob'] }}</span>
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['Dob']" class="text-red-500">{{
+            errorMessages["Dob"]
+            }}</span>
         </div>
-    
-        <!-- Experience -->
+
         <div>
-          <label class="block text-gray-600 font-medium text-sm md:text-base">Experience</label>
-          <input type="number" formControlName="Experience" min="0"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['Experience']" class="text-red-500">{{ errorMessages['Experience'] }}</span>
-              
-        </div> 
-    
+          <label class="block text-gray-600 font-medium text-sm md:text-base">Age</label>
+
+          <input type="number" formControlName="Age" min="0"
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['Age']" class="text-red-500">{{
+            errorMessages["Age"]
+            }}</span>
+        </div>
+
         <!-- Gender -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Gender</label>
           <select formControlName="Gender"
-                  class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
             <option value="M">Male</option>
             <option value="F">Female</option>
           </select>
-          <span *ngIf="errorMessages['Gender']" class="text-red-500">{{ errorMessages['Gender'] }}</span>
+          <span *ngIf="errorMessages['Gender']" class="text-red-500">{{
+            errorMessages["Gender"]
+            }}</span>
         </div>
-    
 
+        <!-- Profile Picture -->
         <div>
-          <label class="block text-gray-600 font-medium text-sm md:text-base">Age</label>
-          
-          <input type="number" formControlName="Age" min="0"
-          class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-   <span *ngIf="errorMessages['Age']" class="text-red-500">{{ errorMessages['Age'] }}</span>
-          </div>
+          <label class="block text-gray-600 font-medium text-sm md:text-base">Profile Picture</label>
+          <input type="file" id="profileImage" (change)="onFileChange($event)"
+            class="w-full p-1 border rounded text-sm md:text-base md:p-2" />
+          <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="Preview"
+            class="mt-2 w-24 h-24 rounded-full shadow-md" />
+        </div>
 
-
-
-
-
-
-          <label class="inline-flex items-center cursor-pointer">
-            <input type="checkbox" value="" class="sr-only peer" formControlName="IsActive" checked>
-            <div class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300
-             dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
-             <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-              {{ doctorForm.get('IsActive')?.value ? 'Active' : 'Inactive' }}
-            </span>          </label>
-          
-
-
-
-            <div>
-              
-            <label for="country">Country</label>
-            <select id="country" formControlName="Country" class="form-control">
-              <option value="" disabled>Select a country</option>
-              <option *ngFor="let country of countries" [value]="country.code">
-                {{ country.name }}
-              </option>
-            </select>
-          
-            <!-- Display Selected Country Code -->
-               <div *ngIf="doctorForm.get('countryCode')?.value">
-                    Selected Country Code: {{ doctorForm.get('countryCode')?.value }}
-                </div>
-
-              </div>
-
-
-
-
-
-
-
-
-
-
+        <!--  Address details -->
+        <h2
+          class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-blue-500">
+          Address details
+        </h2>
 
         <!-- Full Address -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Full Address</label>
           <input type="text" formControlName="Full_Address"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['Full_Address']" class="text-red-500">{{ errorMessages['Full_Address'] }}</span>
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['Full_Address']" class="text-red-500">{{
+            errorMessages["Full_Address"]
+            }}</span>
         </div>
-    
+
         <!-- City -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">City</label>
           <input type="text" formControlName="City"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['City']" class="text-red-500">{{ errorMessages['City'] }}</span>
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['City']" class="text-red-500">{{
+            errorMessages["City"]
+            }}</span>
         </div>
-    
+
         <!-- Postal Code -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Postal Code</label>
           <input type="text" formControlName="PostalCode"
-                 class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
-          <span *ngIf="errorMessages['PostalCode']" class="text-red-500">{{ errorMessages['PostalCode'] }}</span>
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['PostalCode']" class="text-red-500">{{
+            errorMessages["PostalCode"]
+            }}</span>
         </div>
-    
+
+        <!-- Country -->
+        <div class="flex flex-col">
+          <label for="country">Country</label>
+          <select id="country" formControlName="Country" class="form-control p-3">
+            <option value="" disabled>Select a country</option>
+            <option *ngFor="let country of countries" [value]="country.code">
+              {{ country.name }}
+            </option>
+          </select>
+        </div>
+
+        <!--  Professional Information -->
+        <h2
+          class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-blue-500">
+          Professional Information
+        </h2>
+
+        <!-- Experience -->
+        <div>
+          <label class="block text-gray-600 font-medium text-sm md:text-base">Experience</label>
+          <input type="number" formControlName="Experience" min="0"
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+          <span *ngIf="errorMessages['Experience']" class="text-red-500">{{
+            errorMessages["Experience"]
+            }}</span>
+        </div>
+
+        <!-- <div> -->
+        <!-- Display Selected Country Code -->
+        <!-- <div *ngIf="doctorForm.get('countryCode')?.value"> -->
+        <!-- Selected Country Code: {{ doctorForm.get("countryCode")?.value }} -->
+        <!-- </div> -->
+        <!-- </div> -->
+
         <!-- Specialization -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Specialization</label>
-          <app-multiselect [items]="specializations" (selectionChange)="onSpecializationChange($event)"></app-multiselect>
-          <span *ngIf="errorMessages['Specialization']" class="text-red-500">{{ errorMessages['Specialization'] }}</span>
+          <app-multiselect [items]="specializations"
+            (selectionChange)="onSpecializationChange($event)"></app-multiselect>
+          <span *ngIf="errorMessages['Specialization']" class="text-red-500">{{
+            errorMessages["Specialization"]
+            }}</span>
         </div>
-    
-        <!-- Profile Picture -->
-        <div class="col-span-full">
-          <label class="block text-gray-600 font-medium text-sm md:text-base">Profile Picture</label>
-          <input type="file" id="profileImage"
-                 (change)="onFileChange($event)"
-                 class="w-full p-1 border rounded text-sm md:text-base md:p-2">
-          <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="Preview"
-               class="mt-2 w-24 h-24 rounded-full shadow-md">
-        </div>
-    
+
         <!-- Qualifications (Dynamic Add) -->
         <div class="col-span-full">
           <label class="block text-gray-600 font-medium text-sm md:text-base">Qualifications</label>
           <div formArrayName="Qualifications">
             <div *ngFor="let qual of qualificationsArray.controls; let i = index" [formGroupName]="i"
-                 class="grid grid-cols-4 gap-2 items-center mb-2">
+              class="grid grid-cols-1 gap-2 items-center mb-6 md:grid-cols-4">
               <!-- Qualification/Degree -->
-               {{qual}} 
+              {{ qual }}
               <input type="text" formControlName="qualification" placeholder="Degree"
-                     class="p-1 border rounded text-sm md:text-base md:p-2"
-                     [ngClass]="{'border-red-500': qual.get('qualification')?.invalid && (qual.get('qualification')?.touched || qual.get('qualification')?.dirty)}">
-              
+                class="p-1 border rounded text-sm md:text-base md:p-2" [ngClass]="{
+                  'border-red-500':
+                    qual.get('qualification')?.invalid &&
+                    (qual.get('qualification')?.touched ||
+                      qual.get('qualification')?.dirty)
+                }" />
+
               <!-- Institution -->
               <input type="text" formControlName="institution" placeholder="Institution"
-                     class="p-1 border rounded text-sm md:text-base md:p-2"
-                     [ngClass]="{'border-red-500': qual.get('institution')?.invalid && (qual.get('institution')?.touched || qual.get('institution')?.dirty)}">
-              
+                class="p-1 border rounded text-sm md:text-base md:p-2" [ngClass]="{
+                  'border-red-500':
+                    qual.get('institution')?.invalid &&
+                    (qual.get('institution')?.touched ||
+                      qual.get('institution')?.dirty)
+                }" />
+
               <!-- Year of Graduation -->
-              <select formControlName="yearOfGraduation"
-              class="p-1 border rounded text-sm md:text-base md:p-2"
-              [ngClass]="{'border-red-500': qual.get('yearOfGraduation')?.invalid && (qual.get('yearOfGraduation')?.touched || qual.get('yearOfGraduation')?.dirty)}">
-        <option value="" disabled>Select Year</option>
-        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-      </select>
-      
+              <select formControlName="yearOfGraduation" class="p-1 border rounded text-sm md:text-base md:p-2"
+                [ngClass]="{
+                  'border-red-500':
+                    qual.get('yearOfGraduation')?.invalid &&
+                    (qual.get('yearOfGraduation')?.touched ||
+                      qual.get('yearOfGraduation')?.dirty)
+                }">
+                <option value="" disabled>Select Year</option>
+                <option *ngFor="let year of years" [value]="year">
+                  {{ year }}
+                </option>
+              </select>
+
               <!-- Remove button (only show if more than 3) -->
               <button *ngIf="i >= 3" (click)="removeQualification(i)" class="text-red-500 text-xl hover:text-red-700">
                 &times;
               </button>
             </div>
           </div>
-        
+
           <!-- Add Qualification button -->
           <button (click)="addQualification()" class="text-blue-500 mt-2 flex items-center text-sm md:text-base">
             Add Qualification <i class="fa-solid fa-plus ml-2"></i>
           </button>
         </div>
-        
+
         <!-- Terms & Conditions -->
         <div class="col-span-full flex items-center space-x-2">
-          <input type="checkbox" formControlName="IsAgreedTerms" id="terms" class="w-4 h-4">
+          <input type="checkbox" formControlName="IsAgreedTerms" id="terms" class="w-4 h-4" />
           <label for="terms" class="text-gray-600 text-sm md:text-base">
             I accept the terms & conditions
           </label>
-          <span *ngIf="errorMessages['IsAgreedTerms']" class="text-red-500">{{ errorMessages['IsAgreedTerms'] }}</span>
+          <span *ngIf="errorMessages['IsAgreedTerms']" class="text-red-500">{{
+            errorMessages["IsAgreedTerms"]
+            }}</span>
         </div>
-    
 
-        <span  class="text-danger" *ngIf="ErrorMsg">{{ErrorMsg}}</span>
+        <span class="text-danger" *ngIf="ErrorMsg">{{ ErrorMsg }}</span>
         <!-- Submit Button -->
         <div class="col-span-full flex justify-end gap-3">
           <button (click)="cancelForm()"
-                  class="px-2 text-red-500 rounded hover:bg-red-500 hover:text-white border border-red-500 text-sm md:text-base md:px-4 py-2">
+            class="px-2 text-red-500 rounded hover:bg-red-500 hover:text-white border border-red-500 text-sm md:text-base md:px-4 py-2">
             Cancel
           </button>
           <button (click)="submitForm()"
-                  class="px-2 bg-blue-500 text-white rounded border-width- border-blue-500 hover:bg-blue-700 hover:border-blue-700 text-sm md:text-base md:px-4 py-2">
+            class="px-2 bg-blue-500 text-white rounded border-width- border-blue-500 hover:bg-blue-700 hover:border-blue-700 text-sm md:text-base md:px-4 py-2">
             Submit
           </button>
         </div>
       </form>
     </div>
-
   </div>
 </div>
