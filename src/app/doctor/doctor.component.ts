@@ -78,6 +78,7 @@ export class DoctorComponent
     doctorForm: FormGroup;
     constructor( private doctorservice:DoctorServiceService,private fb:FormBuilder) 
     {
+      this.GetDoctorDetails();
       const currentYear = new Date().getFullYear();
 
       this.years = Array.from(
@@ -409,5 +410,30 @@ UploadFile:any;
     }
   }
   
+ async GetDoctorDetails()
+ {
+  const DoctorId = 1040
+
+  
+  try {
+    // Send formData to the backend API
+    const response = await this.doctorservice.GetDoctorDetails(DoctorId);
+console.log(response)
+    if (response.status === 200) 
+      {
+      // Success logic here
+    }
+    if (response.status == 401) {
+      return;
+    }
+  } catch (error: any) {
+    console.error('Error:', error);
+    this.ErrorMsg = "An error occurred while submitting the form.";
+  }
+ }
+
+
+
+
 
 }

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
+import { json } from 'stream/consumers';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,26 @@ SubmitDoctorDetails(formData: FormData): Promise<any>
   .toPromise()
   .then((response: any) => response)
   .catch((error) => {
+      console.error("API Error", error);
+      return error;
+  });
+}
+GetDoctorDetails(doctorId: number): Promise<any> 
+{ 
+  const HospitalId = localStorage.getItem('HospitalId') ?? ''; // Ensure it's not null
+
+  const params = new HttpParams()
+    .set('DoctorId', doctorId.toString())
+    .set('HospitalId', HospitalId);
+
+  return this.http.get<any>(`${this.doctorbaseurl}GetDoctorDetails`, 
+  { 
+    params, // ✅ Send as query params
+    withCredentials: true // ✅ Ensures cookies (JWT) are sent
+  })
+  .toPromise()
+  .then(response => response)
+  .catch(error => {
       console.error("API Error", error);
       return error;
   });
