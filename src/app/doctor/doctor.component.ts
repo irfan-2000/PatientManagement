@@ -7,6 +7,7 @@ import { JsonPipe } from '@angular/common';
 import { get } from 'http';
 import { json } from 'stream/consumers';
 import { DoctorServiceService } from '../doctor-service.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -76,7 +77,7 @@ export class DoctorComponent
     {SpecializationId:1,Name: 'Cardiologist'},{ SpecializationId:2,Name:'Dermatologist'},{SpecializationId:3 ,Name:'Neurologist'}];
   
     doctorForm: FormGroup;
-    constructor( private doctorservice:DoctorServiceService,private fb:FormBuilder) 
+    constructor( private doctorservice:DoctorServiceService,private fb:FormBuilder, private toastr: ToastrService) 
     {
       this.GetDoctorDetails();
       const currentYear = new Date().getFullYear();
@@ -210,6 +211,14 @@ export class DoctorComponent
   }
 
 SubmitDoctorForm: object = {}
+
+showToast(){
+  this.toastr.success("Hehe Toastr working","Success toast")
+  this.toastr.error("Hehe Toastr working","Error Toast")
+  this.toastr.warning("Hehe Toastr working","Warning toast")
+  this.toastr.info("Hehe Toastr working","Info Toast")
+}
+
 async submitForm()
  {
   this.ErrorMsg = "";

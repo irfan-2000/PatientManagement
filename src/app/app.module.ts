@@ -16,7 +16,9 @@ import { MultiSelectModule } from '@syncfusion/ej2-angular-dropdowns';
 import { MultiselectComponent } from './multiselect/multiselect.component';
 import { ServicesComponent } from './services/services.component';
 import { PatientsComponent } from './patients/patients.component';  // ✅ Import MultiSelect
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,13 @@ import { PatientsComponent } from './patients/patients.component';  // ✅ Impor
   imports: [
     BrowserModule,
     AppRoutingModule,CommonModule,FormsModule,ReactiveFormsModule,HttpClientModule,RouterModule,
+    BrowserAnimationsModule, // This is used by the toastr module for animations
+    ToastrModule.forRoot({
+      timeOut: 5000,
+      positionClass: 'toast-bottom-left',
+      progressBar: true,
+    }), // ToastrModule to show toasts
+
   ],
   providers: [
     provideClientHydration(withEventReplay())
