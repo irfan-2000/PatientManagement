@@ -33,7 +33,7 @@
 
         <!-- Doctors -->
         <li>
-          <a href="#" [ngClass]="getNavClasses('doctors')" (click)="handleMenuClick('doctors')">
+          <a href="/doctors" [ngClass]="getNavClasses('doctors')" (click)="handleMenuClick('doctors')">
             <!-- <i class="fa-solid fa-user-doctor mr-3"></i> -->
             <i class="fa-solid fa-stethoscope mr-3"></i>
             <span *ngIf="isSidebarOpen">Doctors</span>
@@ -42,7 +42,7 @@
 
         <!-- Patients -->
         <li>
-          <a href="#" [ngClass]="getNavClasses('patients')" (click)="handleMenuClick('patients')">
+          <a href="/patients" [ngClass]="getNavClasses('patients')" (click)="handleMenuClick('patients')">
             <i class="fas fa-user-injured mr-3"></i>
             <span *ngIf="isSidebarOpen">Patients</span>
           </a>

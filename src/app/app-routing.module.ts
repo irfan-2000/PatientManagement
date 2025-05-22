@@ -8,10 +8,9 @@ import { PatientsComponent } from './patients/patients.component';
 
 const routes: Routes = [
 {path:'',component:LoginComponent},
-{path:'Side',component:SidebarComponent},
-{path:'doctor',component:DoctorComponent},
-{path:'Services',component:ServicesComponent},
-{path:'Patients',component:PatientsComponent}
+{path:'doctors',component:DoctorComponent},
+{path:'services',component:ServicesComponent},
+{path:'patients',component:PatientsComponent}
 
 
 
