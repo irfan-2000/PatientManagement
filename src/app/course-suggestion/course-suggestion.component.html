@@ -1,0 +1,18 @@
+<div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="grid grid-cols-2 w-full">
+        <!-- Left col -->
+        <div class="grid grid-rows-2 bg-red-500">
+            <div class="bg-red-500"></div>
+            <div class="bg-blue-500"></div>
+        </div>
+
+        <!-- Right Col -->
+        <div class="px-6 py-4">
+            <label class="block text-gray-600 font-medium text-sm md:text-base">Course</label>
+            <app-multiselect [items]="courseSuggestions" [placeholder]="'Select Courses'"
+                (selectionChange)="onCourseChange($event)"></app-multiselect>
+        </div>
+
+    </div>
+</div>

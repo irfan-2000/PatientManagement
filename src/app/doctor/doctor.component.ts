@@ -74,7 +74,7 @@ export class DoctorComponent
   years: number[] = [];
 
   specializations = [
-    {SpecializationId:1,Name: 'Cardiologist'},{ SpecializationId:2,Name:'Dermatologist'},{SpecializationId:3 ,Name:'Neurologist'}];
+    {id:1,name: 'Cardiologist'},{ id:2,name:'Dermatologist'},{id:3 ,name:'Neurologist'}];
   
     doctorForm: FormGroup;
     constructor( private doctorservice:DoctorServiceService,private fb:FormBuilder, private toastr: ToastrService) 
@@ -274,8 +274,8 @@ formData.append("Qualifications", JSON.stringify(this.qualificationsArray.value)
 
 const specializationIds = selectedSpecializationNames
   .map((name: string) => {
-    const specialization = this.specializations.find(spec => spec.Name === name);
-    return specialization ? specialization.SpecializationId : null;
+    const specialization = this.specializations.find(spec => spec.name === name);
+    return specialization ? specialization.id : null;
   })
  // .filter((id: null) => id !== null); // Remove null values
 

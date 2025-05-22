@@ -10,22 +10,22 @@
       <input type="text"
              (focus)="showDropDown()"
              (input)="filterItems($event)"
-             [placeholder]="isDropdownVisible ? '' : 'Select specializations...'">
+             [placeholder]="isDropdownVisible || selectedItems?.length ? '' : placeholder">
     </div>
   
     @if (isDropdownVisible)
      {
       <div class="dropdown-list">
-        @for (item of filteredItems; track item.SpecializationId)
+        @for (item of filteredItems; track item.id)
          {
           <div class="dropdown-item" (click)="toggleItem(item)">
             <span class="checkbox">
-              @if (selectedItems.includes(item.Name)) 
+              @if (selectedItems.includes(item.name)) 
               {
                 <span class="checkmark">✓</span>
               }
             </span>
-            <span>{{ item.Name }}</span>
+            <span>{{ item.name }}</span>
           </div>
         }
       </div>

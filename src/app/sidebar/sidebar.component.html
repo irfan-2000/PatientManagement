@@ -139,6 +139,15 @@
             </ul>
           </div>
         </li>
+
+        <!-- Course suggestion -->
+        <li>
+          <a href="/course" [ngClass]="getNavClasses('course')" (click)="handleMenuClick('course')">
+            <i class="fa-solid fa-laptop-file"></i>
+            <span *ngIf="isSidebarOpen">Course</span>
+          </a>
+        </li>
+
       </ul>
     </nav>
   </div>

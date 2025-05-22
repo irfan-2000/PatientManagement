@@ -9,6 +9,7 @@ import { Component, ElementRef, HostListener, inject, Input, Output, EventEmitte
 export class MultiselectComponent
 {
   @Input() items: any[] = [];
+  @Input() placeholder: String = "Select items";
   @Output() selectionChange = new EventEmitter<string[]>();
 
   private elementRef = inject(ElementRef);
@@ -33,16 +34,16 @@ export class MultiselectComponent
     
     const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredItems = this.items.filter(item => 
-      item.Name.toLowerCase().includes(searchTerm)
+      item.name.toLowerCase().includes(searchTerm)
     );
-    const ids = this.filteredItems.map(item => item.SpecializationId);
+    const ids = this.filteredItems.map(item => item.id);
     console.log("Duplicate IDs:", ids.filter((id, index) => ids.indexOf(id) !== index));
     debugger
   }
 
   toggleItem(item: any) 
   {
-    const itemName = item.Name;
+    const itemName = item.name;
     const index = this.selectedItems.indexOf(itemName);
     
     if (index === -1) 
