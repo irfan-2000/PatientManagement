@@ -17,22 +17,27 @@ export class SidebarComponent
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  handleMenuClick(menu: string) {
-    if (this.activeMenu === menu) {
+  handleMenuClick(menu: string)   
+  {
+    if (this.activeMenu === menu) 
+    {
       this.activeMenu = null;
       this.openSubmenu = null;
-    } else {
+    } else 
+    {
       this.activeMenu = menu;
       this.openSubmenu =
         menu === 'departments' || menu === 'reports' ? menu : null;
     }
   }
 
-  handleSubmenuClick(submenu: string) {
+  handleSubmenuClick(submenu: string) 
+  {
     this.activeSubmenu = this.activeSubmenu === submenu ? null : submenu;
   }
 
-  getNavClasses(menu: string){
+  getNavClasses(menu: string)
+  {
     return {
       'flex items-center p-2 rounded-lg transition-all duration-100': true,
       'text-gray-700 hover:bg-blue-50': this.activeMenu !== menu,

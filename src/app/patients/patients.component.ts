@@ -197,16 +197,21 @@ ShowPatient:Boolean= false
 
   openPatientModal( patient?: any,operation: string = ''): void
   {
-    this.ShowPatient = true;
-    this.isAdding = operation === 'Add';
-    
+       
     if (operation === 'Add') 
       {
-        this.isAdding = operation === 'Add';
+        this.ShowPatient = true;
+    
 
       this.patientForm.reset();
       this.clearAllArrays();
-    } else {
+    } else if(operation == 'History')
+      {
+        this.OpenHistoryPopup();
+
+
+      }
+      else{
       this.selectedPatient = patient;
       this.patchFormValues(patient);
     }
@@ -337,4 +342,43 @@ onSubmit() {
     this.patientForm.markAllAsTouched();
   }
 }
+
+
+
+
+isHistoryPopupOpen: boolean = false;
+patient = {
+  name: 'John Doe',
+  allergies: 'Peanuts',
+  pastDiseases: 'Diabetes',
+  visits: [
+    { date: '2024-01-10', doctor: 'Dr. Smith', diagnosis: 'Flu' },
+    { date: '2024-02-15', doctor: 'Dr. Johnson', diagnosis: 'Allergy' }
+  ]
+};
+
+OpenHistoryPopup() {
+  this.isHistoryPopupOpen = true;
+}
+
+CloseHispotyPopup() {
+  this.isHistoryPopupOpen = false;
+}
+
+viewDetails(visit: any) {
+  alert(`Details for ${visit.date}:\nDoctor: ${visit.doctor}\nDiagnosis: ${visit.diagnosis}`);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

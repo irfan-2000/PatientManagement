@@ -7,7 +7,7 @@
         *ngIf="!showForm">
         Add Doctor <i class="fas fa-user-plus ml-3"></i>
       </button>
-      <button (click)="showToast()"
+      <button (click)="showToast('success', 'User registered successfully!', 'Success')"
         class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3">
        Show toast <i class="fas fa-user-plus ml-3"></i>
       </button>
@@ -70,7 +70,7 @@
                 {{ doctor.id }}
               </td>
               <td class="p-2 md:flex md:items-center md:space-x-3">
-                <img [src]="doctor.img" alt="Doctor" class="w-10 h-10 rounded-full hidden md:block" />
+                <img [src]="doctor.image" alt="Doctor" class="w-10 h-10 rounded-full hidden md:block" />
                 <span class="truncate text-sm md:text-base">{{
                   doctor.name
                   }}</span>
@@ -78,7 +78,7 @@
               <td class="p-3 hidden md:table-cell">{{ doctor.clinic }}</td>
               <td class="p-3 hidden lg:table-cell">{{ doctor.email }}</td>
               <td class="p-3 hidden md:table-cell">{{ doctor.mobile }}</td>
-              <td class="p-3 hidden lg:table-cell"></td>
+              <td class="p-3 hidden lg:table-cell">{{doctor.specialization}}</td>
               <td class="p-3">
                 <span class="px-2 rounded-full text-white text-sm md:text-base" [ngClass]="{
                     'bg-green-500': doctor.status === 'Active',
@@ -89,11 +89,11 @@
               </td>
               <td class="p-3">
                 <button
-                  class="bg-blue-500 text-white px-2 rounded-lg py-1 hover:bg-blue-700 text-center text-sm md:text-base md:px-3">
+                  class="bg-blue-500 text-white px-2 rounded-lg py-1 hover:bg-blue-700 text-center text-sm md:text-base md:px-3" (click)="UpdateDoctorDetails(doctor)">
                   <i class="fa-solid fa-pen"></i>
                 </button>
                 <button
-                  class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
+                  class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3" (click)="DeleteDoctor(doctor.id)">
                   <i class="fa-solid fa-trash"></i>
                 </button>
               </td>
@@ -205,8 +205,14 @@
           <label class="block text-gray-600 font-medium text-sm md:text-base">Profile Picture</label>
           <input type="file" id="profileImage" (change)="onFileChange($event)"
             class="w-full p-1 border rounded text-sm md:text-base md:p-2" />
-          <img *ngIf="profileImagePreview" [src]="profileImagePreview" alt="Preview"
+          
+          
+            <img  [src]="profileImagePreview" alt="Preview"
             class="mt-2 w-24 h-24 rounded-full shadow-md" />
+
+
+
+
         </div>
 
         <!--  Address details -->
@@ -282,7 +288,8 @@
         <!-- Specialization -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Specialization</label>
-          <app-multiselect [items]="specializations"
+          <app-multiselect [items]="specializations" [Allitems]="Allitems"  [isEditing]="IsEdition"
+
             (selectionChange)="onSpecializationChange($event)"></app-multiselect>
           <span *ngIf="errorMessages['Specialization']" class="text-red-500">{{
             errorMessages["Specialization"]
@@ -296,7 +303,7 @@
             <div *ngFor="let qual of qualificationsArray.controls; let i = index" [formGroupName]="i"
               class="grid grid-cols-1 gap-2 items-center mb-6 md:grid-cols-4">
               <!-- Qualification/Degree -->
-              {{ qual }}
+             
               <input type="text" formControlName="qualification" placeholder="Degree"
                 class="p-1 border rounded text-sm md:text-base md:p-2" [ngClass]="{
                   'border-red-500':
@@ -352,7 +359,7 @@
             }}</span>
         </div>
 
-        <span class="text-danger" *ngIf="ErrorMsg">{{ ErrorMsg }}</span>
+        <span class="text-red-500" *ngIf="ErrorMsg">{{ ErrorMsg }}</span>
         <!-- Submit Button -->
         <div class="col-span-full flex justify-end gap-3">
           <button (click)="cancelForm()"

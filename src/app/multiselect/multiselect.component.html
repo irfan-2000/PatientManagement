@@ -16,16 +16,16 @@
     @if (isDropdownVisible)
      {
       <div class="dropdown-list">
-        @for (item of filteredItems; track item.SpecializationId)
+        @for (item of filteredItems; track item.specializationId)
          {
           <div class="dropdown-item" (click)="toggleItem(item)">
             <span class="checkbox">
-              @if (selectedItems.includes(item.Name)) 
+              @if (selectedItems.includes(item.name)) 
               {
                 <span class="checkmark">✓</span>
               }
             </span>
-            <span>{{ item.Name }}</span>
+            <span>{{ item.name }}</span>
           </div>
         }
       </div>

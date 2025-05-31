@@ -15,7 +15,7 @@ import { RouterModule, Routes} from '@angular/router';
 import { MultiSelectModule } from '@syncfusion/ej2-angular-dropdowns';
 import { MultiselectComponent } from './multiselect/multiselect.component';
 import { ServicesComponent } from './services/services.component';
-import { PatientsComponent } from './patients/patients.component';  // ✅ Import MultiSelect
+import { PatientsComponent } from './patients/patients.component';  
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';

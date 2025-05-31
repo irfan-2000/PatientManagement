@@ -11,6 +11,10 @@ export class DoctorServiceService {
 private baseurl = "https://localhost:7203/api/"
 private doctorbaseurl = "https://localhost:7203/api/"
 
+ HospitalId:any = localStorage.getItem('HospitalId') ?? ''; // Ensure it's not null
+
+
+
 constructor(private http:HttpClient  ){}
 
 ValidateLogin(logindata: any): Promise<any> 
@@ -47,13 +51,13 @@ SubmitDoctorDetails(formData: FormData): Promise<any>
       return error;
   });
 }
+
+
 GetDoctorDetails(doctorId: number): Promise<any> 
 { 
-  const HospitalId = localStorage.getItem('HospitalId') ?? ''; // Ensure it's not null
-
   const params = new HttpParams()
     .set('DoctorId', doctorId.toString())
-    .set('HospitalId', HospitalId);
+    .set('HospitalId', this.HospitalId);
 
   return this.http.get<any>(`${this.doctorbaseurl}GetDoctorDetails`, 
   { 
@@ -67,6 +71,84 @@ GetDoctorDetails(doctorId: number): Promise<any>
       return error;
   });
 }
+
+
+GetAllDoctors(): Promise<any> 
+{  
+
+if(!this.HospitalId)
+  alert("Unkown Error Occured Please Login again");
+
+
+const params = new HttpParams().set('HospitalId',this.HospitalId);
+  return this.http.get<any>(`${this.doctorbaseurl}GetAllDoctors`, 
+  { 
+    params,
+  })
+  .toPromise()
+  .then(response => response)
+  .catch(error => {
+      console.error("API Error", error);
+      return error;
+  });
+}
+
+
+GetSpecialization(): Promise<any> 
+{  
+if(!this.HospitalId)
+  alert("Unkown Error Occured Please Login again");
+const params = new HttpParams().set('HospitalId',this.HospitalId);
+  return this.http.get<any>(`${this.doctorbaseurl}GetSpecialization`, 
+  { 
+    params,
+  })
+  .toPromise()
+  .then(response => response)
+  .catch(error => {
+      console.error("API Error", error);
+      return error;
+  });
+}
+
+
+
+
+
+DeleteDoctor(Id:Number): Promise<any> 
+{  
+if(!this.HospitalId)
+  alert("Unkown Error Occured Please Login again");
+const params = new HttpParams()
+.set('HospitalId',this.HospitalId)
+.set('DoctorId',Id.toString());
+  return this.http.delete<any>(`${this.doctorbaseurl}DeleteDoctor`, 
+  { 
+    params,
+  })
+  .toPromise()
+  .then(response => response)
+  .catch(error => {
+      console.error("API Error", error);
+      return error;
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

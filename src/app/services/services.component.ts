@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DoctorComponent } from '../doctor/doctor.component';
+import { DoctorServiceService } from '../doctor-service.service';
+import { HospitalServiceService } from '../hospital-service.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -19,10 +23,51 @@ export class ServicesComponent
 
   ErrorMsg:string = ""
   SuccessMsg:string = ""
+  specializations: { specializationId: string; name: string; hospitalId: string; status: string }[] = [];
+  specializationId:number | undefined ;
 
-  openSpecializationModal() {
+
+ngOninit()
+{
+}
+
+ 
+ async GetSpecialization()
+ {
+  
+  try {
+    const response = await this.doctorservice.GetSpecialization();
+     
+    console.log(response)
+    if (response.status === 200) 
+      {
+        console.log("soecialization",response);
+        this.specializations = response.specializationData;
+
+        console.log(this.specializations);
+      }
+
+    if (response.status == 401) 
+      {
+      return;
+    }
+  } catch (error: any) {
+    console.error('Error:', error);
+    this.ErrorMsg = "An error occurred while submitting the form.";
+  }
+
+ }
+
+
+
+ 
+
+
+  openSpecializationModal() 
+  {
     this.ShowSpecialization = true;
     this.isAdding = false;
+    this.GetSpecialization();
   }
   
   closeModal() {
@@ -53,15 +98,13 @@ doctors = ['Dr. Sarah Johnson', 'Dr. Michael Chen', 'Dr. Emily Rodriguez'];
 
   Specializationform: FormGroup;
   serviceForm:FormGroup;
-  constructor(private fb:FormBuilder)
+  constructor(private fb:FormBuilder,private doctorservice:DoctorServiceService,private hospservice:HospitalServiceService,private toastr: ToastrService)
   {      
      this.Specializationform = new FormGroup(
       { 
         Name: new FormControl('', Validators.required),
         Status : new FormControl('',Validators.required)
       } )
-
-
 
       this.serviceForm = this.fb.group({
         Name: ['', Validators.required],
@@ -81,6 +124,8 @@ doctors = ['Dr. Sarah Johnson', 'Dr. Michael Chen', 'Dr. Emily Rodriguez'];
       this.ShowSpecialization = false;
     }
 
+
+
 async submitForm()
 {
   this.ErrorMsg = "";
@@ -91,14 +136,37 @@ async submitForm()
     this.isAdding = false;
 
     formData.append('Name',this.Specializationform.get('Name')?.value ||'');
-    formData.append('Status',this.Specializationform.get('Status')?.value ||'');
+    formData.append('Status',this.Specializationform.get('Status')?.value ||'0');
 
+    if (this.specializationId !== undefined && this.specializationId !== null)
+    {
+      formData.append('SpecializationId',this.specializationId.toString());
 
+    }    
     const hospitalId = localStorage.getItem('HospitalId');
     if (!hospitalId) 
     {
      alert("Error Adding Specialization.. kindly Reload"); 
+    }else{
+      formData.append('HospitalId',hospitalId.toString())
     }
+
+    try {
+      console.log(JSON.stringify(formData))
+     const response = await this.hospservice.AddUpdateSpecialization(formData);
+
+      if (response.status === 200) 
+      {
+        this.showToast('success','Add Success!!','Add');
+      }
+      if (response.status == 401) {
+        return;
+      }
+    } catch (error: any) {
+      console.error('Error:', error);
+      this.ErrorMsg = "An error occurred while submitting the form.";
+    }
+
 
   }
   else
@@ -117,6 +185,50 @@ async submitForm()
   }
 }
 
+
+
+async DeleteSpecialization(specializationId:any)
+{
+  
+  try {
+    console.log(JSON.stringify(specializationId))
+   const response = await this.hospservice.DeleteSpecialization(specializationId);
+
+    if (response.status === 200) 
+    {
+      this.showToast('success','Delete Success!!','Deleted');
+    }
+    if (response.status == 401) 
+      {
+      return;
+        }
+  } catch (error: any) {
+    console.error('Error:', error);
+    this.ErrorMsg = "An error occurred while submitting the form.";
+  }
+
+}
+
+
+showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
+  switch (type) {
+    case 'success':
+      this.toastr.success(message, title);
+      break;
+    case 'error':
+      this.toastr.error(message, title);
+      break;
+    case 'warning':
+      this.toastr.warning(message, title);
+      break;
+    case 'info':
+      this.toastr.info(message, title);
+      break;
+    default:
+      console.error('Invalid toast type');
+  }
+}
+
 AddUpdateSpecialization(Operation: string, item: any = "") 
 {
   this.ErrorMsg = "";
@@ -124,17 +236,21 @@ AddUpdateSpecialization(Operation: string, item: any = "")
   this.isAdding = true;
   console.log(item);
 
-  if (Operation === 'Add') {
+  if (Operation === 'Add')
+    
+    {
     this.Specializationform.setValue({
       Name: "",
       Status: "" // Set appropriate default value (e.g., null or 0)
     });
   }
 
-  if (Operation === 'Update') {
+  if (Operation === 'Update')
+     {
+      this.specializationId = item.specializationId;
     this.Specializationform.patchValue({
-      Name: item.Name,
-      Status: item.Status == 'Active'?1:0 
+      Name: item.name,
+      Status: item.status == 'Active'?1:0 
     });
   }
 }
