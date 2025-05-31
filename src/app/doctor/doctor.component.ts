@@ -60,6 +60,7 @@ export class DoctorComponent
     }
   ];
 
+  doctorId:any
  // constructor(,private fb:FormGroup){}
 
   countries = [
@@ -73,10 +74,8 @@ export class DoctorComponent
 
   ErrorMsg:string = ""
   years: number[] = [];
-  doctorId : number | undefined ;
-  // specializations = [
-  //   {SpecializationId:1,Name: 'Cardiologist'},{ SpecializationId:2,Name:'Dermatologist'},{SpecializationId:3 ,Name:'Neurologist'}];
-  
+
+ 
   specializations: { specializationId: string; name: string; hospitalId: string; status: string }[] = [];
   doctorForm: FormGroup;
   Allitems: { specializationId: string; name: string; hospitalId: string; status: string; }[] = [];

@@ -9,6 +9,7 @@ import { Component, ElementRef, HostListener, inject, Input, Output, EventEmitte
 export class MultiselectComponent
 {
   @Input() items: any[] = [];
+  @Input() placeholder: String = "Select items";
   @Output() selectionChange = new EventEmitter<string[]>();
   @Input() isEditing: boolean = false; // Editing mode, defaults to false
   @Input() Allitems :any[] =[];
@@ -54,7 +55,11 @@ if(this.isEditing)
     this.filteredItems = this.items.filter(item => 
       item.name.toLowerCase().includes(searchTerm)
     );
+<<<<<<< HEAD
     const ids = this.filteredItems.map(item => item.specializationId);
+=======
+    const ids = this.filteredItems.map(item => item.id);
+>>>>>>> f3a3ef2a477993e22d576bfa061fde1bbe43c259
     console.log("Duplicate IDs:", ids.filter((id, index) => ids.indexOf(id) !== index));
     
   }

@@ -288,8 +288,7 @@
         <!-- Specialization -->
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Specialization</label>
-          <app-multiselect [items]="specializations" [Allitems]="Allitems"  [isEditing]="IsEdition"
-
+          <app-multiselect [items]="specializations" [placeholder]="'Select specialization'"
             (selectionChange)="onSpecializationChange($event)"></app-multiselect>
           <span *ngIf="errorMessages['Specialization']" class="text-red-500">{{
             errorMessages["Specialization"]

@@ -19,6 +19,7 @@ import { PatientsComponent } from './patients/patients.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
+import { CourseSuggestionComponent } from './course-suggestion/course-suggestion.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { ToastrModule } from 'ngx-toastr';
     MultiselectComponent,
     ServicesComponent,
     PatientsComponent,
+    CourseSuggestionComponent,
   ],
   imports: [
     BrowserModule,
