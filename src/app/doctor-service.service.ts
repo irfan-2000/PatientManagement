@@ -2,14 +2,15 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
 import { json } from 'stream/consumers';
-
+import { environment } from './environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class DoctorServiceService {
 
-private baseurl = "https://localhost:7203/api/"
-private doctorbaseurl = "https://localhost:7203/api/"
+
+  private baseurl = environment.baseUrl;
+
 
  HospitalId:any = localStorage.getItem('HospitalId') ?? ''; // Ensure it's not null
 
@@ -31,7 +32,7 @@ ValidateLogin(logindata: any): Promise<any>
   // Set headers to send JSON
   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-  return this.http.post<any>(`${this.baseurl}Validate`, JSON.stringify(body), { headers, withCredentials: true })
+  return this.http.post<any>(`${this.baseurl}api/Validate`, JSON.stringify(body), { headers, withCredentials: true })
     .toPromise()
     .then((response: any) => response)
     .catch((error) => {
@@ -39,19 +40,17 @@ ValidateLogin(logindata: any): Promise<any>
       return error;
     });
 }
-SubmitDoctorDetails(formData: FormData): Promise<any> 
-{
-  return this.http.post<any>(`${this.doctorbaseurl}submitdoctordetails`, formData, {
-      withCredentials: true // Ensures cookies (JWT) are sent
-  })
-  .toPromise()
-  .then((response: any) => response)
-  .catch((error) => {
-      console.error("API Error", error);
-      return error;
-  });
-}
 
+
+  AddUpdateDoctor(formData:any )
+  { 
+  
+   return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctor`, formData, {
+     withCredentials: true
+   });
+  }
+
+ 
 
 GetDoctorDetails(doctorId: number): Promise<any> 
 { 
@@ -59,7 +58,7 @@ GetDoctorDetails(doctorId: number): Promise<any>
     .set('DoctorId', doctorId.toString())
     .set('HospitalId', this.HospitalId);
 
-  return this.http.get<any>(`${this.doctorbaseurl}GetDoctorDetails`, 
+  return this.http.get<any>(`${this.baseurl}api/GetDoctorDetails`, 
   { 
     params, // ✅ Send as query params
     withCredentials: true // ✅ Ensures cookies (JWT) are sent
@@ -81,7 +80,7 @@ if(!this.HospitalId)
 
 
 const params = new HttpParams().set('HospitalId',this.HospitalId);
-  return this.http.get<any>(`${this.doctorbaseurl}GetAllDoctors`, 
+  return this.http.get<any>(`${this.baseurl}api/GetAllDoctors`, 
   { 
     params,
   })
@@ -99,7 +98,7 @@ GetSpecialization(): Promise<any>
 if(!this.HospitalId)
   alert("Unkown Error Occured Please Login again");
 const params = new HttpParams().set('HospitalId',this.HospitalId);
-  return this.http.get<any>(`${this.doctorbaseurl}GetSpecialization`, 
+  return this.http.get<any>(`${this.baseurl}api/GetSpecialization`, 
   { 
     params,
   })
@@ -122,7 +121,7 @@ if(!this.HospitalId)
 const params = new HttpParams()
 .set('HospitalId',this.HospitalId)
 .set('DoctorId',Id.toString());
-  return this.http.delete<any>(`${this.doctorbaseurl}DeleteDoctor`, 
+  return this.http.delete<any>(`${this.baseurl}DeleteDoctor`, 
   { 
     params,
   })

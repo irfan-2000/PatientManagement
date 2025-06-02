@@ -8,6 +8,7 @@ import { get } from 'http';
 import { json } from 'stream/consumers';
 import { DoctorServiceService } from '../doctor-service.service';
 import { ToastrService } from 'ngx-toastr';
+import { error } from 'console';
 
 
 @Component({
@@ -20,48 +21,14 @@ import { ToastrService } from 'ngx-toastr';
 export class DoctorComponent 
 {
   showForm = false;
-  IsEdition: boolean = false; // Default is false
+  IsEdition: boolean = false;  
 
   filters = { id: '', name: '', clinic: '', email: '', mobile: '', specialization: '', status: '' };
 
-  doctors = [
-    {
-      id: 1,
-      name: 'Dr. John Doe',
-      img: 'doctors/d1.jpg',
-      clinic: 'City Health Clinic',
-      email: 'john.doe@example.com',
-      mobile: '+1234567890',
-      specialization: 'Cardiologist,Neurologist',
-      qualifications: ['MBBS', 'MD', 'FACC'],
-      status: 'Active'
-    },
-    {
-      id: 2,
-      name: 'Dr. Sarah Smith',
-      img: 'doctors/d2.jpg',
-      clinic: 'Green Valley Hospital',
-      email: 'sarah.smith@example.com',
-      mobile: '+0987654321',
-      specialization: 'Dermatologist,Neurologist',
-      qualifications: ['MBBS', 'MD'],
-      status: 'InActive'
-    },
-    {
-      id: 3,
-      name: 'Dr. Alex Johnson',
-      img: 'doctors/d3.jpg',
-      clinic: 'Sunrise Medical Center',
-      email: 'alex.johnson@example.com',
-      mobile: '+1122334455',
-      specialization: 'Neurologist',
-      qualifications: ['MBBS', 'DM (Neurology)'],
-      status: 'Active'
-    }
-  ];
-
+  doctors = [];
+  errorMessages: any = {};
   doctorId:any
- // constructor(,private fb:FormGroup){}
+  OldselectedFile :any
 
   countries = [
     { name: 'United States', code: 'US' },
@@ -72,17 +39,17 @@ export class DoctorComponent
     // Add more countries as needed
   ];
 
-  ErrorMsg:string = ""
+  ErrorMsg:any= {};
   years: number[] = [];
-
  
   specializations: { specializationId: string; name: string; hospitalId: string; status: string }[] = [];
+
   doctorForm: FormGroup;
   Allitems: { specializationId: string; name: string; hospitalId: string; status: string; }[] = [];
 
     constructor( private doctorservice:DoctorServiceService,private fb:FormBuilder, private toastr: ToastrService) 
     {
-
+  
       const currentYear = new Date().getFullYear();
 
       this.years = Array.from(
@@ -90,37 +57,43 @@ export class DoctorComponent
     
 
       this.doctorForm = new FormGroup({
-        FirstName: new FormControl('', Validators.required),
-        LastName: new FormControl('', Validators.required),
-        Email: new FormControl('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")
+        FirstName: new FormControl('mohd', Validators.required),
+        LastName: new FormControl('irfan', Validators.required),
+        Email: new FormControl('irfan@gmail.com', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")
         ]),
-        Mobile: new FormControl('', [
+        Mobile: new FormControl('7847051616', [
           Validators.required,
           Validators.pattern('^[0-9]{10}$'),  // Only allows 10 digits
           Validators.maxLength(10)
-        ]),
+        ]),//new Date().toISOString().split('T')[0]
         Dob: new FormControl(new Date().toISOString().split('T')[0], [
-          Validators.required,
-          this.DateValidator
+          Validators.required
         ]),
-        Gender: new FormControl('', Validators.required),
-        Age: new FormControl('', Validators.required),
-        Country: new FormControl('', Validators.required),
+        JoiningDate:new FormControl('',Validators.required)  ,
+        Gender: new FormControl('M', Validators.required),
+        Age: new FormControl('25', Validators.required),
+        Country: new FormControl('IN', Validators.required),
         IsActive: new FormControl(true, Validators.required), // Default to true (Active)
-        PostalCode: new FormControl('', Validators.required),
-        Experience: new FormControl('', [
+        PostalCode: new FormControl('123', Validators.required),
+        Experience: new FormControl('5', [
           Validators.required,
           Validators.min(0),
           Validators.pattern('^[0-9]+$')
         ]),
-        Full_Address: new FormControl('', Validators.required),
-        City: new FormControl('', Validators.required),
+        
+        Full_Address: new FormControl('NA', Validators.required),
+        
+        City: new FormControl('gulbarga', Validators.required),
+        
         Specialization: new FormControl<string[]>([], Validators.required),
+        
         Qualifications: new FormArray([
           this.createQualification()
-        ]),
-        IsAgreedTerms: new FormControl(false, Validators.requiredTrue),
-        ProfileImage: new FormControl('') 
+        ],Validators.required),
+        
+        IsAgreedTerms: new FormControl(true, Validators.requiredTrue),
+        
+        ProfileImage: new FormControl(null,Validators.required) 
       });
      
     }
@@ -128,12 +101,14 @@ export class DoctorComponent
    ngOnInit()
       {
         this. GetSpecialization();
-
+        this.GetAllDoctors();
       }
+ 
+
 
 createQualification(q:any= ""): FormGroup
 {
-  
+    
 if(q != "" && q != undefined)
 {
   
@@ -150,7 +125,10 @@ if(q != "" && q != undefined)
       yearOfGraduation: new FormControl('', [Validators.required]) // Must be a 4-digit year
     });
  
+
+
 }
+
  get qualificationsArray()
    {
     return this.doctorForm.get('Qualifications') as FormArray;
@@ -166,44 +144,11 @@ if(q != "" && q != undefined)
     }));
   }
   
- DateValidator(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-  
-    // If no value is provided, return null (valid).
-    if (!value) {
-      return null;
-    }
-  
-    // Check if the value is a valid date
-    if (isNaN(Date.parse(value))) {
-      return { invalidDate: true }; // Invalid date error
-    }
-  
-    // Check if the date is before the current year
-    const currentYear = new Date().getFullYear();
-    const inputDate = new Date(value);
-  
-    // Check if the input date is in the future (greater than the current year)
-    if (inputDate.getFullYear() > currentYear) {
-      return { futureDate: true }; // Future date error
-    }
-  
-    // Return null if valid date
-    return null;
-  }
-
-
-  onSpecializationChange(selectedItems: string[]) 
+  removeQualification(index: number) 
   {
-    
-    this.GetSpecialization()
-    this.doctorForm.controls['Specialization'].setValue(selectedItems);
-  }
-  removeQualification(index: number) {
-
     console.log('Before removing:', this.qualificationsArray.value);
   
-    if (this.qualificationsArray.length > 3)
+    if (this.qualificationsArray.length > 1)
        {
       this.qualificationsArray.removeAt(index);
       console.log('After removing:', this.qualificationsArray.value);
@@ -211,7 +156,18 @@ if(q != "" && q != undefined)
       console.warn("Cannot remove, must keep at least 3 qualifications.");
     }
   }
-  
+   
+
+  onSpecializationChange(selectedItems: string[]) 
+  {
+    debugger
+   
+    
+   // this.GetSpecialization()
+   this.doctorForm.controls['Specialization'].setValue(selectedItems);
+
+  }
+
   // Handle file selection for profile image
   onFileImport(event: any) 
   {
@@ -250,18 +206,16 @@ showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title
 }
 
 
-async submitForm()
+  submitForm()
  {
-  this.ErrorMsg = "";
+   
 
   // Check if the form is valid
-  if (this.doctorForm.valid)
-     {
+  if (this.ValidateFormFields()>0)
+ {
 
-    // Create a FormData object
-    const formData = new FormData();
+     const formData = new FormData();
 
-    // Manually append form values
  formData.append('Firstname', this.doctorForm.get('FirstName')?.value || '');
 formData.append('LastName', this.doctorForm.get('LastName')?.value || '');
 formData.append('Email', this.doctorForm.get('Email')?.value || '');
@@ -270,20 +224,16 @@ formData.append('Dob', this.doctorForm.get('Dob')?.value || '');
 formData.append('Age', this.doctorForm.get('Age')?.value || '');
 formData.append('Gender', this.doctorForm.get('Gender')?.value || '');
 formData.append('Experience', this.doctorForm.get('Experience')?.value || '0');
-debugger
 formData.append('Full_Address', this.doctorForm.get('Full_Address')?.value || '');
 formData.append('City', this.doctorForm.get('City')?.value || '');
 formData.append('Country', this.doctorForm.get('Country')?.value || '');
 formData.append('PostalCode', this.doctorForm.get('PostalCode')?.value || '');
 formData.append('IsActive', this.doctorForm.get('IsActive')?.value ? 'true' : 'false');   
-    // Append Qualifications (Assuming it's an array)
-//     const qualifications = this.doctorForm.get('Qualifications')?.value || [];
-// qualifications.forEach((qual: string | null, index: number) => {
-//   formData.append(`Qualifications[${index}]`, qual ?? ""); // Use empty string if null
-// });
+ 
 console.log("Raw Qualifications:", this.qualificationsArray.value);
 console.log("Type of Qualifications:", typeof this.qualificationsArray.value);
 console.log("JSON.stringify(Qualifications):", JSON.stringify(this.qualificationsArray.value));
+
 formData.append("Qualifications", JSON.stringify(this.qualificationsArray.value));
 
 if (this.doctorId !== undefined && this.doctorId !== null)
@@ -298,11 +248,8 @@ const specializationIds = selectedSpecializationNames
     return specialization ? specialization.specializationId : null;
   })
  // .filter((id: null) => id !== null); // Remove null values
-
-// Option 1: Send as a comma-separated string
-
-// Option 2: Send as a JSON array (Recommended)
-formData.append("Specialization", (specializationIds));
+ 
+ formData.append("Specialization", (specializationIds));
 
     // Append Profile Image (if any)
   // Append Profile Image (if any)
@@ -336,34 +283,40 @@ if(!(fileInput.files && fileInput.files.length > 0))
       {
       formData.append('HospitalId', hospitalId);
     }
+ 
 
-    console.log('Form Data:', this.doctorForm.value);
-
-    // Log FormData for debugging
-    for (let [key, value] of formData.entries()) 
-      {
-      console.log(key, value);
-    }
-
-    try {
+    try 
+    {
       // Send formData to the backend API
-      const response = await this.doctorservice.SubmitDoctorDetails(formData);
+      const response =   this.doctorservice.AddUpdateDoctor(formData).subscribe({
+        next: (response: any) => 
+          {
+          console.log(response);
+          if (response.status == 200)
+          {
+            this.showToast('success', 'Add Success!!', 'Add');
+            window.location.reload();
+          } else if (response.status === 401) {
+            this.showToast('error', 'Unauthorized access', 'Error');
+          }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+          this.ErrorMsg = "An error occurred while submitting the form.";
+        }
 
-      if (response.status === 200) 
-      {
-        this.showToast('success','Add Success!!','Add');
-        window.location.reload()
-        // Success logic here
-      }
-      if (response.status == 401) {
-        return;
-      }
-    } catch (error: any) {
+        
+      });
+
+    
+    } catch (error: any) 
+    {
       console.error('Error:', error);
       this.ErrorMsg = "An error occurred while submitting the form.";
     }
-  } else 
-  {
+    } else 
+  
+    {
     this.ErrorMsg = "Please fill all the fields.";
 
     // Collect error messages for invalid fields
@@ -390,10 +343,14 @@ if(!(fileInput.files && fileInput.files.length > 0))
   }
 }
 
-
+ 
 UpdateDoctorDetails(doctorform :any)
 {
-  console.log(doctorform);
+  debugger
+  this.showForm =true;       
+
+  console.log("this is the docotr form",doctorform);
+
   this. GetDoctorDetails(doctorform.id);
 
 }
@@ -421,7 +378,6 @@ getErrorMessage(control: FormControl, controlName: string): string
 }
 
 
-  errorMessages: { [key: string]: string } = {}; // Variable to store error messages
 
   displayErrorMessages(errorMessages: { [key: string]: string }) 
   {
@@ -458,6 +414,8 @@ getErrorMessage(control: FormControl, controlName: string): string
     console.log('Selected Items:', selectedItems);
     // Handle the selected items here
   }
+
+
 
 
   numbersOnly(event: KeyboardEvent)
@@ -503,24 +461,16 @@ getErrorMessage(control: FormControl, controlName: string): string
             Full_Address: doctordata.fullAddress,
             City: doctordata.city,
             Specialization : specializationData
-            
-            //Specialization: new FormControl<string[]>([], Validators.required),
-          //  Qualifications: new FormArray([
-              //this.createQualification()
-            //]),
-            //IsAgreedTerms: true,
-            
-        
-
+           
           });
          this.profileImagePreview = doctordata.image;
          
         this.doctorForm.controls['Specialization'].setValue(specializationData); 
         const qualificationsArray = this.doctorForm.get('Qualifications') as FormArray;
 
-        // Clear existing values if needed
+         
         qualificationsArray.clear();
-   if(doctordata.qualificationList.length >0 )
+   if(doctordata.qualificationList.length > 0 )
     {
       
       doctordata.qualificationList.forEach((item:any)=>
@@ -530,17 +480,16 @@ getErrorMessage(control: FormControl, controlName: string): string
 
     })
     }
-        console.log("editing",specializationData);
-            this.showForm =true;       
       }
     
   } catch (error: any) {
     console.error('Error:', error);
     this.ErrorMsg = "An error occurred while submitting the form.";
   }
+
+
  }
-
-
+ 
  async GetAllDoctors()
  {
   
@@ -576,8 +525,6 @@ getErrorMessage(control: FormControl, controlName: string): string
     this.ErrorMsg = "An error occurred while submitting the form.";
   }
  }
-
-
  
  async GetSpecialization()
  {
@@ -587,11 +534,10 @@ getErrorMessage(control: FormControl, controlName: string): string
      console.log(response)
     if (response.status === 200) 
       {
-        console.log("soecialization",response);
+         
         this.specializations = response.specializationData;
-        console.log(this.specializations);
-        this.GetAllDoctors();
-    }
+       debugger 
+     }
 
     if (response.status == 401) 
       {
@@ -602,11 +548,9 @@ getErrorMessage(control: FormControl, controlName: string): string
     this.ErrorMsg = "An error occurred while submitting the form.";
   }
 
- }
+ } 
 
 
-
- 
  async DeleteDoctor(Id:number)
  {
   
@@ -633,5 +577,305 @@ getErrorMessage(control: FormControl, controlName: string): string
 
 
 
+ //--------new code -----------
+FinalSubmitDoctorForm()
+{
 
+ 
+const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
+
+const specializationIds = selectedSpecializationNames
+  .map((name: string) => {
+    const specialization = this.specializations.find(spec => spec.name === name);
+    return specialization ? specialization.specializationId : null;
+  })
+
+  debugger
+console.log("doctorForm",JSON.stringify(this.doctorForm.value));
+
+  console.log(" qualification",JSON.stringify(this.qualificationsArray.value));
+
+    this.errorMessages = {}; // Reset error messages
+   const errorCode = this.ValidateFormFields();
+ 
+   if(errorCode > 0)  
+   {
+    this.showToast('error', 'Please fill all the required fields correctly.', 'Form Validation Error');
+    return; 
+   }else
+   {
+    
+     const formData = new FormData();
+
+formData.append('Firstname', this.doctorForm.get('FirstName')?.value || '');
+formData.append('LastName', this.doctorForm.get('LastName')?.value || '');
+formData.append('Email', this.doctorForm.get('Email')?.value || '');
+formData.append('Mobile', this.doctorForm.get('Mobile')?.value || '');
+formData.append('Dob', this.doctorForm.get('Dob')?.value || '');
+formData.append('Age', this.doctorForm.get('Age')?.value || '');
+formData.append('Gender', this.doctorForm.get('Gender')?.value || '');
+formData.append('Experience', this.doctorForm.get('Experience')?.value || '0');
+formData.append('Full_Address', this.doctorForm.get('Full_Address')?.value || '');
+formData.append('City', this.doctorForm.get('City')?.value || '');
+formData.append('Country', this.doctorForm.get('Country')?.value || '');
+formData.append('PostalCode', this.doctorForm.get('PostalCode')?.value || '');
+formData.append('IsActive', this.doctorForm.get('IsActive')?.value ? 'true' : 'false');   
+formData.append("Qualifications", JSON.stringify(this.qualificationsArray.value));
+
+if (this.doctorId !== undefined && this.doctorId !== null)
+  {
+  formData.append("DoctorId",this.doctorId.toString())
+}
+const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
+
+const specializationIds = selectedSpecializationNames
+  .map((name: string) => {
+    const specialization = this.specializations.find(spec => spec.name === name);
+    return specialization ? specialization.specializationId : null;
+  })
+ // .filter((id: null) => id !== null); // Remove null values
+ 
+ formData.append("Specialization", (specializationIds));
+
+ 
+
+if(this.IsEdition)
+{
+   
+  if(this.UploadFile instanceof File)
+  {
+    formData.append('ProfileImage', this.UploadFile);
+  }
+  else
+  {
+    formData.append('OldProfileImage', this.OldselectedFile);
+  }
+}else
+{
+  formData.append('ProfileImage', this.UploadFile);
+}
+
+formData.append('JoiningDate',  this.doctorForm.get('JoiningDate')?.value || '');
+ 
+    if(this.doctorId != "" && this.doctorId != undefined)
+      {
+        formData.append("doctorId",this.doctorId.toString());
+      }
+    
+
+        formData.append("IsEditing",this.IsEdition.toString())
+    
+    
+
+
+try {
+       this.doctorservice.AddUpdateDoctor(formData).subscribe({
+        next: (response: any) => 
+          {
+           if (response.status === 200) 
+            {
+            this.showToast('success', 'Doctor details updated successfully!', 'Success');
+            window.location.reload();
+            }
+        },
+        error: (error: any) =>
+           {
+ 
+          console.log(error);
+          if (error.status === 401) 
+            {
+           } else if (error.status === 500 && error.error) 
+            {
+             
+           }else
+           {
+            console.error('Unhandled API error:', error);
+          }
+        },
+      });
+    } catch (error: any) 
+    {
+      console.error('API error:', error);
+    }
+ 
+  }
+ 
+ 
+
+
+}
+
+
+ ValidateFormFields()
+{
+  let errorcode  = 0;
+
+  if(this.doctorForm.get('FirstName')?.value == '' || this.doctorForm.get('FirstName')?.value == undefined || this.doctorForm.get('FirstName')?.value == null)
+  {
+    this.errorMessages["FirstName"] = 'First Name is required!';
+     errorcode = 1;
+  } 
+  if(this.doctorForm.get('LastName')?.value == '' || this.doctorForm.get('LastName')?.value == undefined || this.doctorForm.get('LastName')?.value == null)
+  {   
+    this.errorMessages["LastName"] = 'Last Name is required!';
+     errorcode = 1;
+  }
+  if(this.doctorForm.get('Email')?.value == '' || this.doctorForm.get('Email')?.value == undefined || this.doctorForm.get('Email')?.value == null)
+  {
+    this.errorMessages["Email"] = 'Email is required!';
+     errorcode = 1;
+  }
+   
+if(this.ValidateEmail(this.doctorForm.get('Email')?.value) == false)
+{
+  this.errorMessages["Email"] = 'Please enter a valid email address!';
+   errorcode = 1;
+}
+
+  if(this.doctorForm.get('Mobile')?.value == '' || this.doctorForm.get('Mobile')?.value == undefined || this.doctorForm.get('Mobile')?.value == null)
+  {
+    this.errorMessages["Mobile"] = 'Mobile is required!';
+     errorcode = 1;
+  }
+
+  if(this.doctorForm.get('Mobile')?.value.length < 10)
+  {
+    this.errorMessages["Mobile"] = 'Mobile number must be 10 digits!';
+     errorcode = 1;
+  }
+  if(this.doctorForm.get('Dob')?.value == '' || this.doctorForm.get('Dob')?.value == undefined || this.doctorForm.get('Dob')?.value == null)
+  {
+    this.errorMessages["Dob"] = 'Date of Birth is required!';
+     errorcode = 1;
+  }
+  
+  if(this.doctorForm.get('Age')?.value == '' || this.doctorForm.get('Age')?.value == undefined || this.doctorForm.get('Age')?.value == null)  
+  {
+    this.errorMessages["Age"] = 'Age is required!';
+     errorcode = 1;
+  }
+
+  if(this.doctorForm.get('Gender')?.value == '' || this.doctorForm.get('Gender')?.value == undefined || this.doctorForm.get('Gender')?.value == null) 
+  {
+    this.errorMessages['Gender'] = 'Gender is required!';
+     errorcode = 1;
+  }
+
+ if(!this.doctorForm.get('ProfileImage')?.valid && !this.IsEdition == false)
+ {
+  this.errorMessages['ProfileImage'] = 'Profile Image is required!';
+     errorcode = 1;
+ }
+ 
+  if(this.doctorForm.get('Country')?.value == '' || this.doctorForm.get('Country')?.value == undefined || this.doctorForm.get('Country')?.value == null) 
+  {
+    this.errorMessages['Country'] = 'Country is required!';
+     errorcode = 1;  
+  }
+
+  if(this.doctorForm.get('PostalCode')?.value == '' || this.doctorForm.get('PostalCode')?.value == undefined || this.doctorForm.get('PostalCode')?.value == null) 
+  {
+    this.errorMessages['PostalCode'] = 'Postal Code is required!';
+     errorcode = 1;
+  }
+ 
+ const experienceValue = this.doctorForm.get('Experience')?.value;
+if (experienceValue === '' || experienceValue === null || experienceValue === undefined) {
+  this.errorMessages['Experience'] = 'Experience is required else enter 0';
+  errorcode = 1;
+}
+
+  if(this.doctorForm.get('Full_Address')?.value == '' || this.doctorForm.get('Full_Address')?.value == undefined || this.doctorForm.get('Full_Address')?.value == null) 
+  {
+    this.errorMessages['Full_Address'] = 'Full Address is required!';
+     errorcode = 1;
+  }
+
+  if(this.doctorForm.get('City')?.value == '' || this.doctorForm.get('City')?.value == undefined || this.doctorForm.get('City')?.value == null) 
+  {
+    this.errorMessages['City'] = 'City is required!';
+     errorcode = 1;
+  }
+
+  if(this.doctorForm.get('Specialization')?.value.length == 0 || this.doctorForm.get('Specialization')?.value == undefined || this.doctorForm.get('Specialization')?.value == null) 
+  {
+    this.errorMessages['Specialization'] = 'Please select at least one specialization!';
+     errorcode = 1;
+  }
+
+  if(this.doctorForm.get('Qualifications')?.value.length < 1 || this.doctorForm.get('Qualifications')?.value == undefined || this.doctorForm.get('Qualifications')?.value == null) 
+  { 
+    this.errorMessages['Qualifications'] = 'Please enter at least 1 qualifications!';
+     errorcode = 1;
+  }
+
+  if(this.doctorForm.get('ProfileImage')?.value == '' || this.doctorForm.get('ProfileImage')?.value == undefined || this.doctorForm.get('ProfileImage')?.value == null) 
+  {
+    this.errorMessages ['ProfileImage'] = 'Please upload a profile image!';
+     errorcode = 1;
+  }
+
+
+  if(this.doctorForm.get('IsActive')?.value == '' || this.doctorForm.get('IsActive')?.value == undefined || this.doctorForm.get('IsActive')?.value == null) 
+  {
+        this.errorMessages['IsActive'] = 'Status is required!';
+     errorcode = 1; 
+  }
+ 
+  if(this.doctorForm.get('IsAgreedTerms')?.value == '' || this.doctorForm.get('IsAgreedTerms')?.value == undefined || this.doctorForm.get('IsAgreedTerms')?.value == null) 
+  {
+    this.errorMessages['IsAgreedTerms'] = 'You must agree to the terms and conditions!';
+     errorcode = 1;
+  }
+   
+  
+
+ 
+
+return errorcode;
+
+}
+ 
+ValidateEmail(email: string): boolean 
+  {
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
+  }
+
+ValidateQualification(): number {
+  const qualifications = this.doctorForm.get('Qualifications') as FormArray;
+
+  if (!qualifications || qualifications.length === 0) {
+    this.errorMessages['qualification'] = 'Please enter at least one qualification!';
+    return 1;
+  }
+
+  for (let i = 0; i < qualifications.length; i++) {
+    const control = qualifications.at(i);
+    const qualification = control.get('qualification')?.value;
+    const institution = control.get('institution')?.value;
+    const year = control.get('yearOfGraduation')?.value;
+
+    if (!qualification) {
+      this.errorMessages['qualification'] = 'Qualification is required!';
+      return 1;
+    }
+
+    if (!institution) {
+      this.errorMessages['qualification'] = 'Institution is required!';
+      return 1;
+    }
+
+    if (!year) {
+      this.errorMessages['qualification'] = 'Year of graduation is required!';
+      return 1;
+    }
+  }
+
+  return 0; // All validations passed
+}
+
+
+
+  
 }

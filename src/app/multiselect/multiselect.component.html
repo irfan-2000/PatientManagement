@@ -16,11 +16,7 @@
     @if (isDropdownVisible)
      {
       <div class="dropdown-list">
-<<<<<<< HEAD
-        @for (item of filteredItems; track item.specializationId)
-=======
         @for (item of filteredItems; track item.id)
->>>>>>> f3a3ef2a477993e22d576bfa061fde1bbe43c259
          {
           <div class="dropdown-item" (click)="toggleItem(item)">
             <span class="checkbox">

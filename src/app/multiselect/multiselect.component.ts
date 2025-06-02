@@ -9,27 +9,27 @@ import { Component, ElementRef, HostListener, inject, Input, Output, EventEmitte
 export class MultiselectComponent
 {
   @Input() items: any[] = [];
+ 
+
   @Input() placeholder: String = "Select items";
+  
   @Output() selectionChange = new EventEmitter<string[]>();
+  
   @Input() isEditing: boolean = false; // Editing mode, defaults to false
+  
   @Input() Allitems :any[] =[];
+
   private elementRef = inject(ElementRef);
   isDropdownVisible = false;
   filteredItems: any[] = [];
   selectedItems: string[] = [];
-  ngOnInit() 
-  {
-console.log("all items",this.items);
-
-
-console.log("all items",this.Allitems);
-
-    this.filteredItems = [...this.items];
-if(this.isEditing)
-{
   
-  console.log("truw");
-
+  ngOnInit() 
+  { 
+     debugger
+this.filteredItems = [...this.items];
+if(this.isEditing)
+{ 
   this.items.forEach((item) =>
      {
     this.toggleItem(item);
@@ -41,7 +41,8 @@ if(this.isEditing)
 }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
+  onDocumentClick(event: MouseEvent) 
+  {
     if (!this.elementRef.nativeElement.contains(event.target))
        {
       this.isDropdownVisible = false;
@@ -55,11 +56,7 @@ if(this.isEditing)
     this.filteredItems = this.items.filter(item => 
       item.name.toLowerCase().includes(searchTerm)
     );
-<<<<<<< HEAD
-    const ids = this.filteredItems.map(item => item.specializationId);
-=======
     const ids = this.filteredItems.map(item => item.id);
->>>>>>> f3a3ef2a477993e22d576bfa061fde1bbe43c259
     console.log("Duplicate IDs:", ids.filter((id, index) => ids.indexOf(id) !== index));
     
   }
