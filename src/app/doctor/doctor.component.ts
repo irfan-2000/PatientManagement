@@ -160,7 +160,7 @@ if(q != "" && q != undefined)
 
   onSpecializationChange(selectedItems: string[]) 
   {
-    debugger
+     
    
     
    // this.GetSpecialization()
@@ -346,7 +346,7 @@ if(!(fileInput.files && fileInput.files.length > 0))
  
 UpdateDoctorDetails(doctorform :any)
 {
-  debugger
+   
   this.showForm =true;       
 
   console.log("this is the docotr form",doctorform);
@@ -536,7 +536,7 @@ getErrorMessage(control: FormControl, controlName: string): string
       {
          
         this.specializations = response.specializationData;
-       debugger 
+         
      }
 
     if (response.status == 401) 
@@ -590,7 +590,7 @@ const specializationIds = selectedSpecializationNames
     return specialization ? specialization.specializationId : null;
   })
 
-  debugger
+   
 console.log("doctorForm",JSON.stringify(this.doctorForm.value));
 
   console.log(" qualification",JSON.stringify(this.qualificationsArray.value));

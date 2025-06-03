@@ -20,6 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
 import { CourseSuggestionComponent } from './course-suggestion/course-suggestion.component';
+import { AppointmentsComponent } from './appointments/appointments.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { CourseSuggestionComponent } from './course-suggestion/course-suggestion
     ServicesComponent,
     PatientsComponent,
     CourseSuggestionComponent,
+    AppointmentsComponent,
   ],
   imports: [
     BrowserModule,

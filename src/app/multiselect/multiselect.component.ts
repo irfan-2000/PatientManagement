@@ -26,7 +26,7 @@ export class MultiselectComponent
   
   ngOnInit() 
   { 
-     debugger
+      
 this.filteredItems = [...this.items];
 if(this.isEditing)
 { 
