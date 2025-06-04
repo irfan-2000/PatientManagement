@@ -21,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { CourseSuggestionComponent } from './course-suggestion/course-suggestion.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
+import { LoaderComponent } from './shared/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { AppointmentsComponent } from './appointments/appointments.component';
     PatientsComponent,
     CourseSuggestionComponent,
     AppointmentsComponent,
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,
