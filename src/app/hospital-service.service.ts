@@ -12,7 +12,7 @@ export class HospitalServiceService
   
    HospitalId:any = localStorage.getItem('HospitalId') ?? ''; // Ensure it's not null
   
-  
+  token:string = ''
   
   constructor(private http:HttpClient  ){}
   
@@ -31,9 +31,7 @@ export class HospitalServiceService
         return error;
     });
   }
-
-
-  
+ 
   DeleteSpecialization(specializationId: number): Promise<any> 
 { 
   const params = new HttpParams()
@@ -51,7 +49,30 @@ export class HospitalServiceService
       console.error("API Error", error);
       return error;
   });
+} 
+ AddUpdateServices( payload:any) 
+ {
+   debugger
+
+  return this.http.post<any>(`${this.baseurl}AddUpdateServices`, payload  , {
+       headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    }),
+    withCredentials: true,
+  });
 }
 
 
+
+ GetServices(  ) 
+ {
+    
+
+  return this.http.get<any>(`${this.baseurl}GetServices`,   {
+       headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    }),
+    withCredentials: true,
+  });
+}
 }

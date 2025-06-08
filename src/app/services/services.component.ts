@@ -4,6 +4,7 @@ import { DoctorComponent } from '../doctor/doctor.component';
 import { DoctorServiceService } from '../doctor-service.service';
 import { HospitalServiceService } from '../hospital-service.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -20,15 +21,18 @@ export class ServicesComponent
   isAdding: boolean = false;
   isAddingService:boolean = false;
   ShowServicePopup:boolean = false;
-
+  IsEditingService:boolean = false;
+  ServideId:any;
   ErrorMsg:string = ""
   SuccessMsg:string = ""
   specializations: { specializationId: string; name: string; hospitalId: string; status: string }[] = [];
   specializationId:number | undefined ;
 
+filteredDoctors:any = [];
 
 ngOninit()
 {
+      
 }
 
  
@@ -57,12 +61,7 @@ ngOninit()
   }
 
  }
-
-
-
  
-
-
   openSpecializationModal() 
   {
     this.ShowSpecialization = true;
@@ -93,12 +92,12 @@ hours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
 
 minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 
-doctors = ['Dr. Sarah Johnson', 'Dr. Michael Chen', 'Dr. Emily Rodriguez'];
+doctors :any = {}
 
 
   Specializationform: FormGroup;
   serviceForm:FormGroup;
-  constructor(private fb:FormBuilder,private doctorservice:DoctorServiceService,private hospservice:HospitalServiceService,private toastr: ToastrService)
+  constructor(private fb:FormBuilder,private  router:Router,private doctorservice:DoctorServiceService,private hospservice:HospitalServiceService,private toastr: ToastrService)
   {      
      this.Specializationform = new FormGroup(
       { 
@@ -113,10 +112,13 @@ doctors = ['Dr. Sarah Johnson', 'Dr. Michael Chen', 'Dr. Emily Rodriguez'];
         minutes: ['00', Validators.required],
         Charges: ['', [Validators.required, Validators.min(0)]],
         Category: ['', Validators.required],
-        Status: ['Active', Validators.required]
+        Status: ['Active', Validators.required],
+        DoctorIds: new FormControl([], Validators.required),
     });
   
-  
+    this.GetAllDoctors();
+    this.GetServices();
+
     }
 
     cancelForm() {
@@ -157,6 +159,7 @@ async submitForm()
 
       if (response.status === 200) 
       {
+        this.GetSpecialization();
         this.showToast('success','Add Success!!','Add');
       }
       if (response.status == 401) {
@@ -184,9 +187,7 @@ async submitForm()
   
   }
 }
-
-
-
+ 
 async DeleteSpecialization(specializationId:any)
 {
   
@@ -197,6 +198,7 @@ async DeleteSpecialization(specializationId:any)
     if (response.status === 200) 
     {
       this.showToast('success','Delete Success!!','Deleted');
+      this.GetSpecialization(); // Refresh the list after deletion
     }
     if (response.status == 401) 
       {
@@ -263,8 +265,7 @@ displayErrorMessages(errorMessages: { [key: string]: string })
   this.errorMessages = errorMessages; // Update the errorMessages variable
 }
 
-// Helper function to get error messages
-getErrorMessage(control: FormControl, controlName: string): string
+ getErrorMessage(control: FormControl, controlName: string): string
  {
   if (control.hasError('required')) {
     return `${controlName} is required.`;
@@ -286,69 +287,7 @@ getErrorMessage(control: FormControl, controlName: string): string
 }
 
 // Sample data array with 6 items
-services:any = [
-  {
-    ID: 'S001',
-    ServiceID: 'SRV-2023-001',
-    Name: 'General Checkup',
-    Doctor: 'Dr. Sarah Johnson',
-    Charges: 120,
-    Duration: '00:30',
-    Category: 'Primary Care',
-    Status: 'Active'
-  },
-  {
-    ID: 'S002',
-    ServiceID: 'SRV-2023-002',
-    Name: 'Dental Cleaning',
-    Doctor: 'Dr. Michael Chen',
-    Charges: 150,
-    Duration: '00:45',
-    Category: 'Dentistry',
-    Status: 'Active'
-  },
-  {
-    ID: 'S003',
-    ServiceID: 'SRV-2023-003',
-    Name: 'Physical Therapy',
-    Doctor: 'Dr. Emily Rodriguez',
-    Charges: 95,
-    Duration: '01:00',
-    Category: 'Rehabilitation',
-    Status: 'Pending'
-  },
-  {
-    ID: 'S004',
-    ServiceID: 'SRV-2023-004',
-    Name: 'Eye Exam',
-    Doctor: 'Dr. David Wilson',
-    Charges: 80,
-    Duration: '00:20',
-    Category: 'Optometry',
-    Status: 'Inactive'
-  },
-  {
-    ID: 'S005',
-    ServiceID: 'SRV-2023-005',
-    Name: 'Vaccination',
-    Doctor: 'Dr. Jessica Lee',
-    Charges: 65,
-    Duration: '00:15',
-    Category: 'Immunization',
-    Status: 'Active'
-  },
-  {
-    ID: 'S006',
-    ServiceID: 'SRV-2023-006',
-    Name: 'MRI Scan',
-    Doctor: 'Dr. Robert Smith',
-    Charges: 300,
-    Duration: '01:30',
-    Category: 'Radiology',
-    Status: 'Pending'
-  }
-];
-
+services:any =  {};
 
 get duration(): string {
   return `${this.serviceForm.value.hours}:${this.serviceForm.value.minutes}`;
@@ -357,11 +296,12 @@ get duration(): string {
 
 AddUpdateServices(Operation: string, item: any = "") 
 {
+  debugger
   this.ErrorMsg = "";
   this.ShowServicePopup = true;
    
   this.isAddingService = false;
-
+  
 
   if (Operation === 'Add')
   {
@@ -380,77 +320,117 @@ AddUpdateServices(Operation: string, item: any = "")
 
   if (Operation === 'Update') 
     {
-    // Split duration into hours and minutes
-    const [hours, minutes] = item.Duration.split(':');
-    
+      
+    this.IsEditingService = true;
+    this.ServideId = item.serviceId; // Store the ServiceId for later use
+      // Split duration into hours and minutes
+    const [hours, minutes] = item.stringTime.split(':');
+    debugger
     // Patch values with existing data
     this.serviceForm.patchValue({
-      Name: item.Name,
+      Name: item.name,
       Doctor: item.Doctor,
       hours: hours,
       minutes: minutes,
-      Charges: item.Charges,
-      Category: item.Category,
-      Status: item.Status
+      Charges: item.charges,
+      Category: item.category,
+      Status: item.status,
+      DoctorIds: item.commaSeparatedDoctorIds ? item.commaSeparatedDoctorIds  .split(',') : []
     });
   }
 }
 
 
-onSubmitServiceForm()
-{
-  if(this.serviceForm.valid)
-  {
+onSubmitServiceForm(ServiceId: any = '') {
+  this.ErrorMsg = '';
 
-    console.log(this.serviceForm);
+  const docIds = this.serviceForm.get('DoctorIds')?.value || [];
+  if(docIds.length === 0) {
+    this.ErrorMsg = 'Please select at least one doctor.'; 
+    return;
+  }
+  debugger
+  // Manual validation checks
+  const name = this.serviceForm.get('Name')?.value;
+  const doctorId = this.serviceForm.get('Doctor')?.value;
+  const charges = this.serviceForm.get('Charges')?.value;
+  const hours = this.serviceForm.get('hours')?.value;
+  const minutes = this.serviceForm.get('minutes')?.value;
+  const category = this.serviceForm.get('Category')?.value;
+  const status = this.serviceForm.get('Status')?.value;
 
-  }else
-  {
-
-    
-    if (!this.serviceForm.get('Name')?.value)
-      {
-     this.ErrorMsg = "Please Enter the Name";
-     return;
-   }
-   
-  
-   if (!this.serviceForm.get('Doctor')?.value)
-    {
-   this.ErrorMsg = "Please select the Doctor";
-   return;
- }
- 
- if (!this.serviceForm.get('Charges')?.value)
-  {
- this.ErrorMsg = "Please Enter the Name";
- return;
-}
-
-if (!this.serviceForm.get('hours')?.value && !this.serviceForm.get('minutes')?.value)
-  {
- this.ErrorMsg = "Please Enter the Duration";
- return;
-}
-
-if (!this.serviceForm.get('Category')?.value)
-  {
- this.ErrorMsg = "Please Select the Name";
- return;
-}
-
-if (!this.serviceForm.get('Status')?.value)
-  {
- this.ErrorMsg = "Please Enter the Name";
- return;
-}
-
-
-
+  if (!name || name.trim() === '') {
+    this.ErrorMsg = 'Please enter the service name';
+    return;
   }
 
+ 
+  if (charges === null || charges === undefined || charges === '' || isNaN(charges) || parseFloat(charges) <= 0) {
+    this.ErrorMsg = 'Please enter the charges';
+    return;
+  }
 
+  if (
+    (hours === null || hours === undefined || hours === '' ) &&
+    (minutes === null || minutes === undefined || minutes === '') || (hours === '00' && minutes === '00')
+  ) {
+    this.ErrorMsg = 'Please enter the duration (hours or minutes)';
+    return;
+  }
+
+  if (!category || category.trim() === '') {
+    this.ErrorMsg = 'Please select the category';
+    return;
+  }
+
+  if (status === null || status === undefined || status === '') {
+    this.ErrorMsg = 'Please select the status';
+    return;
+  }
+
+  // Format duration in HH:mm:ss for backend
+  const formattedDuration = `${String(hours || 0).padStart(2, '0')}:${String(minutes || 0).padStart(2, '0')}:00`;
+
+  // Prepare payload
+  const payload =
+   {
+    ServiceId: this.serviceForm.get('ServiceId')?.value || null,
+    Name: name.trim() || null,
+    
+    Charges: parseFloat(charges) || null,
+    Duration: formattedDuration || null ,
+    Category: category.trim() || null,
+    Status:  status || null,
+     Flag: this.serviceForm.get('ServiceId')?.value ? 'U' : 'I',
+     CommaSeparatedDoctorIds:this.serviceForm.get('DoctorIds')?.value ? this.serviceForm.get('DoctorIds')?.value.join(',') : ''
+  };
+
+   
+
+  try {
+    this.hospservice.AddUpdateServices(payload).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          
+          this.ErrorMsg = '';
+          console.log('Service saved successfully.');
+        }
+      },
+      error: (error: any) => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
+      }
+    });
+  } catch (error: any) {
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  }
 }
+
 
 
 CancelServiceForm()
@@ -459,13 +439,98 @@ CancelServiceForm()
   this.ShowServicePopup = false;
 }
 
+doctorSearchText: string = '';
+ 
+  filterDoctors(searchTerm: string) {
+    if (!searchTerm) {
+      this.filteredDoctors = [...this.doctors];
+      return;
+    }
+    
+    const term = searchTerm.toLowerCase();
+    this.filteredDoctors = this.doctors.filter((doctor:any) => 
+      doctor.firstName.toLowerCase().includes(term) || 
+      doctor.lName.toLowerCase().includes(term)
+    );
+  }
+
+ removeDoctor(doctorId: any, event: Event)
+{
+  event.stopPropagation();
+  const doctorIdsControl = this.serviceForm.get('DoctorIds');
+  if (doctorIdsControl) {
+    const currentValue = doctorIdsControl.value as any[] || [];
+    doctorIdsControl.setValue(
+      currentValue.filter(id => id !== doctorId)
+    );
+  }
+}
+
+
+convertTimeStringToReadable(duration: string): string {
+  const [hours, minutes, seconds] = duration.split(':').map(Number);
+
+  const h = hours > 0 ? `${hours}h` : '';
+  const m = minutes > 0 ? `${minutes}m` : '';
+  const s = seconds > 0 ? `${seconds}s` : '';
+
+  // Join with space and filter out empty values
+  return [h, m, s].filter(part => part).join(' ') || '0s';
+}
+
+
+ async GetAllDoctors() {
+
+    try {
+      const response = await this.doctorservice.GetAllDoctors();
+      console.log(response);
+
+      if (response?.status === 200) 
+        { 
+
+        this.doctors = response.doctorsData;
+        console.log("After assinging", this.doctors);
+              this.filteredDoctors = [...this.doctors];
+           
+      }
+      if (response.status == 401) {
+        return;
+      }
+    } catch (error: any) {
+      console.error('Error:', error);
+      this.ErrorMsg = "An error occurred while submitting the form.";
+    }
+  }
 
 
 
-
-
-
-
+  GetServices()
+  {
+    
+  try {
+    this.hospservice.GetServices( ).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          
+          this.ErrorMsg = '';
+           this.services = response.result;
+           debugger
+        }
+      },
+      error: (error: any) => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
+      }
+    });
+  } catch (error: any) {
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  }
+  }
 
 
 }
