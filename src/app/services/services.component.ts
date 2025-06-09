@@ -27,8 +27,12 @@ export class ServicesComponent
   SuccessMsg:string = ""
   specializations: { specializationId: string; name: string; hospitalId: string; status: string }[] = [];
   specializationId:number | undefined ;
+    ServicesCategories:any ={}
+    MainserviceCategories:any ={};
+
 
 filteredDoctors:any = [];
+  serviceId: any;
 
 ngOninit()
 {
@@ -94,7 +98,7 @@ minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 
 doctors :any = {}
 
-
+MainServiceCategoriesForm:FormGroup;
   Specializationform: FormGroup;
   serviceForm:FormGroup;
   constructor(private fb:FormBuilder,private  router:Router,private doctorservice:DoctorServiceService,private hospservice:HospitalServiceService,private toastr: ToastrService)
@@ -118,6 +122,14 @@ doctors :any = {}
   
     this.GetAllDoctors();
     this.GetServices();
+    this.GetServiceCategories();
+    this.GetMainServiceCategories();
+    this.MainServiceCategoriesForm = new FormGroup({
+       Name: new FormControl('', Validators.required),
+       Description: new FormControl('',Validators.required),
+      Status: new FormControl('', Validators.required)
+
+    });
 
     }
 
@@ -296,7 +308,7 @@ get duration(): string {
 
 AddUpdateServices(Operation: string, item: any = "") 
 {
-  debugger
+   
   this.ErrorMsg = "";
   this.ShowServicePopup = true;
    
@@ -322,21 +334,24 @@ AddUpdateServices(Operation: string, item: any = "")
     {
       
     this.IsEditingService = true;
-    this.ServideId = item.serviceId; // Store the ServiceId for later use
-      // Split duration into hours and minutes
-    const [hours, minutes] = item.stringTime.split(':');
-    debugger
+    this.serviceId = item.serviceId;  
+        debugger
+
+    const [hours, minutes] = item.duration.split(':');
     // Patch values with existing data
     this.serviceForm.patchValue({
-      Name: item.name,
-      Doctor: item.Doctor,
+      Name: item.serviceCategoryId,
+      Doctor: item.doctorId,
+      DoctorIds: item.doctorId ? item.doctorId.split(',') : [], // Assuming doctorIds is a comma-separated string
       hours: hours,
       minutes: minutes,
       Charges: item.charges,
       Category: item.category,
       Status: item.status,
-      DoctorIds: item.commaSeparatedDoctorIds ? item.commaSeparatedDoctorIds  .split(',') : []
-    });
+
+     });
+
+
   }
 }
 
@@ -394,17 +409,19 @@ onSubmitServiceForm(ServiceId: any = '') {
   // Prepare payload
   const payload =
    {
-    ServiceId: this.serviceForm.get('ServiceId')?.value || null,
+    ServiceId: this.serviceId  || '',
     Name: name.trim() || null,
     
     Charges: parseFloat(charges) || null,
     Duration: formattedDuration || null ,
     Category: category.trim() || null,
     Status:  status || null,
-     Flag: this.serviceForm.get('ServiceId')?.value ? 'U' : 'I',
-     CommaSeparatedDoctorIds:this.serviceForm.get('DoctorIds')?.value ? this.serviceForm.get('DoctorIds')?.value.join(',') : ''
-  };
+     Flag: this.serviceId ? 'U' : 'I',
+     CommaSeparatedDoctorIds:this.serviceForm.get('DoctorIds')?.value ? this.serviceForm.get('DoctorIds')?.value.join(',') : '',
+ 
+    };
 
+  debugger
    
 
   try {
@@ -514,7 +531,7 @@ convertTimeStringToReadable(duration: string): string {
           
           this.ErrorMsg = '';
            this.services = response.result;
-           debugger
+              
         }
       },
       error: (error: any) => {
@@ -532,5 +549,200 @@ convertTimeStringToReadable(duration: string): string {
   }
   }
 
+
+
+  GetServiceCategories(CategoryId:any = '')
+  {
+    
+  try {
+    this.hospservice.GetServiceCategories( CategoryId ).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) {
+          
+          this.ErrorMsg = '';
+           this.ServicesCategories = response.data; 
+        }
+      },
+      error: (error: any) => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
+      }
+    });
+  } catch (error: any) {
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  }
+  }
+
+
+
+//Service category code new main
+isFormVisible: boolean = true;
+MainServiceflag: string = 'G'; // Default to 'G' for Get operation
+Mainserviceid:any ;
+  GetMainServiceCategories( )
+  {
+     
+  try {
+    this.hospservice.GetMainServiceCategories(   ).subscribe({
+      next: (response: any) => {
+         
+        if (response.status == 200) {
+          
+          this.ErrorMsg = '';
+           this.MainserviceCategories = response.data;
+            
+        }
+      },
+      error: (error: any) => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
+      }
+    });
+  } catch (error: any) {
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  }
+  }
+ 
+toggleForm() 
+{
+    this.isFormVisible = !this.isFormVisible;
+    if (!this.isFormVisible) {
+      this.resetForm();
+    }
+  }
+
+resetForm() 
+{
+    this.MainServiceCategoriesForm.reset({
+      Name: '',
+      Description: '',
+      Status: ''
+    });
+}
+
+
+editmaincategory(item:any)
+{
+   
+  this.MainServiceflag = 'U'; // Set to 'U' for Update operation
+  this.isFormVisible = true; // Show the form
+
+  this.MainServiceCategoriesForm.patchValue({
+    Name: item.categoryname,
+    Description: item.description,
+    Status: item.status //== 'Active' ? 1 : 0 // Assuming status is a boolean or string
+  });
+  this.Mainserviceid = item.categoryId; // Store the serviceId for update
+
+}
+
+
+AddUpdateMainServiceCategory()
+{
+
+
+const Categoryname = this.MainServiceCategoriesForm.get('Name')?.value;
+const Description = this.MainServiceCategoriesForm.get('Description')?.value;
+const Status = this.MainServiceCategoriesForm.get('Status')?.value;
+let flag = 'I'
+
+if (!Categoryname || Categoryname.trim() === '')
+  {
+    this.ErrorMsg = 'Please enter the category name'; 
+    return
+  }
+
+  if(Description === null || Description === undefined || Description.trim() === '')
+  {
+    this.ErrorMsg = 'Please enter the description'; 
+    return;
+  }
+
+if (Status === null || Status === undefined || Status === '') {
+    this.ErrorMsg = 'Please select the status';
+    return;
+  }
+
+  if(this.MainServiceflag === 'U' && !this.Mainserviceid) 
+    {
+    this.ErrorMsg = 'Service ID is required for update';
+  
+    return;     
+  }
+  debugger
+
+  if(this.Mainserviceid)
+  {
+    flag = 'U'; // Set to 'U' for Update operation
+  }
+  
+
+
+  try {
+    this.hospservice. AddUpdateMainServiceCategory(Categoryname,Description,Status,this.Mainserviceid,flag).subscribe({
+      next: (response: any) => {
+         
+        if (response.status == 200) {
+          
+          this.ErrorMsg = '';
+          // this.MainserviceCategories = response.data;
+            this.GetMainServiceCategories(); // Refresh the list after saving
+        }
+      },
+      error: (error: any) => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
+      }
+    });
+  } catch (error: any) {
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  }
+
+}
+
+
+deleteCategory(item:any)
+{
+  try {
+    this.hospservice. DeleteMainServiceCategory(item).subscribe({
+      next: (response: any) => {
+         
+        if (response.status == 200) {
+          
+          this.ErrorMsg = '';
+          // this.MainserviceCategories = response.data;
+            this.GetMainServiceCategories(); // Refresh the list after saving
+        }
+      },
+      error: (error: any) => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
+      }
+    });
+  } catch (error: any) {
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  }
+
+}
 
 }

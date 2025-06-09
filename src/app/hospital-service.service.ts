@@ -75,4 +75,76 @@ export class HospitalServiceService
     withCredentials: true,
   });
 }
+
+
+GetServiceCategories(CategoryId:any = ''  ) 
+ { 
+
+  return this.http.get<any>(`${this.baseurl}GetServiceCategories`,   {
+       headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    }),
+    withCredentials: true,
+  });
+
+}
+
+
+GetMainServiceCategories( )
+ {
+  let params = new HttpParams();
+  params= params.append('flag', 'G');  
+
+   
+  return this.http.get<any>(`${this.baseurl}GetServicesCategory`,   {
+    params: params,   
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+
+    }),
+    withCredentials: true,
+  });
+}
+
+AddUpdateMainServiceCategory(categoryname:any,description:any,staus:any,id:any,flag:any  )
+{ 
+  debugger
+  let params = new HttpParams();
+  params= params.append('flag', flag);
+  params= params.append('Categoryname', categoryname);
+  params= params.append('Description', description);
+  params= params.append('status', staus);
+  params= params.append('CategoryId', id ||'' );
+  
+
+
+  return this.http.post<any>(`${this.baseurl}AddUpdateDeleteServicesCategory`, null,  {
+    params: params,   
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+
+    }),
+    withCredentials: true,
+  });
+
+}
+
+DeleteMainServiceCategory(id:any)
+{
+  let params = new HttpParams();
+  params= params.append('flag', 'D');  
+  params= params.append('CategoryId', id); // Assuming you want to delete all categories, otherwise pass the specific ID
+
+  debugger
+  return this.http.post<any>(`${this.baseurl}AddUpdateDeleteServicesCategory`, null,  {
+    params: params,   
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+
+    }),
+    withCredentials: true,
+  });
+}
+
+
 }
