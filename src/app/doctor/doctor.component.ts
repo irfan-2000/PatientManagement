@@ -152,11 +152,13 @@ export class DoctorComponent {
   }
 
 
-  onSpecializationChange(selectedItems: string[]) {
-
-
-    // this.GetSpecialization()
-    this.doctorForm.controls['Specialization'].setValue(selectedItems);
+  onSpecializationChange(selectedItems: string[]) 
+  {
+    debugger
+   
+    
+   // this.GetSpecialization()
+   this.doctorForm.controls['Specialization'].setValue(selectedItems);
 
   }
 
@@ -321,13 +323,15 @@ export class DoctorComponent {
     }
   }
 
+ 
+UpdateDoctorDetails(doctorform :any)
+{
+  debugger
+  this.showForm =true;       
 
-  UpdateDoctorDetails(doctorform: any) {
-     
-   
-    console.log("this is the docotr form", doctorform);
+  console.log("this is the docotr form",doctorform);
 
-    this.GetDoctorDetails(doctorform.id);
+  this. GetDoctorDetails(doctorform.id);
 
   }
 
@@ -440,8 +444,8 @@ export class DoctorComponent {
       if (response.status === 200) {
 
         this.specializations = response.specializationData;
-         
-      }
+       debugger 
+     }
 
       if (response.status == 401) {
        }
@@ -488,8 +492,8 @@ export class DoctorComponent {
         return specialization ? specialization.specializationId : null;
       })
 
-    debugger
-    console.log("doctorForm", JSON.stringify(this.doctorForm.value));
+  debugger
+console.log("doctorForm",JSON.stringify(this.doctorForm.value));
 
     console.log(" qualification", JSON.stringify(this.qualificationsArray.value));
 
