@@ -50,9 +50,17 @@
 
         <!-- Appointments -->
         <li>
-          <a href="#" [ngClass]="getNavClasses('appointments')" (click)="handleMenuClick('appointments')">
+          <a href="/appointments" [ngClass]="getNavClasses('appointments')" (click)="handleMenuClick('appointments')">
             <i class="fas fa-calendar-check mr-3"></i>
             <span *ngIf="isSidebarOpen">Appointments</span>
+          </a>
+        </li>
+
+        <!-- Services -->
+        <li>
+          <a href="/services" [ngClass]="getNavClasses('services')" (click)="handleMenuClick('services')">
+            <i class="fa-solid fa-server mr-3"></i>
+            <span *ngIf="isSidebarOpen">Services</span>
           </a>
         </li>
 

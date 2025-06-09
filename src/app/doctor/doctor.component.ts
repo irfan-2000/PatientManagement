@@ -369,7 +369,7 @@ UpdateDoctorDetails(doctorform :any)
   }
 
   UploadFile: any;
-  profileImagePreview: string | ArrayBuffer | null = null;  // Holds the image preview
+  profileImagePreview: string | ArrayBuffer | null = '/doctors/defaultImage.jpg';  // Holds the image preview
 
   onFileChange(event: any) {
     this.UploadFile = event.target.files[0];

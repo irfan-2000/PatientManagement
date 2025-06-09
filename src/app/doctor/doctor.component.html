@@ -1,22 +1,29 @@
 <div class="flex">
   <app-sidebar></app-sidebar>
   <div class="p-2 bg-gray-add overflow-y-auto h-dvh w-dvw">
-    <div class="px-3 mb-5 flex gap-2 justify-end">
+    <div class="px-3 mb-5 flex justify-between">
+      <div class="flex gap-2">
+        <a href="/doctors"
+        class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3 self-start"
+        *ngIf="showForm"
+        > <i class="fa-solid fa-arrow-left"></i> Go Back</a>
+      </div>
+      <div class="flex gap-2">
         <button (click)="showForm = true"
-        class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3"
-        *ngIf="!showForm">
-        Add Doctor <i class="fas fa-user-plus ml-3"></i>
-      </button>
-      <button (click)="showToast('success', 'User registered successfully!', 'Success')"
-        class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3">
-       Show toast <i class="fas fa-user-plus ml-3"></i>
-      </button>
-
-      <button (click)="fileInput.click()"
-        class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3">
-        Import data <i class="fas fa-file-import ml-3"></i>
-      </button>
-      <input #fileInput type="file" accept=".json" hidden (change)="onFileImport($event)" />
+          class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3"
+          *ngIf="!showForm">
+          Add Doctor <i class="fas fa-user-plus ml-3"></i>
+        </button>
+        <button (click)="showToast('success', 'User registered successfully!', 'Success')"
+          class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3">
+          Show toast <i class="fas fa-user-plus ml-3"></i>
+        </button>
+        <button (click)="fileInput.click()"
+          class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3">
+          Import data <i class="fas fa-file-import ml-3"></i>
+        </button>
+        <input #fileInput type="file" accept=".json" hidden (change)="onFileImport($event)" />
+      </div>
     </div>
 
     <div *ngIf="!showForm" class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -109,7 +116,7 @@
       </h2>
 
       <form [formGroup]="doctorForm"
-        class="formClass grid grid-cols-1 gap-x-10 gap-y-5 mt-4 md:grid-cols-2 lg:grid-cols-3">
+        class=" grid grid-cols-1 gap-x-10 gap-y-5 mt-4 md:grid-cols-2 lg:grid-cols-3">
         <!-- Activity status -->
         <div class="flex gap-8 mb-6">
           <p>Activity Status:</p>
@@ -192,7 +199,7 @@
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base">Gender</label>
           <select formControlName="Gender"
-            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2">
+            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2 bg-white">
             <option value="">Select Gender</option>
             <option value="M">Male</option>
             <option value="F">Female</option>
@@ -203,32 +210,28 @@
             }}</span>
         </div>
 
-        <!-- Profile Picture -->
-        <div>
-          <label class="block text-gray-600 font-medium text-sm md:text-base">Profile Picture</label>
-          <input type="file" id="profileImage" (change)="onFileChange($event)"  formControlName="ProfileImage"
-            class="w-full p-1 border rounded text-sm md:text-base md:p-2" />          
-          
-            <img  [src]="profileImagePreview" alt="Preview" 
-            class="mt-2 w-24 h-24 rounded-full shadow-md" />
-
-
-              <span *ngIf="errorMessages['ProfileImage']" class="text-red-500">{{
-            errorMessages["ProfileImage"]
-            }}</span>
-
-
-        </div>
-
-
         <div>
           <label class="block text-gray-600 font-medium text-sm md:text-base"> Joining Date</label>
-            <input type="date" formControlName="JoiningDate">
+            <input type="date" formControlName="JoiningDate" class="w-full p-2 border rounded">
               <span *ngIf="errorMessages['JoiningDate']" class="text-red-500">{{
             errorMessages["JoiningDate"]
             }}</span>
+        </div>
 
-
+        <!-- Profile Picture -->
+        <div>
+          <label class="block text-gray-600 font-medium text-sm md:text-base">Profile Picture</label>
+          <div class="relative w-48 h-48 mx-auto">
+            <input type="file" id="profileImage" (change)="onFileChange($event)"  formControlName="ProfileImage"
+            class="hidden w-full p-1 border rounded text-sm md:text-base md:p-2" />          
+            <label for="profileImage" class="absolute top-0 right-0 px-2 py-1 rounded-full bg-blue-500 text-white border cursor-pointer"> <i class="fa-solid fa-pen"></i> </label>
+            
+            <img  [src]="profileImagePreview" alt="Preview" 
+            class="mt-2 w-48 h-48 rounded-full shadow-md" />
+            <span *ngIf="errorMessages['ProfileImage']" class="text-red-500">{{
+              errorMessages["ProfileImage"]
+            }}</span>
+          </div>
         </div>
 
         <!--  Address details -->
@@ -270,7 +273,7 @@
         <!-- Country -->
         <div class="flex flex-col">
           <label for="country">Country</label>
-          <select id="country" formControlName="Country" class="form-control p-3">
+          <select id="country" formControlName="Country" class="form-control p-3 bg-white border rounded">
             <option value="" disabled>Select a country</option>
             <option *ngFor="let country of countries" [value]="country.code">
               {{ country.name }}
@@ -343,7 +346,7 @@
                 }" />
 
               <!-- Year of Graduation -->
-              <select formControlName="yearOfGraduation" class="p-1 border rounded text-sm md:text-base md:p-2"
+              <select formControlName="yearOfGraduation" class="p-1 border rounded text-sm md:text-base md:p-2 bg-white"
                 [ngClass]="{
                   'border-red-500':
                     qual.get('yearOfGraduation')?.invalid &&
