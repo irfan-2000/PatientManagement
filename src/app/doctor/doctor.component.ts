@@ -800,10 +800,7 @@ debugger
           City: doctordata.city 
           
          });
-
-
-debugger
-
+ 
 
         this.profileImagePreview = doctordata.image;
 
