@@ -17,6 +17,13 @@ export class ServicesComponent
 {
   filters = { id: '', name: '', status: '' };
 
+  tabs = [
+    { id: 'specializations', label: 'Specializations' },
+    { id: 'services', label: 'Services' },
+    { id: 'categories', label: 'Categories' }
+  ];
+  activeTab = 'specializations';
+
   ShowSpecialization:boolean = false;
   isAdding: boolean = false;
   isAddingService:boolean = false;
@@ -70,7 +77,7 @@ ngOninit()
   {
     this.ShowSpecialization = true;
     this.isAdding = false;
-    this.GetSpecialization();
+    // this.GetSpecialization();
   }
   
   closeModal() {
@@ -119,7 +126,7 @@ MainServiceCategoriesForm:FormGroup;
         Status: ['Active', Validators.required],
         DoctorIds: new FormControl([], Validators.required),
     });
-  
+    this.GetSpecialization();
     this.GetAllDoctors();
     this.GetServices();
     this.GetServiceCategories();
@@ -246,7 +253,7 @@ showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title
 AddUpdateSpecialization(Operation: string, item: any = "") 
 {
   this.ErrorMsg = "";
-
+  this.ShowSpecialization = true;
   this.isAdding = true;
   console.log(item);
 
@@ -335,7 +342,7 @@ AddUpdateServices(Operation: string, item: any = "")
       
     this.IsEditingService = true;
     this.serviceId = item.serviceId;  
-        debugger
+         
 
     const [hours, minutes] = item.duration.split(':');
     // Patch values with existing data
@@ -364,7 +371,7 @@ onSubmitServiceForm(ServiceId: any = '') {
     this.ErrorMsg = 'Please select at least one doctor.'; 
     return;
   }
-  debugger
+   
   // Manual validation checks
   const name = this.serviceForm.get('Name')?.value;
   const doctorId = this.serviceForm.get('Doctor')?.value;
@@ -421,7 +428,7 @@ onSubmitServiceForm(ServiceId: any = '') {
  
     };
 
-  debugger
+   
    
 
   try {
@@ -530,6 +537,7 @@ convertTimeStringToReadable(duration: string): string {
         if (response.status === 200) {
           
           this.ErrorMsg = '';
+          console.log("reh services",response.result);
            this.services = response.result;
               
         }
@@ -679,7 +687,7 @@ if (Status === null || Status === undefined || Status === '') {
   
     return;     
   }
-  debugger
+   
 
   if(this.Mainserviceid)
   {

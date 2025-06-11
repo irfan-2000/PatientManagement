@@ -29,7 +29,7 @@ ValidateLogin(logindata: any): Promise<any>
     Role: Role,
     HospitalId:HospitalId
   };
-  debugger
+   
 
   // Set headers to send JSON
   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -118,7 +118,7 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
   });
- debugger
+  
    return this.http.get<any>(`${this.baseurl}api/GetSpecialization`, 
   { 
      headers,withCredentials: true,
