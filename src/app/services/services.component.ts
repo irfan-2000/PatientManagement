@@ -27,7 +27,9 @@ export class ServicesComponent
   ShowSpecialization:boolean = false;
   isAdding: boolean = false;
   isAddingService:boolean = false;
+  isAddingServiceCategory:boolean = false;
   ShowServicePopup:boolean = false;
+  showCategoryForm:boolean = false;
   IsEditingService:boolean = false;
   ServideId:any;
   ErrorMsg:string = ""
@@ -312,6 +314,23 @@ get duration(): string {
   return `${this.serviceForm.value.hours}:${this.serviceForm.value.minutes}`;
 }
 
+openCategoryForm(Operation: string, item: any = ""){
+  this.showCategoryForm = true;
+  console.log("Reh oper", Operation, item)
+  if(Operation === 'Add'){
+    // Add new service category
+    this.isAddingServiceCategory = true;
+  }
+  if(Operation === 'Update'){
+    // Update service category
+    this.isAddingServiceCategory = false;
+    this.MainServiceCategoriesForm.patchValue({
+      Name: item.categoryname,
+      Description: item.description,
+      Status: item.status //== 'Active' ? 1 : 0 // Assuming status is a boolean or string
+    })
+  }
+}
 
 AddUpdateServices(Operation: string, item: any = "") 
 {
