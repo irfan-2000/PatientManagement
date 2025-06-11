@@ -10,6 +10,52 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class PatientsComponent {
  
+  tabs: string[] = ['Patient Details', 'Patient Report Details', 'Extra Tab'];
+  activeTab: string = this.tabs[0];
+  showAddDiv: boolean = false;
+  currentPatientIdForReportDetail: string = '';
+
+  patientReports = [
+    {
+      patientId: 'P001',
+      reportId: 'R001',
+      reportName: "Test report 1",
+      reportUrl: '/patients' 
+    },
+    {
+      patientId: 'P002',
+      reportId: 'R002',
+      reportName: "Test report 2",
+      reportUrl: '/patients' 
+    },
+    {
+      patientId: 'P003',
+      reportId: 'R003',
+      reportName: "Test report 3",
+      reportUrl: '/patients' 
+    },
+  ]
+
+  searchPatient(event: any) {
+    const searchTerm = event.target.value.toLowerCase();
+    console.log("Searching patient: ",searchTerm);
+  }
+  hideAddDiv() {
+    this.showAddDiv = false;
+    //clear all inputs
+  }
+  addReport() {
+    console.log("Adding report...");
+    // Add report
+    this.showAddDiv = false;
+  }
+  navigateToReportDetails(patient: any) {
+    console.log("Navigating to report details: ",patient);
+    this.activeTab = 'Patient Report Details';
+    this.currentPatientIdForReportDetail = patient.patientId;
+
+  }
+
   patientForm: FormGroup;
   isAdding = false;
   doctors = ['Dr. Smith', 'Dr. Brown', 'Dr. Wilson', 'Dr. Taylor', 'Dr. Lee'];
@@ -213,6 +259,7 @@ ShowPatient:Boolean= false
       }
       else{
       this.selectedPatient = patient;
+      console.log("reh pat", patient);
       this.patchFormValues(patient);
     }
   }
