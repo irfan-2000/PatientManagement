@@ -100,7 +100,7 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
 
    return this.http.get<any>(`${this.baseurl}api/GetAllDoctors`, 
   { 
-      headers
+      headers,withCredentials: true,
   })
   .toPromise()
   .then(response => response)
@@ -118,10 +118,10 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
   });
- 
+ debugger
    return this.http.get<any>(`${this.baseurl}api/GetSpecialization`, 
   { 
-     headers
+     headers,withCredentials: true,
   })
   .toPromise()
   .then(response => response)

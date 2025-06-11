@@ -2,25 +2,30 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { error } from 'console';
 import { json } from 'stream/consumers';
+import { environment } from './environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HospitalServiceService
  {
-  private baseurl = "https://localhost:7203/api/"
-  
+     private baseurl = environment.baseUrl;
+   
    HospitalId:any = localStorage.getItem('HospitalId') ?? ''; // Ensure it's not null
   
   token:string = ''
-  
-  constructor(private http:HttpClient  ){}
-  
+   
+constructor(private http:HttpClient  )
+{
+    this.token = localStorage.getItem('token') || ''; // Ensure it's not null
+ 
+}
+
   AddUpdateSpecialization(formData:any): Promise<any> 
   { 
     
     
-  return this.http.post<any>(`${this.baseurl}AddUpdateSpecialization`, formData, 
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateSpecialization`, formData, 
     {
         withCredentials: true // Ensures cookies (JWT) are sent
     })
@@ -38,7 +43,7 @@ export class HospitalServiceService
     .set('specializationId', specializationId.toString())
     .set('HospitalId', this.HospitalId);
 
-  return this.http.delete<any>(`${this.baseurl}DeleteSpecialization`, 
+  return this.http.delete<any>(`${this.baseurl}api/DeleteSpecialization`, 
   { 
     params, // ✅ Send as query params
     withCredentials: true // ✅ Ensures cookies (JWT) are sent
@@ -54,7 +59,7 @@ export class HospitalServiceService
  {
    debugger
 
-  return this.http.post<any>(`${this.baseurl}AddUpdateServices`, payload  , {
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateServices`, payload  , {
        headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
     }),
@@ -68,7 +73,7 @@ export class HospitalServiceService
  {
     
 
-  return this.http.get<any>(`${this.baseurl}GetServices`,   {
+  return this.http.get<any>(`${this.baseurl}api/GetServices`,   {
        headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
     }),
@@ -80,7 +85,8 @@ export class HospitalServiceService
 GetServiceCategories(CategoryId:any = ''  ) 
  { 
 
-  return this.http.get<any>(`${this.baseurl}GetServiceCategories`,   {
+
+  return this.http.get<any>(`${this.baseurl}api/GetServiceCategories`,   {
        headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
     }),
@@ -90,21 +96,18 @@ GetServiceCategories(CategoryId:any = ''  )
 }
 
 
-GetMainServiceCategories( )
- {
-  let params = new HttpParams();
-  params= params.append('flag', 'G');  
+GetMainServiceCategories() {
+  const params = new HttpParams().set('flag', 'G');
 
-   
-  return this.http.get<any>(`${this.baseurl}GetServicesCategory`,   {
-    params: params,   
+  return this.http.get<any>(`${this.baseurl}api/GetServicesCategory`, {
+    params,
     headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
-
     }),
-    withCredentials: true,
+    withCredentials: true
   });
 }
+
 
 AddUpdateMainServiceCategory(categoryname:any,description:any,staus:any,id:any,flag:any  )
 { 
@@ -112,13 +115,11 @@ AddUpdateMainServiceCategory(categoryname:any,description:any,staus:any,id:any,f
   let params = new HttpParams();
   params= params.append('flag', flag);
   params= params.append('Categoryname', categoryname);
-  params= params.append('Description', description);
-  params= params.append('status', staus);
-  params= params.append('CategoryId', id ||'' );
-  
+   params= params.append('status', staus);
+     params= params.append('CategoryId', id ||'' );
+  params= params.append('Description', description); 
 
-
-  return this.http.post<any>(`${this.baseurl}AddUpdateDeleteServicesCategory`, null,  {
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateDeleteServicesCategory`, null,  {
     params: params,   
     headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
@@ -136,7 +137,7 @@ DeleteMainServiceCategory(id:any)
   params= params.append('CategoryId', id); // Assuming you want to delete all categories, otherwise pass the specific ID
 
   debugger
-  return this.http.post<any>(`${this.baseurl}AddUpdateDeleteServicesCategory`, null,  {
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateDeleteServicesCategory`, null,  {
     params: params,   
     headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
