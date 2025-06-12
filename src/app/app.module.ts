@@ -26,6 +26,7 @@ import { LoaderComponent } from './shared/loader/loader.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { MatInputModule } from '@angular/material/input';
     CourseSuggestionComponent,
     AppointmentsComponent,
     LoaderComponent,
+    AddEditPatientComponent,
   ],
   imports: [
     BrowserModule,

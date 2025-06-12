@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PatientService } from '../patient.service';
 import { report } from 'process';
 import { from } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -17,7 +18,9 @@ export class PatientsComponent {
   activeTab: string = this.tabs[0];
   showAddDiv: boolean = false;
   currentPatientIdForReportDetail: string = '';
+  currentPatientDetails: any = null;
    ReportForm: FormGroup;
+   PrescriptionForm: FormGroup;
 
 
   patientReports = [
@@ -59,7 +62,18 @@ export class PatientsComponent {
     console.log("Navigating to report details: ",patient);
     this.activeTab = 'Patient Report Details';
     this.currentPatientIdForReportDetail = patient.patientId;
+    this.currentPatientDetails = patient;
+  }
 
+  navigateToAddEditPatient(patient: any) {
+    console.log("Navigating to add edit patient: ",patient);
+    if(patient.patientId){
+      // Navigate as edit
+      this.router.navigate(['/addeditpatient'], { queryParams: { patientId: patient.patientId } });
+    }else{
+      // Navigate as add
+      this.router.navigate(['/addeditpatient']);
+    }
   }
 
   patientForm: FormGroup;
@@ -76,7 +90,7 @@ ShowPatient:Boolean= false
 
   selectedPatient: any = null;
 
-  constructor(private fb: FormBuilder,private PatientService:PatientService) 
+  constructor(private fb: FormBuilder,private PatientService:PatientService,private router:Router) 
   {
     
     this.patientForm = this.fb.group({
@@ -111,6 +125,10 @@ ShowPatient:Boolean= false
       reports: this.fb.array([this.createReportGroup()])
     });
 
+  this.PrescriptionForm = this.fb.group({
+    prescriptions: this.fb.array([this.createPrescriptionGroup()])
+  });
+
   }
 
 
@@ -128,14 +146,47 @@ ShowPatient:Boolean= false
     });
   }
 
+  createPrescriptionGroup(): FormGroup
+  {
+    return this.fb.group({
+      prescriptionName: ['', Validators.required],
+      prescriptionType: [''],
+      prescriptionDescription: [''],
+      prescriptionDate: ['', Validators.required],
+      prescriptionFile: ['', Validators.required],
+    });
+  }
+
+  toggleAddDiv() {
+    if(this.showAddDiv){
+      this.showAddDiv = false;
+      // clear and reset forms here
+      this.ReportForm.reset();
+      this.PrescriptionForm.reset();
+      this.reports.clear();
+      this.prescriptions.clear();
+      this.adddynamicReport();
+      this.adddynamicPrescription();
+    }else{
+      this.showAddDiv = true;
+    }
+  }
+
  adddynamicReport() {
     this.reports.push(this.createReportGroup());
   }
-
+adddynamicPrescription() {
+  this.prescriptions.push(this.createPrescriptionGroup());
+}
 
 get reports(): FormArray 
 {
     return this.ReportForm.get('reports') as FormArray;
+  }
+
+  get prescriptions(): FormArray 
+  {
+    return this.PrescriptionForm.get('prescriptions') as FormArray;
   }
 
 
@@ -148,7 +199,24 @@ get reports(): FormArray
 
   }
 
+  removePrescription(index: number) 
+  {
+    if (this.prescriptions.length > 1) 
+      {
+      this.prescriptions.removeAt(index);
+    }
+
+  }
   
+  onFileChangePrescription(event: any, index: number)
+  {
+    const file = event.target.files[0];
+
+    if (file) 
+      {
+        this.prescriptions.at(index).patchValue({ prescriptionFile: file });
+      }
+  }
 
  onFileChange(event: any, index: number)
   {
@@ -216,6 +284,10 @@ get reports(): FormArray
 
   }
 
+  Submitprescriptions(flag:any='InsertPrescription') 
+  {
+    console.log("Submitting prescriptions...");
+  }
 
 
   get allergies() {
