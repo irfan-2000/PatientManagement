@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { error } from 'console';
 import { json } from 'stream/consumers';
 import { environment } from './environments/environment';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,20 +17,21 @@ export class DoctorServiceService {
 
 
 
-constructor(private http:HttpClient  ){}
+constructor(private http:HttpClient ,private router :Router ){}
 
 ValidateLogin(logindata: any): Promise<any> 
 {
-  const { UserId, Password, Role,HospitalId } = logindata.value;
+  const { UserId, Password, Role,HospitalId,RememberMe } = logindata.value;
 
   const body = 
   {
     Id: UserId,
     Password: Password,
     Role: Role,
-    HospitalId:HospitalId
+    HospitalId:HospitalId,
+    rememberMe: RememberMe
   };
-  debugger
+   
 
   // Set headers to send JSON
   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -105,6 +107,11 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
   .toPromise()
   .then(response => response)
   .catch(error => {
+    if (error.status == 401) 
+        {
+        this.router.navigate(['/login']);
+        return;
+      }
       console.error("API Error", error);
       return error;
   });
@@ -118,7 +125,7 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
   });
- debugger
+  
    return this.http.get<any>(`${this.baseurl}api/GetSpecialization`, 
   { 
      headers,withCredentials: true,
@@ -126,6 +133,11 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
   .toPromise()
   .then(response => response)
   .catch(error => {
+    if (error.status == 401) 
+        {
+        this.router.navigate(['']);
+        return;
+      }
       console.error("API Error", error);
       return error;
   });
@@ -169,7 +181,18 @@ const params = new HttpParams()
 
 
 
+CheckRememberMe() 
+{ 
 
+return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
+{
+  headers:new HttpHeaders({'Content-Type':'application/json'}),
+  withCredentials:true
+  
+});
+  
+  
+  }
 
 
 

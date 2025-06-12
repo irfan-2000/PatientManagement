@@ -19,12 +19,14 @@ export class LoginComponent {
     
  constructor(private docservice:DoctorServiceService,private router: Router)
  {
+  this.CheckRememberMe();
  this.loginForm = new FormGroup(
   {
-    UserId:new FormControl('',[Validators.required]),
+    UserId:new FormControl('Receptionist_IRFAN_HOSP0001001',[Validators.required]),
     Password:new FormControl('',[Validators.required]),
     Role:new FormControl('',[Validators.required]),
-    HospitalId:new FormControl( '',[Validators.required])
+    HospitalId:new FormControl( '',[Validators.required]),
+    RememberMe:new FormControl(false)
   });
 
  }
@@ -61,6 +63,7 @@ export class LoginComponent {
 
       if(response.status === 200)
       {
+
       // localStorage.setItem('Token',response.token); 
        localStorage.setItem('HospitalId',response.hospitalId);
        localStorage.setItem('token',response.token);
@@ -80,5 +83,39 @@ export class LoginComponent {
     
   }
 
+
+
+
+  CheckRememberMe()
+  {
+     try {
+      const response =this.docservice.CheckRememberMe( ).subscribe({
+          next: (response: any) =>
+          {
+            debugger
+            this.loginForm.patchValue({
+              HospitalId: response.txtHospitalId,
+              UserId: response.txtId,
+              Password: response.txtPassword,
+              Role: response.txtRole,
+              RememberMe: response.ChkRememberMe
+
+
+            });
+
+            
+          },
+          error: (error: any) =>
+           { 
+          },
+        });
+    } catch (error: any) 
+    {
+      console.error('API error');
+      return error;
+    
+    
+    }
+  }
 
 }

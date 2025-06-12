@@ -9,6 +9,7 @@ import { json } from 'stream/consumers';
 import { DoctorServiceService } from '../doctor-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { error } from 'console';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -47,7 +48,7 @@ export class DoctorComponent {
   doctorForm: FormGroup;
   Allitems: { specializationId: string; name: string; hospitalId: string; status: string; }[] = [];
 
-  constructor(private doctorservice: DoctorServiceService, private fb: FormBuilder, private toastr: ToastrService) {
+  constructor(private doctorservice: DoctorServiceService, private fb: FormBuilder, private toastr: ToastrService,private router: Router) {
 
     const currentYear = new Date().getFullYear();
 
@@ -427,13 +428,23 @@ UpdateDoctorDetails(doctorform :any)
         console.log("After assinging", this.doctors);
 
       }
-      if (response.status == 401) {
+      if (response.status == 401) 
+        {
+        this.router.navigate(['/login']);
         return;
       }
-    } catch (error: any) {
-      console.error('Error:', error);
-      this.ErrorMsg = "An error occurred while submitting the form.";
-    }
+    } catch (error: any) 
+{
+  debugger;
+
+  if (error.status === 401 || error?.error?.status === 401) {
+    this.router.navigate(['/login']);
+    return;
+  }
+
+  console.error('Error:', error);
+  this.ErrorMsg = "An error occurred while submitting the form.";
+}
   }
 
   async GetSpecialization() {
