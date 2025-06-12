@@ -39,20 +39,33 @@
                   <th class="px-4 py-2 border">Patient ID</th>
                   <th class="px-4 py-2 border">Full Name</th>
                   <th class="px-4 py-2 border hidden lg:table-cell">DOB</th>
+                   <th class="px-4 py-2 border hidden lg:table-cell">Age</th>
                   <th class="px-4 py-2 border hidden lg:table-cell">Gender</th>
                   <th class="px-4 py-2 border">Phone</th>
                   <th class="px-4 py-2 border hidden lg:table-cell">Visit Date & Time</th>
+
+  
+                  <th class="px-4 py-2 border hidden lg:table-cell">Created By</th>
+  
+                  <th class="px-4 py-2 border hidden lg:table-cell">Created On</th>
+
                   <th class="px-4 py-2 border">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let patient of patients" class="hover:bg-gray-50 transition-colors">
                   <td class="px-4 py-2 border">{{ patient.patientId }}</td>
-                  <td class="px-4 py-2 border">{{ patient.fullName }}</td>
-                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.dob }}</td>
+                  <td class="px-4 py-2 border">{{ patient.patientName }}</td>
+                  <td class="px-4 py-2 border">{{ patient.dob }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.age }}</td>
                   <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.gender }}</td>
-                  <td class="px-4 py-2 border">{{ patient.phone }}</td>
-                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.visitDateTime | date:'short' }}</td>
+                  <td class="px-4 py-2 border">{{ patient.phoneNumber }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.lastVisitDate | date:'short' }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.createdBy }}</td>
+                  
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.createdOn | date:'short' }}</td>
+                  
+                  
                   <td class="px-4 py-2 border text-center">
                     <button class="text-blue-500 hover:text-blue-700" (click)="navigateToReportDetails(patient)">
                       <i class="fas fa-eye"></i>
@@ -71,19 +84,19 @@
               <!-- Need to replace the href with the actual link -->
               <a href="/patients"
                 class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
-                Last visited report
+                Recent Prescription
               </a>
               <a href="/patients"
                 class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
-                Integrated PDF of report
+                Recent Test Reports
               </a>
               <a href="/patients"
                 class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
-                Integrated Prescription
+              All Prescriptions
               </a>
               <a href="/patients"
                 class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
-                Last done test
+                All Test Reports 
               </a>
               <button (click)="showAddDiv = true" class="border border-blue-600 bg-blue-600 text-white px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
                 <i class="fas fa-plus mr-2"></i> Add New
@@ -96,21 +109,62 @@
 
           <!-- Table would go here -->
           <div class="space-y-4">
-            <div *ngIf="showAddDiv" class="bg-white p-4 rounded-lg shadow-md">
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Report Name</label>
-                  <input type="text" class=" w-fullpx-3 py-2 border rounded-lg text-sm">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Choose file</label>
-                  <input type="file" class="w-full px-3 py-2 border rounded-lg text-sm">
-                </div>
-                <div class="flex gap-3 items-end pb-3">
-                  <button class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-700 text-sm font-medium" (click)="hideAddDiv()">Cancel</button>
-                  <button class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-700 text-sm font-medium" (click)="addReport()">Add</button>
-                </div>
-              </div>
+            
+            <div class="bg-white p-4 mb-4 rounded-lg shadow-md">
+    <h2 class="text-lg font-semibold mb-2">Reports</h2>
+
+  <form [formGroup]="ReportForm"  >
+  <div formArrayName="reports">
+    <div *ngFor="let report of reports.controls; let i = index" [formGroupName]="i" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 border p-3 rounded-lg shadow">
+      
+      <div>
+        <label class="block text-sm">Report name</label>
+        <input type="text" formControlName="reportName" class="form-control" />
+      </div>
+
+      <div>
+        <label class="block text-sm">Report Type</label>
+        <input type="text" formControlName="reportType" class="form-control" />
+      </div>
+
+        <div>
+        <label class="block text-sm">Description</label>
+        <input type="textarea" formControlName="reportDescription" class="form-control" />
+      </div>
+
+      <div>
+        <label class="block text-sm"> Date</label>
+        <input type="date" formControlName="reportDate" class="form-control" />
+      </div>
+
+      <div>
+        <label class="block text-sm">Report File</label>
+        <input type="file" (change)="onFileChange($event, i)" formControlName="reportFile" class="form-control" />
+      </div>
+
+      <div *ngIf="i > 0" class="col-span-3 text-right">
+        <button type="button" (click)="removeReport(i)" class="text-red-600 font-bold">X Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-2">
+    <button type="button" (click)="adddynamicReport()" class="text-green-600 text-xl font-bold">+ Add</button>
+  </div>
+
+  <button type="submit" class="btn btn-primary mt-3" (click)="Submitreports()">Submit</button>
+</form>
+
+
+ 
+</div>
+ 
+
+
+
+
+
+
             </div>
             <!-- Header row (hidden on mobile) -->
             <div class="hidden md:grid grid-cols-4 gap-4 bg-gray-100 p-3 rounded-lg font-medium">

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PatientService } from '../patient.service';
+import { report } from 'process';
+import { from } from 'rxjs';
 
 
 @Component({
@@ -14,6 +17,8 @@ export class PatientsComponent {
   activeTab: string = this.tabs[0];
   showAddDiv: boolean = false;
   currentPatientIdForReportDetail: string = '';
+   ReportForm: FormGroup;
+
 
   patientReports = [
     {
@@ -49,7 +54,8 @@ export class PatientsComponent {
     // Add report
     this.showAddDiv = false;
   }
-  navigateToReportDetails(patient: any) {
+  navigateToReportDetails(patient: any) 
+  {
     console.log("Navigating to report details: ",patient);
     this.activeTab = 'Patient Report Details';
     this.currentPatientIdForReportDetail = patient.patientId;
@@ -63,125 +69,16 @@ export class PatientsComponent {
   hours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
   minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 
-  patients = [
-    {
-      patientId: 'P001',
-      fullName: 'John Doe',
-      dob: '1985-05-15',
-      gender: 'Male',
-      bloodGroup: 'A+',
-      phone: '1234567890',
-      email: 'johndoe@example.com',
-      address: '123 Main Street, City, Country',
-      heightWeight: '180cm/75kg',
-      allergies: 'None',
-      pastMedicalHistory: 'Asthma',
-      surgicalHistory: 'Appendectomy in 2010',
-      doctorAssigned: 'Dr. Smith',
-      visitDateTime: '2025-02-20T09:30',
-      reasonForVisit: 'Routine Checkup',
-      diagnosis: 'Healthy',
-      prescribedMedications: 'None',
-      labTestReports: 'Normal',
-      treatmentPlan: 'Regular exercise, balanced diet',
-      followUpDate: '2025-08-20'
-    },
-    {
-      patientId: 'P002',
-      fullName: 'Jane Smith',
-      dob: '1990-11-25',
-      gender: 'Female',
-      bloodGroup: 'B+',
-      phone: '0987654321',
-      email: 'janesmith@example.com',
-      address: '456 Another St, City, Country',
-      heightWeight: '165cm / 60kg',
-      allergies: 'Penicillin',
-      pastMedicalHistory: 'Hypertension',
-      surgicalHistory: 'None',
-      doctorAssigned: 'Dr. Brown',
-      visitDateTime: '2025-02-19T14:00',
-      reasonForVisit: 'Headache',
-      diagnosis: 'Migraine',
-      prescribedMedications: 'Pain relievers',
-      labTestReports: 'MRI normal',
-      treatmentPlan: 'Lifestyle changes',
-      followUpDate: '2025-03-19'
-    },
-    {
-      patientId: 'P003',
-      fullName: 'Michael Johnson',
-      dob: '1975-03-30',
-      gender: 'Male',
-      bloodGroup: 'O-',
-      phone: '5551234567',
-      email: 'michaelj@example.com',
-      address: '789 Sample Rd, City, Country',
-      heightWeight: '175cm / 80kg',
-      allergies: 'None',
-      pastMedicalHistory: 'Diabetes',
-      surgicalHistory: 'Knee surgery in 2018',
-      doctorAssigned: 'Dr. Wilson',
-      visitDateTime: '2025-02-18T11:15',
-      reasonForVisit: 'Follow-up',
-      diagnosis: 'Diabetes under control',
-      prescribedMedications: 'Metformin',
-      labTestReports: 'Stable blood sugar',
-      treatmentPlan: 'Diet and exercise',
-      followUpDate: '2025-05-18'
-    },
-    {
-      patientId: 'P004',
-      fullName: 'Emily Davis',
-      dob: '2000-07-12',
-      gender: 'Female',
-      bloodGroup: 'AB+',
-      phone: '4445556666',
-      email: 'emilyd@example.com',
-      address: '321 Sample Ave, City, Country',
-      heightWeight: '170cm / 65kg',
-      allergies: 'Peanuts',
-      pastMedicalHistory: 'None',
-      surgicalHistory: 'None',
-      doctorAssigned: 'Dr. Taylor',
-      visitDateTime: '2025-02-17T10:00',
-      reasonForVisit: 'Skin rash',
-      diagnosis: 'Allergic reaction',
-      prescribedMedications: 'Antihistamines',
-      labTestReports: 'Positive allergy test',
-      treatmentPlan: 'Avoid allergens',
-      followUpDate: '2025-03-17'
-    },
-    {
-      patientId: 'P005',
-      fullName: 'David Wilson',
-      dob: '1980-09-05',
-      gender: 'Male',
-      bloodGroup: 'A-',
-      phone: '3332221111',
-      email: 'davidw@example.com',
-      address: '654 Demo Blvd, City, Country',
-      heightWeight: '185cm / 85kg',
-      allergies: 'None',
-      pastMedicalHistory: 'High Cholesterol',
-      surgicalHistory: 'None',
-      doctorAssigned: 'Dr. Lee',
-      visitDateTime: '2025-02-16T08:45',
-      reasonForVisit: 'Cholesterol check',
-      diagnosis: 'High cholesterol',
-      prescribedMedications: 'Statins',
-      labTestReports: 'Abnormal lipid profile',
-      treatmentPlan: 'Diet modification',
-      followUpDate: '2025-06-16'
-    }
-  ];
+  patients  :any= {}
 
 ShowPatient:Boolean= false
 
 
   selectedPatient: any = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,private PatientService:PatientService) 
+  {
+    
     this.patientForm = this.fb.group({
       patientId: [''],
       fullName: ['', Validators.required],
@@ -205,10 +102,122 @@ ShowPatient:Boolean= false
       treatmentPlan: [''],
       followUpDate: ['']
     });
+  
+  
+  this.GetPatientDetails();
+  
+
+ this.ReportForm = this.fb.group({
+      reports: this.fb.array([this.createReportGroup()])
+    });
+
   }
 
 
+//--working code of report forms
+ createReportGroup(): FormGroup
+  {
+    return this.fb.group({
+      reportName: ['', Validators.required],
+      reportType: [''],
+      reportDescription: [''],
+      reportDate: ['', Validators.required],
+      prescriptionDate: ['', Validators.required],
+      reportFile: ['', Validators.required],
+
+    });
+  }
+
+ adddynamicReport() {
+    this.reports.push(this.createReportGroup());
+  }
+
+
+get reports(): FormArray 
+{
+    return this.ReportForm.get('reports') as FormArray;
+  }
+
+
+  removeReport(index: number) 
+  {
+    if (this.reports.length > 1) 
+      {
+      this.reports.removeAt(index);
+    }
+
+  }
+
   
+
+ onFileChange(event: any, index: number)
+  {
+    const file = event.target.files[0];
+
+
+    if (file) 
+      {
+      this.reports.at(index).patchValue({ reportFile: file });
+    }
+  }
+
+
+   Submitreports(flag:any='InsertReport') 
+   {
+ 
+
+
+    const formData = new FormData();
+    
+    formData.append('IsEditing', 'false');
+
+    this.reports.controls.forEach((group, i) => {
+      formData.append(`reports[${i}].reportName`, group.get('reportName')?.value);
+      formData.append(`reports[${i}].reportType`, group.get('reportType')?.value);
+      formData.append(`reports[${i}].reportDescription`, group.get('reportDescription')?.value);
+      formData.append(`reports[${i}].reportDate`, group.get('reportDate')?.value);
+      formData.append(`reports[${i}].prescriptionDate`, group.get('prescriptionDate')?.value);
+      formData.append(`reports[${i}].reportFile`, group.get('reportFile')?.value);    
+      
+      
+     });
+
+    // Call your service here with formData
+    console.log('Submitting:', formData);
+    for (let pair of formData.entries()) {
+  console.log(pair[0], pair[1]);
+}
+
+
+
+    try {
+        this.PatientService.AddUpdateReports(formData ).subscribe({
+          next: (response: any) => {
+            if (response.status === 200) 
+              {
+                 this.patients = response.result;
+            
+            }
+          },
+          error: (error: any) => {
+
+            console.log(error);
+            if (error.status === 401) {
+            } else if (error.status === 500 && error.error) {
+
+            } else {
+              console.error('Unhandled API error:', error);
+            }
+          },
+        });
+      } catch (error: any) {
+        console.error('API error:', error);
+      }
+
+  }
+
+
+
   get allergies() {
     return this.patientForm.get('allergies') as FormArray;
   }
@@ -313,7 +322,7 @@ removeLabTestReport(index: number) {
 }
 
 // Complete patchFormValues implementation
-private patchFormValues(patient: any) 
+   patchFormValues(patient: any) 
 {
   this.patientForm.patchValue({
     ...patient,
@@ -379,7 +388,7 @@ onSubmit() {
       formValue.patientId = `P${(this.patients.length + 1).toString().padStart(3, '0')}`;
       this.patients.push(formValue);
     } else {
-      const index = this.patients.findIndex(p => p.patientId === formValue.patientId);
+      const index = this.patients.findIndex((p:any) => p.patientId === formValue.patientId);
       this.patients[index] = formValue;
     }
 
@@ -418,7 +427,50 @@ viewDetails(visit: any) {
 
 
 
+ 
+GetPatientDetails(flag:any = 'GetPatients',Tab = 'Details')
+{
+  
+  
+      try {
+        this.PatientService.GetPatientDetails(flag ,Tab).subscribe({
+          next: (response: any) => {
+            if (response.status === 200) 
+              {
+                 this.patients = response.result;
+              //this.showToast('success', 'Doctor details updated successfully!', 'Success');
+             // window.location.reload();
+            }
+          },
+          error: (error: any) => {
 
+            console.log(error);
+            if (error.status === 401) {
+            } else if (error.status === 500 && error.error) {
+
+            } else {
+              console.error('Unhandled API error:', error);
+            }
+          },
+        });
+      } catch (error: any) {
+        console.error('API error:', error);
+      }
+ 
+
+}
+
+
+
+ 
+// addReport() {
+//   this.reports.push({ reportDate: '', prescriptionDate: '', reportFile: null });
+// }
+ 
+
+ 
+
+ 
 
 
 
