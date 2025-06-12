@@ -1,72 +1,172 @@
+<!-- patient.component.html -->
 <div class="flex">
 
-<app-sidebar></app-sidebar>
+  <app-sidebar></app-sidebar>
+  <div class="container mx-auto px-4 py-4 h-dvh overflow-y-auto">
 
-<!-- patient.component.html -->
-<div class="container mx-auto px-4 py-4">
+    <div class="flex flex-col h-full">
+      <!-- Tab Headers -->
+      <div class="flex border-b border-gray-200">
+        <button *ngFor="let tab of tabs" (click)="activeTab = tab; currentPatientIdForReportDetail = '';" [ngClass]="{
+              'border-b-2 border-blue-500 text-blue-600': activeTab === tab,
+              'text-gray-500 hover:text-gray-700': activeTab !== tab
+            }" class="px-6 py-3 text-sm font-medium focus:outline-none">
+          {{ tab }}
+        </button>
+      </div>
 
-  <div class="overflow-x-auto">
-    <table class="min-w-full border-collapse border border-gray-200">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-4 py-2 border">Patient ID</th>
-          <th class="px-4 py-2 border">Full Name</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">DOB</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Gender</th>
-          <th class="px-4 py-2 border">Phone</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Registration Date & Time</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Last visited Date</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Treated By Doctor</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Treatment Plan</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Test Reports of last vist</th>
+      <!-- Tab Content -->
+      <div class="flex-1 p-4 bg-white">
+        <!-- Patient details Tab -->
+        <div *ngIf="activeTab === 'Patient Details'">
+          <div class="mb-4 flex justify-between items-center flex-wrap gap-2">
+            <h2 class="text-lg font-semibold">Patient Details</h2>
+            <div class="border rounded-lg pl-3">
+              <i class="fas fa-search text-gray-500"></i>
+              <input type="text" class="px-3 py-2 focus:outline-none" placeholder="Search by Id or Name" (keyup.enter)="searchPatient($event)">
+            </div>
+            <!-- <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i> Dummy button 1
+              </button> -->
+          </div>
+
+          <!-- Table would go here -->
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full border-collapse border border-gray-200">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-4 py-2 border">Patient ID</th>
+                  <th class="px-4 py-2 border">Full Name</th>
+                  <th class="px-4 py-2 border hidden lg:table-cell">DOB</th>
+                  <th class="px-4 py-2 border hidden lg:table-cell">Gender</th>
+                  <th class="px-4 py-2 border">Phone</th>
+                  <th class="px-4 py-2 border hidden lg:table-cell">Visit Date & Time</th>
+                  <th class="px-4 py-2 border">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let patient of patients" class="hover:bg-gray-50 transition-colors">
+                  <td class="px-4 py-2 border">{{ patient.patientId }}</td>
+                  <td class="px-4 py-2 border">{{ patient.fullName }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.dob }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.gender }}</td>
+                  <td class="px-4 py-2 border">{{ patient.phone }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.visitDateTime | date:'short' }}</td>
+                  <td class="px-4 py-2 border text-center">
+                    <button class="text-blue-500 hover:text-blue-700" (click)="navigateToReportDetails(patient)">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="activeTab === 'Patient Report Details' && currentPatientIdForReportDetail">
+          <div class="mb-4 flex flex-col">
+            <h2 class="text-lg font-semibold">Patient Report Details</h2>
+            <div class="mt-2 flex gap-2 flex-wrap">
+              <!-- Need to replace the href with the actual link -->
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                Last visited report
+              </a>
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                Integrated PDF of report
+              </a>
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                Integrated Prescription
+              </a>
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                Last done test
+              </a>
+              <button (click)="showAddDiv = true" class="border border-blue-600 bg-blue-600 text-white px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                <i class="fas fa-plus mr-2"></i> Add New
+              </button>
+            </div>
+            <!-- <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i> Dummy button 2
+              </button> -->
+          </div>
+
+          <!-- Table would go here -->
+          <div class="space-y-4">
+            <div *ngIf="showAddDiv" class="bg-white p-4 rounded-lg shadow-md">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Report Name</label>
+                  <input type="text" class=" w-fullpx-3 py-2 border rounded-lg text-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Choose file</label>
+                  <input type="file" class="w-full px-3 py-2 border rounded-lg text-sm">
+                </div>
+                <div class="flex gap-3 items-end pb-3">
+                  <button class="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-700 text-sm font-medium" (click)="hideAddDiv()">Cancel</button>
+                  <button class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-700 text-sm font-medium" (click)="addReport()">Add</button>
+                </div>
+              </div>
+            </div>
+            <!-- Header row (hidden on mobile) -->
+            <div class="hidden md:grid grid-cols-4 gap-4 bg-gray-100 p-3 rounded-lg font-medium">
+              <div>Report Name</div>
+              <div>Upload</div>
+              <div>View</div>
+              <div>Action</div>
+            </div>
+          
+            <!-- Report items -->
+            <div *ngFor="let report of patientReports" class="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 p-3 md:p-0 border md:border-0 rounded-lg md:rounded-none">
+              <!-- Report Name -->
+              <div class="md:hidden text-sm text-gray-500">Report Name</div>
+              <p class="font-medium truncate">{{report.reportName}}</p>
+          
+              <!-- File Upload -->
+              <div class="md:hidden text-sm text-gray-500">Upload</div>
+              <div class="flex items-center">
+                <input type="file" class="w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+              </div>
+          
+              <!-- View Link -->
+              <div class="md:hidden text-sm text-gray-500">View</div>
+              <div class="flex items-center">
+                <a href="/patients" class="text-blue-500 hover:text-blue-700 underline text-sm md:text-base">View Report</a>
+              </div>
+          
+              <!-- Delete Action -->
+              <div class="md:hidden text-sm text-gray-500">Action</div>
+              <div class="flex items-center">
+                <i class="fas fa-trash text-red-500 hover:text-red-700 cursor-pointer text-lg"></i>
+              </div>
+            </div>
+            
+          </div>
 
           
+        </div>
+          <!-- Content when condition is false -->
+          <div *ngIf="activeTab === 'Patient Report Details' && !currentPatientIdForReportDetail" class="p-4 text-gray-500 text-center">
+            No patient selected. <br> Please go to the Patient Details tab and click on the eye button to view the respective patient report details.
+          </div>
 
-          <th class="px-4 py-2 border">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let patient of patients" class="hover:bg-gray-50 transition-colors">
-          <td class="px-4 py-2 border">{{ patient.patientId }}</td>
-          <td class="px-4 py-2 border">{{ patient.fullName }}</td>
-          <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.dob }}</td>
-          <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.gender }}</td>
-          <td class="px-4 py-2 border">{{ patient.phone }}</td>
-          <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.visitDateTime | date:'short' }}</td>
-          <td class="px-4 py-2 border"></td>
-          
-          <td class="px-4 py-2 border"></td>
-          <td class="px-4 py-2 border">p1,p2,p3</td>
+        <div *ngIf="activeTab === 'Extra Tab'">
+          <div class="mb-4 flex justify-between items-center">
+            <h2 class="text-lg font-semibold">Extra Tab</h2>
+            <!-- <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i> Dummy button 3
+              </button> -->
+          </div>
 
-          <td class="px-4 py-2 border"> test reports Integrated pdf,last visit prescription</td>
-          <td class="px-4 py-2 border text-center">
-            <button class="text-blue-500 hover:text-blue-700 mx-1" (click)="openPatientModal(patient, 'Updates')">
-              <i class="fas fa-edit"></i> <!-- Edit Icon -->
-            </button>
-          
-            <!-- Patient History Button -->
-            <button class="text-green-500 hover:text-green-700 mx-1" (click)="openPatientModal(patient,'History')">
-              <i class="fas fa-history"></i> <!-- History Icon -->
-            </button>
-          
-            <!-- Delete Button -->
-            <button class="text-red-500 hover:text-red-700 mx-1" (click)="openPatientModal(patient.patientId,'Delete')">
-              <i class="fas fa-trash"></i> <!-- Delete Icon -->
-            </button>
-          </td>
-          
+          <!-- Table would go here -->
+        </div>
+      </div>
+    </div>
 
-
-
-
-
-        </tr>
-      </tbody>
-
-
-
-    </table>
-  </div>
 
 
     <div *ngIf="ShowPatient" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -211,16 +311,3 @@
         </div>
       </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-  </div>
-</div>

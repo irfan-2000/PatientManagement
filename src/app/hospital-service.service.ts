@@ -57,7 +57,7 @@ constructor(private http:HttpClient  )
 } 
  AddUpdateServices( payload:any) 
  {
-   debugger
+    
 
   return this.http.post<any>(`${this.baseurl}api/AddUpdateServices`, payload  , {
        headers: new HttpHeaders({
@@ -111,7 +111,7 @@ GetMainServiceCategories() {
 
 AddUpdateMainServiceCategory(categoryname:any,description:any,staus:any,id:any,flag:any  )
 { 
-  debugger
+   
   let params = new HttpParams();
   params= params.append('flag', flag);
   params= params.append('Categoryname', categoryname);
@@ -136,7 +136,7 @@ DeleteMainServiceCategory(id:any)
   params= params.append('flag', 'D');  
   params= params.append('CategoryId', id); // Assuming you want to delete all categories, otherwise pass the specific ID
 
-  debugger
+   
   return this.http.post<any>(`${this.baseurl}api/AddUpdateDeleteServicesCategory`, null,  {
     params: params,   
     headers: new HttpHeaders({

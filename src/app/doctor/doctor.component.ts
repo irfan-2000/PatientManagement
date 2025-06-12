@@ -155,7 +155,7 @@ export class DoctorComponent {
 
   onSpecializationChange(selectedItems: string[]) 
   {
-    debugger
+     
    
     
    // this.GetSpecialization()
@@ -327,7 +327,7 @@ export class DoctorComponent {
  
 UpdateDoctorDetails(doctorform :any)
 {
-  debugger
+   
   this.showForm =true;       
 
   console.log("this is the docotr form",doctorform);
@@ -455,7 +455,7 @@ UpdateDoctorDetails(doctorform :any)
       if (response.status === 200) {
 
         this.specializations = response.specializationData;
-       debugger 
+         
      }
 
       if (response.status == 401) {
@@ -503,7 +503,7 @@ UpdateDoctorDetails(doctorform :any)
         return specialization ? specialization.specializationId : null;
       })
 
-  debugger
+   
 console.log("doctorForm",JSON.stringify(this.doctorForm.value));
 
     console.log(" qualification", JSON.stringify(this.qualificationsArray.value));
@@ -533,7 +533,7 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
       formData.append('IsActive', this.doctorForm.get('IsActive')?.value ? 'true' : 'false');
       formData.append("Qualifications", JSON.stringify(this.qualificationsArray.value));
 
-      debugger
+       
       if (this.doctorId !== undefined && this.doctorId !== null) {
         formData.append("DoctorId", this.doctorId.toString())
       }
@@ -616,7 +616,7 @@ parseCustomDate(dateStr: string): Date | null
 
   // Validate parsed numbers
   if (!day || !month || !year) return null;
-debugger
+ 
   return new Date(year, month , day); // JS Date uses 0-based month
 }
 
@@ -793,7 +793,7 @@ debugger
 
       //  this.specializations = specializationData;
           this.OldselectedFile = doctordata.oldImageName;
-          debugger
+           
         this.doctorForm.patchValue({
           FirstName: doctordata.firstName,
           LastName: doctordata.lName,
