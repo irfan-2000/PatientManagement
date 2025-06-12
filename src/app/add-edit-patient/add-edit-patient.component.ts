@@ -9,11 +9,14 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AddEditPatientComponent {
   patientId: string = '';
-  
+  title: string = 'Add Patient';
   constructor(private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
       this.patientId = params['patientId'];
       console.log("Patient ID: ",this.patientId);
+      if(this.patientId){
+        this.title = 'Edit Patient';
+      }
     });
   }
 }
