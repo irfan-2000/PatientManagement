@@ -46,6 +46,46 @@
             <i class="fas fa-user-injured mr-3"></i>
             <span *ngIf="isSidebarOpen">Patients</span>
           </a>
+          <div>
+            <a
+              href="#"
+              class="flex items-center justify-between p-2 text-gray-700 hover:bg-blue-50 rounded-lg"
+              [class.bg-blue-50]="activeMenu === 'departments'"
+              (click)="handleMenuClick('departments')"
+            >
+            <div class="flex items-center">
+              <i class="fas fa-building mr-3"></i>
+              <span *ngIf="isSidebarOpen">Departments</span>
+            </div>
+            <i *ngIf="isSidebarOpen" class="fas fa-chevron-down text-sm transition-transform"
+              [class.rotate-180]="openSubmenu === 'departments'"></i>
+          </a>
+          <!-- Submenu -->
+            <ul
+              class="pl-6 mt-2 space-y-2"
+              *ngIf="openSubmenu === 'departments'"
+              [class.hidden]="!isSidebarOpen"
+            >
+            <li>
+              <a href="#" [ngClass]="getNavClasses('cardiology')" (click)="handleSubmenuClick('cardiology')">
+                <i class="fas fa-stethoscope mr-3"></i>
+                <span *ngIf="isSidebarOpen">Cardiology</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" [ngClass]="getNavClasses('orthopedics')" (click)="handleSubmenuClick('orthopedics')">
+                <i class="fas fa-bone mr-3"></i>
+                <span *ngIf="isSidebarOpen">Orthopedics</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" [ngClass]="getNavClasses('neurology')" (click)="handleSubmenuClick('neurology')">
+                <i class="fas fa-brain mr-3"></i>
+                <span *ngIf="isSidebarOpen">Neurology</span>
+              </a>
+            </li>
+          </ul>
+        </div>
         </li>
 
         <!-- Appointments -->

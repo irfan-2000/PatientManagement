@@ -27,7 +27,7 @@ export class SidebarComponent
     {
       this.activeMenu = menu;
       this.openSubmenu =
-        menu === 'departments' || menu === 'reports' ? menu : null;
+        menu === 'departments' || menu === 'reports' || menu === 'patients' ? menu : null;
     }
   }
 
