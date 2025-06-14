@@ -42,7 +42,7 @@ params = params.append('PatientId',id);
 
 
 AddUpdateReports(formData: any) {
-  debugger
+   
   const token = localStorage.getItem('token');  
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`

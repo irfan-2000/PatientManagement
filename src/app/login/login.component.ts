@@ -92,7 +92,7 @@ export class LoginComponent {
       const response =this.docservice.CheckRememberMe( ).subscribe({
           next: (response: any) =>
           {
-            debugger
+             
             this.loginForm.patchValue({
               HospitalId: response.txtHospitalId,
               UserId: response.txtId,
