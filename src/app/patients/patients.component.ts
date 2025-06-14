@@ -4,6 +4,7 @@ import { PatientService } from '../patient.service';
 import { report } from 'process';
 import { from } from 'rxjs';
 import { Router } from '@angular/router';
+import { formatDate } from '@angular/common';
 
 
 @Component({
@@ -21,28 +22,12 @@ export class PatientsComponent {
   currentPatientDetails: any = null;
    ReportForm: FormGroup;
    PrescriptionForm: FormGroup;
+  IsShowReportForm: boolean = false;
+  IsShowPrescriptionForm: boolean = false;
 
 
-  patientReports = [
-    {
-      patientId: 'P001',
-      reportId: 'R001',
-      reportName: "Test report 1",
-      reportUrl: '/patients' 
-    },
-    {
-      patientId: 'P002',
-      reportId: 'R002',
-      reportName: "Test report 2",
-      reportUrl: '/patients' 
-    },
-    {
-      patientId: 'P003',
-      reportId: 'R003',
-      reportName: "Test report 3",
-      reportUrl: '/patients' 
-    },
-  ]
+PatientReportDetails:any = {}
+   
 
   searchPatient(event: any) {
     const searchTerm = event.target.value.toLowerCase();
@@ -63,6 +48,7 @@ export class PatientsComponent {
     this.activeTab = 'Patient Report Details';
     this.currentPatientIdForReportDetail = patient.patientId;
     this.currentPatientDetails = patient;
+    this.GetPatientreports();
   }
 
   navigateToAddEditPatient(patient: any) {
@@ -142,6 +128,7 @@ ShowPatient:Boolean= false
       reportDate: ['', Validators.required],
       prescriptionDate: ['', Validators.required],
       reportFile: ['', Validators.required],
+      viewreport:['']
 
     });
   }
@@ -157,10 +144,15 @@ ShowPatient:Boolean= false
     });
   }
 
-  toggleAddDiv() {
-    if(this.showAddDiv){
+  toggleAddDiv()
+   {
+    if(this.showAddDiv)
+      {
       this.showAddDiv = false;
       // clear and reset forms here
+      this.IsShowReportForm = true;
+      this.IsShowPrescriptionForm = true;
+    
       this.ReportForm.reset();
       this.PrescriptionForm.reset();
       this.reports.clear();
@@ -229,15 +221,30 @@ get reports(): FormArray
     }
   }
 
-
-   Submitreports(flag:any='InsertReport') 
+  
+   Submitreports(item:any = '',flag:any='InsertReport') 
    {
- 
-
+  
 
     const formData = new FormData();
     
-    formData.append('IsEditing', 'false');
+    
+    formData.append('PatientId', this.currentPatientDetails?.patientId || '');
+
+
+ 
+    if(this.reportid !=null && this.reportid != undefined  && this.reportid != '')
+    {
+    formData.append('reportid', this.reportid.toString());
+    formData.append('IsEditing','true');
+    formData.append('flag','UpdateReport');
+    
+    }
+    else
+    {
+      formData.append('IsEditing', 'false');
+     formData.append('flag','InsertReport');
+    }
 
     this.reports.controls.forEach((group, i) => {
       formData.append(`reports[${i}].reportName`, group.get('reportName')?.value);
@@ -517,8 +524,10 @@ GetPatientDetails(flag:any = 'GetPatients',Tab = 'Details')
           error: (error: any) => {
 
             console.log(error);
-            if (error.status === 401) {
-            } else if (error.status === 500 && error.error) {
+            if (error.status === 401) 
+              {
+            this.router.navigate(['']);
+              } else if (error.status === 500 && error.error) {
 
             } else {
               console.error('Unhandled API error:', error);
@@ -534,13 +543,84 @@ GetPatientDetails(flag:any = 'GetPatients',Tab = 'Details')
 
 
 
+GetPatientreports(flag:any = 'GetReportsByPatientId',Tab = 'ReportDetails')
+{
+let id =this.currentPatientDetails.patientId.toString();
+
+
+
+  try {
+    this.PatientService.GetPatientreports(flag ,Tab,id).subscribe({
+      next: (response: any) => {
+        if (response.status === 200) 
+          {
+             this.PatientReportDetails  = response.result;
+           
+        }
+      },
+      error: (error: any) => {
+
+        console.log(error);
+        if (error.status === 401) 
+          {
+        this.router.navigate(['']);
+          } else if (error.status === 500 && error.error) {
+
+        } else {
+          console.error('Unhandled API error:', error);
+        }
+      },
+    });
+  } catch (error: any) {
+    console.error('API error:', error);
+  }
+
+}
+
+
  
+EnableFileUpdate:boolean = false;
+reportid:any = null;
+reportPath:any = null;
+OnEditReport(item:any)
+{
+this.EnableFileUpdate = true;
+this.reportid = item.reportId;
+this.showAddDiv = true;
+this.IsShowReportForm = true;
+this.IsShowPrescriptionForm = false;
+this.ReportForm.reset();
+      this.PrescriptionForm.reset();
+      this.reports.clear();
+      this.prescriptions.clear();
+      this.adddynamicReport();
+this.reportPath = item.reportPath
+
+debugger
+  this.ReportForm.patchValue({
+   reports: [{
+  reportName: item.reportName,
+  reportType: item.reportType,
+  reportDescription: item.description,
+reportDate:   this.dateFormat(item.customDate.split(' ')[0],'yyyy-MM-dd') ,
+
+   
+}]
+ 
+  });    
+
+}
+
+ dateFormat(date: any, status: string) {
+  const [day, month, year] = date.split('-');
+  const myDate = new Date(+year, +month - 1, +day); // JS months are 0-indexed
+  return formatDate(myDate, status, 'en-US');
+}
+
 // addReport() {
 //   this.reports.push({ reportDate: '', prescriptionDate: '', reportFile: null });
 // }
- 
 
- 
 
  
 

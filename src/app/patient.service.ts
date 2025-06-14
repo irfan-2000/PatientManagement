@@ -55,4 +55,23 @@ AddUpdateReports(formData: any) {
 }
 
 
+GetPatientreports(flag: any,Tab:any, PatientId: any)
+{
+  let params = new HttpParams();
+  params = params.append('flag', flag);
+  params = params.append('Tab', Tab);
+  params = params.append('PatientId', PatientId);
+
+  const token = localStorage.getItem('token');  
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+    // Do NOT manually set 'Content-Type' when using FormData
+  });
+
+  return this.http.get<any>(`${this.baseurl}api/GetPatientsorReports`, {
+    params,headers: headers,
+    withCredentials: true
+  }); 
+}
+
 }
