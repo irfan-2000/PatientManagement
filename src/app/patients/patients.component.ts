@@ -121,6 +121,7 @@ ShowPatient:Boolean= false
 //--working code of report forms
  createReportGroup(): FormGroup
   {
+    console.log("createReportGroup");
     return this.fb.group({
       reportName: ['', Validators.required],
       reportType: [''],
@@ -135,6 +136,7 @@ ShowPatient:Boolean= false
 
   createPrescriptionGroup(): FormGroup
   {
+    console.log("createPrescriptionGroup");
     return this.fb.group({
       prescriptionName: ['', Validators.required],
       prescriptionType: [''],
@@ -148,7 +150,6 @@ ShowPatient:Boolean= false
    {
     if(this.showAddDiv)
       {
-      this.showAddDiv = false;
       // clear and reset forms here
       this.IsShowReportForm = true;
       this.IsShowPrescriptionForm = true;
@@ -159,9 +160,15 @@ ShowPatient:Boolean= false
       this.prescriptions.clear();
       this.adddynamicReport();
       this.adddynamicPrescription();
+      this.showAddDiv = false;
+
     }else{
       this.showAddDiv = true;
+      this.IsShowReportForm = true;
+
     }
+    console.log("toggleAddDiv",this.showAddDiv);
+
   }
 
  adddynamicReport() {

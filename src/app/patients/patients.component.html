@@ -83,7 +83,8 @@
 
         <div *ngIf="activeTab === 'Patient Report Details' && currentPatientIdForReportDetail">
           <div class="mb-4 flex flex-col">
-            <h2 class="text-lg font-semibold">{{currentPatientDetails.patientName}} ({{currentPatientDetails.age}}y {{currentPatientDetails.gender}})</h2>
+            <h2 class="text-lg font-semibold">{{currentPatientDetails.patientName}} ({{currentPatientDetails.age}}y
+              {{currentPatientDetails.gender}})</h2>
             <div class="mt-2 flex gap-2 flex-wrap">
               <!-- Need to replace the href with the actual link -->
               <a href="/patients"
@@ -116,7 +117,7 @@
           <div *ngIf="showAddDiv" class="space-y-3 mb-6">
 
             <!-- Dynamic report form -->
-            <div   *ngIf="IsShowReportForm"     class="bg-white p-4 mb-4 rounded-lg shadow-md border border-gray-400">
+            <div *ngIf="IsShowReportForm" class="bg-white p-4 mb-4 rounded-lg shadow-md border border-gray-400">
               <h2 class="text-lg font-semibold mb-2">Reports</h2>
 
               <form [formGroup]="ReportForm">
@@ -126,35 +127,36 @@
 
                     <div>
                       <label class="block text-sm text-gray-500 font-medium">Report name</label>
-                      <input type="text" formControlName="reportName" class="form-control border rounded-lg px-2 py-1" />
+                      <input type="text" formControlName="reportName"
+                        class="form-control border rounded-lg px-2 py-1" />
                     </div>
 
                     <div>
                       <label class="block text-sm text-gray-500 font-medium">Report Type</label>
-                      <input type="text" formControlName="reportType" placeholder="ex:Presecription or Test reportname" class="form-control border rounded-lg px-2 py-1" />
+                      <input type="text" formControlName="reportType" placeholder="ex:Presecription or Test reportname"
+                        class="form-control border rounded-lg px-2 py-1" />
                     </div>
 
                     <div>
                       <label class="block text-sm text-gray-500 font-medium"> Date</label>
-                      <input type="date" formControlName="reportDate" class="form-control border rounded-lg px-2 py-1" />
+                      <input type="date" formControlName="reportDate"
+                        class="form-control border rounded-lg px-2 py-1" />
                     </div>
-                    
+
                     <div>
                       <label class="block text-sm text-gray-500 font-medium">Description</label>
-                      <textarea type="textarea" rows="1" formControlName="reportDescription" class="form-control border rounded-lg px-2 py-1 resize-vertical"></textarea>
+                      <textarea type="textarea" rows="1" formControlName="reportDescription"
+                        class="form-control border rounded-lg px-2 py-1 resize-vertical"></textarea>
                     </div>
-                    
+
                     <div>
                       <label class="block text-sm text-gray-500 font-medium">Report File</label>
                       <input type="file" (change)="onFileChange($event, i)" formControlName="reportFile"
                         class="form-control border rounded-lg px-2 py-1" />
                     </div>
 
-                    <a
-                      [href]="reportPath" *ngIf="EnableFileUpdate"
-                      target="_blank"
-                      class="text-blue-600 hover:underline"
-                    >
+                    <a [href]="reportPath" *ngIf="EnableFileUpdate" target="_blank"
+                      class="text-blue-600 hover:underline">
                       View Report
                     </a>
 
@@ -166,17 +168,19 @@
                 </div>
 
                 <div class="my-2" *ngIf="!EnableFileUpdate">
-                  <button type="button" (click)="adddynamicReport()" class="text-blue-500 font-bold hover:text-blue-700"> 
+                  <button type="button" (click)="adddynamicReport()"
+                    class="text-blue-500 font-bold hover:text-blue-700">
                     <i class="fas fa-plus mr-2"></i>Add</button>
                 </div>
                 <div class="flex justify-end">
-                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 ml-auto" (click)="Submitreports()">Submit</button>
+                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 ml-auto"
+                    (click)="Submitreports()">Submit</button>
                 </div>
               </form>
             </div>
 
             <!-- Dynamic prescription form -->
-            <div    *ngIf="IsShowPrescriptionForm" class="bg-white p-4 mb-4 rounded-lg shadow-md border border-gray-400">
+            <!-- <div *ngIf="IsShowPrescriptionForm" class="bg-white p-4 mb-4 rounded-lg shadow-md border border-gray-400">
               <h2 class="text-lg font-semibold mb-2">Prescriptions</h2>
 
               <form [formGroup]="PrescriptionForm">
@@ -186,129 +190,125 @@
 
                     <div>
                       <label class="block text-sm text-gray-500 font-medium">Prescription name</label>
-                      <input type="text" formControlName="prescriptionName" class="form-control border rounded-lg px-2 py-1" />
+                      <input type="text" formControlName="prescriptionName"
+                        class="form-control border rounded-lg px-2 py-1" />
                     </div>
 
                     <div>
                       <label class="block text-sm text-gray-500 font-medium">Prescription Type</label>
-                      <input type="text" formControlName="prescriptionType" class="form-control border rounded-lg px-2 py-1" />
+                      <input type="text" formControlName="prescriptionType"
+                        class="form-control border rounded-lg px-2 py-1" />
                     </div>
 
                     <div>
                       <label class="block text-sm text-gray-500 font-medium">Date</label>
-                      <input type="date" formControlName="prescriptionDate" class="form-control border rounded-lg px-2 py-1" />
-                    </div>
-                    
-                    <div>
-                      <label class="block text-sm text-gray-500 font-medium">Description</label>
-                      <textarea type="textarea" rows="1" formControlName="prescriptionDescription" class="form-control border rounded-lg px-2 py-1 resize-vertical"></textarea>
-                    </div>
-                    
-                    <div>
-                      <label class="block text-sm text-gray-500 font-medium">Prescription File</label>
-                      <input type="file" (change)="onFileChangePrescription($event, i)" formControlName="prescriptionFile"
+                      <input type="date" formControlName="prescriptionDate"
                         class="form-control border rounded-lg px-2 py-1" />
                     </div>
 
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Description</label>
+                      <textarea type="textarea" rows="1" formControlName="prescriptionDescription"
+                        class="form-control border rounded-lg px-2 py-1 resize-vertical"></textarea>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Prescription File</label>
+                      <input type="file" (change)="onFileChangePrescription($event, i)"
+                        formControlName="prescriptionFile" class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
                     <div *ngIf="i > 0" class="col-span-3 text-right">
-                      <button type="button" (click)="removePrescription(i)" class="text-red-600 font-bold">X Remove</button>
+                      <button type="button" (click)="removePrescription(i)" class="text-red-600 font-bold">X
+                        Remove</button>
                     </div>
                   </div>
                 </div>
 
                 <div class="my-2">
-                  <button type="button" (click)="adddynamicPrescription()" class="text-blue-500 font-bold hover:text-blue-700"> 
+                  <button type="button" (click)="adddynamicPrescription()"
+                    class="text-blue-500 font-bold hover:text-blue-700">
                     <i class="fas fa-plus mr-2"></i>Add</button>
                 </div>
                 <div class="flex justify-end">
-                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 ml-auto" (click)="Submitprescriptions()">Submit</button>
+                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 ml-auto"
+                    (click)="Submitprescriptions()">Submit</button>
                 </div>
               </form>
-            
-            </div>
+
+            </div> -->
 
           </div>
 
 
           <div class="card-body border border-dashed border-x-0 border-b-0">
-  <div class="overflow-x-auto max-h-[calc(100vh-335px)]">
-    <table class="min-w-full text-sm text-left text-gray-700">
-      <thead class="bg-gray-100 text-gray-700 uppercase text-xs sticky top-0 z-10">
-        <tr>
-          <th class="px-4 py-3">#</th>
-          <th class="px-4 py-3">Report Name</th>
-          <th class ="px-4 py-3">Report Type</th>
-           <th class="px-4 py-3">Description</th>
-          <th class="px-4 py-3">Upload</th>
-          <th class="px-4 py-3">View</th>
-          <th class="px-4 py-3">Created By</th>
-          <th class="px-4 py-3">Updated By</th>
-           <th class="px-4 py-3">Action</th>
-        </tr>
-      </thead>
+            <div class="overflow-x-auto max-h-[calc(100vh-335px)]">
+              <table class="min-w-full text-sm text-left text-gray-700">
+                <thead class="bg-gray-100 text-gray-700 uppercase text-xs sticky top-0 z-10">
+                  <tr>
+                    <th class="px-4 py-3">#</th>
+                    <th class="px-4 py-3">Report Name</th>
+                    <th class="px-4 py-3">Report Type</th>
+                    <th class="px-4 py-3">Description</th>
+                    <th class="px-4 py-3">Reason for visit</th>
+                    <th class="px-4 py-3">Upload</th>
+                    <th class="px-4 py-3">View</th>
+                    <th class="px-4 py-3">Created By</th>
+                    <th class="px-4 py-3">Updated By</th>
+                    <th class="px-4 py-3">Action</th>
+                  </tr>
+                </thead>
 
-      <tbody *ngFor="let group of PatientReportDetails">
-        <!-- Group Header -->
-        <tr>
-          <td colspan="7" class="bg-gray-50 font-semibold px-4 py-2 text-sm text-gray-800">
-            📅 Date: {{ group.date.split(' ')[0] }}
-          </td>
-        </tr>
+                <tbody *ngFor="let group of PatientReportDetails" >
+                  <!-- Group Header -->
+                  <tr>
+                    <td colspan="7" class="bg-gray-50 font-semibold px-4 py-2 text-sm text-gray-800">
+                      Date: {{ group.date.split(' ')[0] }}
+                    </td>
+                  </tr>
 
-        <!-- Reports Rows -->
-        <tr *ngFor="let report of group.patientReport; let i = index" class="hover:bg-gray-50 transition">
-          <td class="px-4 py-2">{{ i + 1 }}</td>
-          <td class="px-4 py-2">{{ report.reportName }}</td>
-          <td class="px-4 py-2">{{report.reportType}}</td>
- 
-            <td class="px-4 py-2">
-            <textarea rows="1" class="w-full px-3 py-2 border rounded-lg text-sm resize-none"
-              [value]="report.description" readonly></textarea>
+                  <!-- Reports Rows -->
+                  <tr *ngFor="let report of group.patientReport; let i = index" class="hover:bg-gray-50 transition">
+                    <td class="px-4 py-2">{{ i + 1 }}</td>
+                    <td class="px-4 py-2">{{ report.reportName }}</td>
+                    <td class="px-4 py-2">{{report.reportType}}</td>
 
-          <td class="px-4 py-2">
-            <input
-              type="file"
-              [disabled]="!EnableFileUpdate"
-              class="block w-full text-sm text-gray-600
+                    <td class="px-4 py-2" title="{{report.description}}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      {{report.description}}
+                    </td>
+                    <td>
+                      <!-- Reason for visit -->
+                    </td>
+
+                    <td class="px-4 py-2">
+                      <label for="reportFileUpdate" class="cursor-pointer bg-blue-100 px-3 py-1 rounded-md text-blue-600 hover:text-blue-700 flex items-center justify-center flex-wrap gap-2">
+                        <i class="fas fa-file-upload"></i> Upload
+                      </label>
+                      <input type="file" [disabled]="!EnableFileUpdate" class="block w-full text-sm text-gray-600
                      file:mr-3 file:py-1 file:px-3
                      file:rounded-md file:border-0
                      file:bg-blue-100 file:text-blue-700
-                     hover:file:bg-blue-200"
-            />
-          </td>
-          <td class="px-4 py-2">
-            <a
-              [href]="report.reportPath"
-              target="_blank"
-              class="text-blue-600 hover:underline"
-            >
-              View Report
-            </a>
-          </td>
-          <td class="px-4 py-2">{{ report.createdBy || '—' }}</td>
-          <td class="px-4 py-2">{{ report.updatedBy || '—' }}</td>
-          <td class="px-4 py-2">
-          
-            <button  
-              (click)="OnEditReport(report)"
-              class="text-white bg-yellow-500 hover:bg-yellow-600 text-xs px-3 py-1 rounded"
-            >
-              Edit
-            </button>
-
-           
-
-             <i
-              class="fas fa-trash text-red-500 cursor-pointer hover:text-red-700 transition"
-               
-            ></i>
-          </td>
-          
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+                     hover:file:bg-blue-200 hidden" id="reportFileUpdate" />
+                    </td>
+                    <td class="px-4 py-2">
+                      <a [href]="report.reportPath" target="_blank" class="text-blue-600 hover:underline">
+                        View Report
+                      </a>
+                    </td>
+                    <td class="px-4 py-2">{{ report.createdBy || '—' }}</td>
+                    <td class="px-4 py-2">{{ report.updatedBy || '—' }}</td>
+                    <td class="px-4 py-2 space-x-2">
+                      <button (click)="OnEditReport(report)"
+                        class="text-white bg-yellow-500 hover:bg-yellow-600 text-xs px-3 py-1 rounded">
+                        <i class="fas fa-pencil"></i>
+                      </button>
+                      <i class="fas fa-trash text-red-500 cursor-pointer hover:text-red-700 transition"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
 
 
