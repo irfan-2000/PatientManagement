@@ -55,11 +55,13 @@ PatientReportDetails:any = {}
     console.log("Navigating to add edit patient: ",patient);
     if(patient.patientId){
       // Navigate as edit
-      this.router.navigate(['/addeditpatient'], { queryParams: { patientId: patient.patientId } });
+      this.router.navigate(['/addeditpatient'], { queryParams: { patientId: patient.patientId ,IsEditing: true} });
     }else{
       // Navigate as add
       this.router.navigate(['/addeditpatient']);
     }
+
+    
   }
 
   patientForm: FormGroup;
@@ -222,7 +224,7 @@ get reports(): FormArray
   }
 
   
-   Submitreports(item:any = '',flag:any='InsertReport') 
+   Submitreports(item:any = '') 
    {
   
 
@@ -231,7 +233,8 @@ get reports(): FormArray
     
     formData.append('PatientId', this.currentPatientDetails?.patientId || '');
 
-
+ 
+ 
  
     if(this.reportid !=null && this.reportid != undefined  && this.reportid != '')
     {
@@ -596,7 +599,7 @@ this.ReportForm.reset();
       this.adddynamicReport();
 this.reportPath = item.reportPath
 
-debugger
+ 
   this.ReportForm.patchValue({
    reports: [{
   reportName: item.reportName,

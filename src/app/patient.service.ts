@@ -18,12 +18,13 @@ export class PatientService {
 
 constructor(private http:HttpClient ,private router :Router ){}
 
-GetPatientDetails(flag :any,Tab:any)
+GetPatientDetails(flag :any,Tab:any,id='')
 {
 
 let params = new HttpParams();
 params = params.append('flag', flag);
 params = params.append('Tab', Tab);
+params = params.append('PatientId',id);
 
     const token = localStorage.getItem('token');  
     const headers = new HttpHeaders({
@@ -73,5 +74,23 @@ GetPatientreports(flag: any,Tab:any, PatientId: any)
     withCredentials: true
   }); 
 }
+
+
+AddUpdatePatient(formData: any) 
+{
+  const token = localStorage.getItem('token');  
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+    // Do NOT manually set 'Content-Type' when using FormData
+  });
+
+  return this.http.post<any>(`${this.baseurl}api/AddUpdatePatients`, formData, {
+    headers: headers,
+    withCredentials: true
+  });
+
+}
+ 
+
 
 }
