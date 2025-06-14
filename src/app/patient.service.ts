@@ -41,7 +41,7 @@ params = params.append('Tab', Tab);
 
 
 AddUpdateReports(formData: any) {
-  debugger
+   
   const token = localStorage.getItem('token');  
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`

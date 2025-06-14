@@ -275,10 +275,11 @@ get reports(): FormArray
     try {
         this.PatientService.AddUpdateReports(formData ).subscribe({
           next: (response: any) => {
+            this.toggleAddDiv();
             if (response.status === 200) 
               {
                  this.patients = response.result;
-            
+                 this.toggleAddDiv();
             }
           },
           error: (error: any) => {
@@ -603,7 +604,7 @@ this.ReportForm.reset();
       this.adddynamicReport();
 this.reportPath = item.reportPath
 
-debugger
+ 
   this.ReportForm.patchValue({
    reports: [{
   reportName: item.reportName,

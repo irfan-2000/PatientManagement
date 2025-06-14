@@ -435,7 +435,7 @@ UpdateDoctorDetails(doctorform :any)
       }
     } catch (error: any) 
 {
-  debugger;
+   ;
 
   if (error.status === 401 || error?.error?.status === 401) {
     this.router.navigate(['/login']);
