@@ -27,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.component';
+import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.com
     AppointmentsComponent,
     LoaderComponent,
     AddEditPatientComponent,
+    DoctorSessionsComponent,
   ],
   imports: [
     BrowserModule,
