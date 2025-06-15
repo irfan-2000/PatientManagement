@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../patient.service';
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-patient',
@@ -15,6 +16,8 @@ export class AddEditPatientComponent {
   patientForm: FormGroup;
   bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
+IsEditing: boolean = false;
+errorMessages:any = {}
   constructor(private route: ActivatedRoute, private fb: FormBuilder, private PatientService: PatientService, private router: Router) {
     this.patientForm = this.fb.group({
       patientId: [''],
@@ -30,23 +33,28 @@ export class AddEditPatientComponent {
       allergies: this.fb.array([]),
       pastMedicalHistory: this.fb.array([]),
       surgicalHistory: this.fb.array([]),
-      doctorAssigned: ['', Validators.required],
-      visitDateTime: ['', Validators.required],
+      doctorAssigned: [''],
+      visitDateTime: [''],
       reasonForVisit: [''],
       diagnosis: [''],
       prescribedMedications: this.fb.array([]),
       labTestReports: this.fb.array([]),
       treatmentPlan: [''],
-      followUpDate: ['']
+      followUpDate: [''],
+      description:['']
     });
 
     this.route.queryParams.subscribe(params => {
       this.patientId = params['patientId'];
       console.log("Patient ID: ", this.patientId);
-      if (this.patientId) {
+      this.IsEditing= params["IsEditing"];
+      if (this.patientId) 
+        {
         // Populate data Here
         this.title = 'Edit Patient';
+
       }
+      this.GetPatientDetails();
     });
   }
 
@@ -110,4 +118,160 @@ export class AddEditPatientComponent {
   removeLabTestReport(index: number) {
     this.labTestReports.removeAt(index);
   }
+
+
+
+AddUpdatePatient()
+{ 
+    const formData = new FormData();
+    
+
+    if(this.ValidateFormFields() == 0)
+    {
+
+    }
+
+
+    if(this.IsEditing)
+      {
+        formData.append('PatientId', this.patientId);
+        formData.append('flag','UpdatePatient');
+
+      }else
+      {
+        formData.append('PatientId', '');
+         formData.append('flag','InsertPatient');
+      }
+
+
+      formData.append('PatientName', this.patientForm.get('fullName')?.value);
+      formData.append('Dob', this.patientForm.get('dob')?.value); 
+      formData.append('Gender', this.patientForm.get('gender')?.value);
+      formData.append('PhoneNumber', this.patientForm.get('phone')?.value);
+      formData.append('Email', this.patientForm.get('email')?.value || '');
+      formData.append('Address', this.patientForm.get('address')?.value) ;
+      formData.append('Height', this.patientForm.get('height')?.value || '');
+      formData.append('Weight', this.patientForm.get('weight')?.value || '');
+      formData.append('Description', this.patientForm.get('description')?.value || '');
+      formData.append('BloodGroup', this.patientForm.get('bloodGroup')?.value || '');
+
+      
+    try {
+        this.PatientService.AddUpdatePatient (formData ).subscribe({
+          next: (response: any) => {
+            if (response.status === 200) 
+           {
+                            
+            }
+          },
+          error: (error: any) => {
+
+            console.log(error);
+            if (error.status === 401) {
+            } else if (error.status === 500 && error.error) {
+
+            } else {
+              console.error('Unhandled API error:', error);
+            }
+          },
+        });
+      } catch (error: any) {
+        console.error('API error:', error);
+      }
+ 
+}
+
+
+
+ValidateFormFields()
+{
+  let errorcode = 0;
+
+  if (this.patientForm.get('fullName')?.value == '' || this.patientForm.get('fullName')?.value == undefined || this.patientForm.get('fullName')?.value == null) {
+      this.errorMessages["fullName"] = '  Name is required!';
+      errorcode = 1;
+    }
+
+if (this.patientForm.get('dob')?.value == '' || this.patientForm.get('dob')?.value == undefined || this.patientForm.get('dob')?.value == null) {
+      this.errorMessages["dob"] = 'Date of Birth is required!';
+      errorcode = 1;
+    }
+ 
+if(this.patientForm.get('gender')?.value == '' || this.patientForm.get('gender')?.value == undefined || this.patientForm.get('gender')?.value == null) {
+      this.errorMessages['gender'] = 'Gender is required!';
+      errorcode = 1;
+}
+
+
+if(this.patientForm.get('phone')?.value == '' || this.patientForm.get('phone')?.value == undefined || this.patientForm.get('phone')?.value == null) {
+      this.errorMessages['phone'] = 'Phone number is required!';
+      errorcode = 1;
+    }
+
+
+    if(this.patientForm.get('bloodGroup')?.value == '' || this.patientForm.get('bloodGroup')?.value == undefined || this.patientForm.get('bloodGroup')?.value == null) {
+      this.errorMessages['bloodGroup'] = 'Blood Group is required!';
+      errorcode = 1;
+    }
+
+
+    return errorcode;
+
+}
+
+
+ PatientDetails:any ={}
+
+GetPatientDetails(flag:any = 'GetPatientById',Tab = 'Details')
+{
+  
+  this.patientId
+      try {
+        this.PatientService.GetPatientDetails(flag ,Tab,this.patientId).subscribe({
+          next: (response: any) => {
+            if (response.status === 200) 
+              {
+                debugger
+                this.PatientDetails = response.result[0];
+                //this.showToast('success', 'Doctor details updated successfully!', 'Success');
+             // window.location.reload();
+
+                this.patientForm.patchValue({
+                fullName :this.PatientDetails.patientName,
+                dob:this.PatientDetails.dob,
+                gender:this.PatientDetails.gender,
+                bloodGroup:this.PatientDetails.bloodGroup,
+                phone:this.PatientDetails.phoneNumber,
+                email:this.PatientDetails.email,
+                address:this.PatientDetails.address,
+                height:this.PatientDetails.height,
+                weight:this.PatientDetails.weight,
+                description:this.PatientDetails.description
+
+
+
+
+                });
+
+            }
+          },
+          error: (error: any) => {
+
+            console.log(error);
+            if (error.status === 401) 
+              {
+            this.router.navigate(['']);
+              } else if (error.status === 500 && error.error) {
+
+            } else {
+              console.error('Unhandled API error:', error);
+            }
+          },
+        });
+      } catch (error: any) {
+        console.error('API error:', error);
+      }
+ 
+
+}
 }
