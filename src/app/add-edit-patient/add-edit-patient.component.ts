@@ -129,7 +129,6 @@ AddUpdatePatient()
     if(this.ValidateFormFields() == 0)
     {
 
-    }
 
 
     if(this.IsEditing)
@@ -178,6 +177,8 @@ AddUpdatePatient()
       } catch (error: any) {
         console.error('API error:', error);
       }
+    }
+
  
 }
 
@@ -231,7 +232,7 @@ GetPatientDetails(flag:any = 'GetPatientById',Tab = 'Details')
           next: (response: any) => {
             if (response.status === 200) 
               {
-                debugger
+                 
                 this.PatientDetails = response.result[0];
                 //this.showToast('success', 'Doctor details updated successfully!', 'Success');
              // window.location.reload();

@@ -30,8 +30,15 @@ PatientReportDetails:any = {}
    
 
   searchPatient(event: any) {
-    const searchTerm = event.target.value.toLowerCase();
+    const searchTerm = event.target.value?.trim().toLowerCase();
     console.log("Searching patient: ",searchTerm);
+
+    if(!searchTerm){
+      this.patients = this.AllPatients
+    }else{
+      this.patients = this.AllPatients.filter((pat:any)=> (pat.patientName.toLowerCase().includes(searchTerm) || pat.patientId.includes(searchTerm)) )
+      console.log("reh patients", this.patients)
+    }
   }
   hideAddDiv() {
     this.showAddDiv = false;
@@ -72,6 +79,7 @@ PatientReportDetails:any = {}
   minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 
   patients  :any= {}
+  AllPatients:any = {}
 
 ShowPatient:Boolean= false
 
@@ -282,6 +290,7 @@ get reports(): FormArray
             if (response.status === 200) 
               {
                  this.patients = response.result;
+                 this.AllPatients = response.result
                  this.toggleAddDiv();
             }
           },
@@ -528,6 +537,7 @@ GetPatientDetails(flag:any = 'GetPatients',Tab = 'Details')
             if (response.status === 200) 
               {
                  this.patients = response.result;
+                 this.AllPatients = response.result;
               //this.showToast('success', 'Doctor details updated successfully!', 'Success');
              // window.location.reload();
             }
