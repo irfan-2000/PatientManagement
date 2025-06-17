@@ -68,36 +68,46 @@ this.sessionForm.get('slotDuration')?.valueChanges.subscribe(() => {
     return this.sessionForm.get('sessions') as FormArray;
   }
 
-  addSession(): void 
-  {
-    let startHour = 0, startMinute = 0;
-  if (this.sessions.length > 0) {
-    const prev = this.sessions.at(this.sessions.length - 1).value;
-    startHour = prev.endHour;
-    startMinute = prev.endMinute;
-  }
-  const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
-  let endHour = startHour;
-  let endMinute = startMinute + slotDuration;
-  if (endMinute >= 60) {
-    endHour += Math.floor(endMinute / 60);
-    endMinute = endMinute % 60;
-  }
-     this.sessions.push(this.fb.group({
-      startHour: [0, Validators.required],
-      startMinute: [0, Validators.required],
+  addSession(): void {
+    const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
+    
+    // Calculate start time for new session
+    let startHour = 0;
+    let startMinute = 0;
+    
+    if (this.sessions.length > 0) {
+      const prevSession = this.sessions.at(this.sessions.length - 1);
+      const prevEndHour = prevSession.get('endHour')?.value;
+      console.log("reh prevEndHour", prevEndHour);
+      // Set start time to be the next hour after previous session's end time
+      startHour = +prevEndHour + 1;
+      startMinute = 0;
+      
+      // Handle case where end hour is 23
+      if (startHour > 23) {
+        startHour = 0;
+      }
+    }
+    console.log("reh startHour", startHour);
+    
+    this.sessions.push(this.fb.group({
+      startHour: [startHour, Validators.required],
+      startMinute: [startMinute, Validators.required],
       endHour: [0, Validators.required],
-      endMinute: [0, Validators.required]
+      endMinute: [30, Validators.required]
     }));
-  //this.updateSessionTimings(); // Auto-adjust timings
 
+    // Update timings for the new session
+    this.updateSessionTimings(this.sessions.length - 1);
   }
 
-  removeSession(index: number): void 
-  {
-    debugger
-
+  removeSession(index: number): void {
     this.sessions.removeAt(index);
+    
+    // Update timings for all subsequent sessions
+    if (index < this.sessions.length) {
+      this.updateSessionTimings(index);
+    }
   }
 
   toggleAllDays(event: any): void
@@ -184,78 +194,134 @@ debugger
 
 
 
- getAvailableStartHours(i: number,request:any): number[] 
- {
+ getAvailableStartHours(i: number, request: string): number[] {
+  if (request === 'Start') {
+    if (i === 0) {
+      return this.hours;
+    }
 
-  let testform = this.sessions.at(i);
-  let Starthour = testform.get('startHour')?.value;
-  let Endhour =  testform.get('endHour')?.value;
-   
- 
- 
-if(request == 'Start' && i == 0)
-{
-   
+    // Get the previous session's end hour
+    const prevSession = this.sessions.at(i - 1);
+    const prevEndHour = prevSession.get('endHour')?.value;
+    
+    // If previous session ends at 23, return empty array
+    if (prevEndHour >= 23) {
+      return [];
+    }
+    
+    // Return only hours that are after the previous session's end hour
+    return this.hours.filter(hour => hour > prevEndHour);
+  }
 
-console.log('test end',testform.get('endHour')?.value);
-  
-  return this.hours
+  if (request === 'End') {
+    if(i==0)
+    {
+      return this.hours;
+    }
+    const currentSession = this.sessions.at(i);
+    const startHour = currentSession.get('startHour')?.value;
+    
+    // If no start hour is selected or no hours are available after start hour
+    if (!startHour || startHour >= 23) {
+      return [];
+    }
 
+    // Check if this is the last session and if previous session ends at 23
+    if (i > 0) {
+      const prevSession = this.sessions.at(i - 1);
+      const prevEndHour = prevSession.get('endHour')?.value;
+      if (prevEndHour >= 23) {
+        return [];
+      }
+    }
+    
+    return this.hours.filter(hour => hour >= startHour);
+  }
+
+  return this.hours;
 }
- if (request == 'Start' && i != 0)
-{
-   
-  let prevcontrol = this.sessions.at(i-1);
-  let prevhour =  prevcontrol.get('endHour')?.value;
- 
-  return this.hours.filter(hour => hour >= prevhour)
+
+// Add a new method to get available minutes
+getAvailableMinutes(i: number, request: string): number[] {
+  const currentSession = this.sessions.at(i);
+  const startHour = currentSession.get('startHour')?.value;
+  const endHour = currentSession.get('endHour')?.value;
+  const startMinute = currentSession.get('startMinute')?.value;
+
+  // If no hours are available, return empty array for minutes
+  if (request === 'Start' && i > 0) {
+    const prevSession = this.sessions.at(i - 1);
+    const prevEndHour = prevSession.get('endHour')?.value;
+    if (prevEndHour >= 23) {
+      return [];
+    }
+  }
+
+  if (request === 'End') {
+    if(i==0)
+    {
+      return this.minutes;
+    }
+    // If start hour is not selected or is 23, return empty array
+    if (!startHour || startHour >= 23) {
+      return [];
+    }
+
+    // Check if this is the last session and if previous session ends at 23
+    if (i > 0) {
+      const prevSession = this.sessions.at(i - 1);
+      const prevEndHour = prevSession.get('endHour')?.value;
+      if (prevEndHour >= 23) {
+        return [];
+      }
+    }
+    
+    // If start hour equals end hour, only show minutes after start minute
+    if (startHour === endHour) {
+      return this.minutes.filter(minute => minute > startMinute);
+    }
+  }
+
+  return this.minutes;
 }
 
-if(request == 'End')
-{
-   
-  return this.hours.filter(hour => hour >= Number(Starthour));
-}
- 
-
- return this.hours
-   
-}
-
-
-
-updateSessionTimings(i: number)
- {
-  return;
+updateSessionTimings(i: number): void {
   const session = this.sessions.at(i);
   const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
 
+  // Update current session's end time based on start time and slot duration
   const startHour = +session.get('startHour')?.value;
   const startMinute = +session.get('startMinute')?.value;
 
   const startTime = new Date(0, 0, 0, startHour, startMinute);
   const endTime = new Date(startTime.getTime() + slotDuration * 60000);
 
-  // Update current session's end time
   session.patchValue({
     endHour: endTime.getHours(),
     endMinute: endTime.getMinutes()
   });
 
-  // If there's a next session, update its start time to be 1 hour after previous session END
-  if (i + 1 < this.sessions.length) {
-    const nextSession = this.sessions.at(i + 1);
-    const nextStartTime = new Date(endTime.getTime() + 60 * 60000); // Add 1 hour (60 minutes)
-
+  // Update subsequent sessions
+  for (let j = i + 1; j < this.sessions.length; j++) {
+    const nextSession = this.sessions.at(j);
+    const prevSession = this.sessions.at(j - 1);
+    
+    // Set start time to be 1 minute after previous session's end time
+    const prevEndHour = prevSession.get('endHour')?.value;
+    const prevEndMinute = prevSession.get('endMinute')?.value;
+    
     nextSession.patchValue({
-      startHour: nextStartTime.getHours(),
-      startMinute: nextStartTime.getMinutes()
+      startHour: prevEndHour,
+      startMinute: prevEndMinute
     });
 
-    const nextEndTime = new Date(nextStartTime.getTime() + slotDuration * 60000);
+    // Update end time based on new start time
+    const newStartTime = new Date(0, 0, 0, prevEndHour, prevEndMinute);
+    const newEndTime = new Date(newStartTime.getTime() + slotDuration * 60000);
+    
     nextSession.patchValue({
-      endHour: nextEndTime.getHours(),
-      endMinute: nextEndTime.getMinutes()
+      endHour: newEndTime.getHours(),
+      endMinute: newEndTime.getMinutes()
     });
   }
 }
