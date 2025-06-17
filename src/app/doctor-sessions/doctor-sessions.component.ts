@@ -214,12 +214,11 @@ debugger
   }
 
   if (request === 'End') {
-    if(i==0)
-    {
-      return this.hours;
-    }
     const currentSession = this.sessions.at(i);
     const startHour = currentSession.get('startHour')?.value;
+    if(i==0){
+      return this.hours.filter(hour => hour >= startHour);
+    }
     
     // If no start hour is selected or no hours are available after start hour
     if (!startHour || startHour >= 23) {
