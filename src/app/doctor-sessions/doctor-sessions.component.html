@@ -93,14 +93,14 @@
         <div>
           <label>Start Time</label>
           <div class="flex gap-2 mb-2">
-           <select formControlName="startHour" class="border px-2 py-1 rounded" (change)="updateSessionTimings(i)">
-  <option *ngFor="let hour of getAvailableStartHours(i)" [value]="hour">
-    {{ hour.toString().padStart(2, '0') }}
-  </option>
-</select>
+           <select formControlName="startHour" class="border px-2 py-1 rounded" >
+            <option *ngFor="let hour of getAvailableStartHours(i,'Start')" [value]="hour">
+              {{ hour.toString().padStart(2, '0') }}
+            </option>
+          </select>
 
 
-            <select formControlName="startMinute" class="border px-2 py-1 rounded"  (change)="updateSessionTimings(i)">
+            <select formControlName="startMinute" class="border px-2 py-1 rounded"  >
               <option *ngFor="let minute of minutes" [value]="minute">{{ minute.toString().padStart(2, '0') }}</option>
             </select>
           
@@ -111,10 +111,10 @@
         <div>
           <label>End Time</label>
           <div class="flex gap-2 mb-2">
-            <select formControlName="endHour" class="border px-2 py-1 rounded" (change)="updateSessionTimings(i)">
-              <option *ngFor="let hour of hours" [value]="hour">{{ hour.toString().padStart(2, '0') }}</option>
+            <select formControlName="endHour" class="border px-2 py-1 rounded" >
+              <option *ngFor="let hour of getAvailableStartHours(i,'End')" [value]="hour">{{ hour.toString().padStart(2, '0') }}</option>
             </select>
-            <select formControlName="endMinute" class="border px-2 py-1 rounded" (change)="updateSessionTimings(i)">
+            <select formControlName="endMinute" class="border px-2 py-1 rounded">
               <option *ngFor="let minute of minutes" [value]="minute">{{ minute.toString().padStart(2, '0') }}</option>
             </select>
           </div>

@@ -3,6 +3,7 @@ import { DoctorServiceService } from '../doctor-service.service';
 import { Router } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { json } from 'stream/consumers';
+import { findIndex } from 'rxjs';
 
 @Component({
   selector: 'app-doctor-sessions',
@@ -16,15 +17,17 @@ export class DoctorSessionsComponent {
 doctors: any[] = [];
 
 doctorSessions:any = {}
-  daysOfTheWeek = ['','Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   selectedDays: number[] = [];
 
   hours = Array.from({ length: 24 }, (_, i) => i); // 0 - 23
-minutes = Array.from({length: 12}, (_, i) => i *5);
+
+  minutes = Array.from({length: 12}, (_, i) => i *5);
    constructor( private doctorservice: DoctorServiceService, private router: Router, private fb: FormBuilder) 
 {
   this.GetAllDoctors();
 this.GetDoctorSessions();
+
   this.sessionForm = this.fb.group({
     doctorId: [null, Validators.required],
     slotDuration: [30, Validators.required],
@@ -109,10 +112,15 @@ this.sessionForm.get('slotDuration')?.valueChanges.subscribe(() => {
   onDaySelect(event: any): void 
   {
     const value = parseInt(event.target.value, 10);
-    if (event.target.checked) {
+    if (event.target.checked)
+    {
       if (!this.selectedDays.includes(value)) this.selectedDays.push(value);
-    } else {
-      this.selectedDays = this.selectedDays.filter(d => d !== value);
+    } 
+    else 
+    {
+     this.selectedDays = this.selectedDays.filter(d => d !== value);
+    
+     
     }
   }
 
@@ -174,21 +182,51 @@ debugger
  
   } 
 
- getAvailableStartHours(i: number): number[] 
+
+
+ getAvailableStartHours(i: number,request:any): number[] 
  {
-  if (i === 0) return this.hours;
 
-  const prevSession = this.sessions.at(i - 1);
-  const prevEndHour = +prevSession.get('endHour')?.value;
+  let testform = this.sessions.at(i);
+  let Starthour = testform.get('startHour')?.value;
+  let Endhour =  testform.get('endHour')?.value;
+   
+ 
+ 
+if(request == 'Start' && i == 0)
+{
+   
 
-  const minStartHour = prevEndHour + 1;
+console.log('test end',testform.get('endHour')?.value);
+  
+  return this.hours
 
-  return this.hours.filter(hour => hour >= minStartHour);
+}
+ if (request == 'Start' && i != 0)
+{
+   
+  let prevcontrol = this.sessions.at(i-1);
+  let prevhour =  prevcontrol.get('endHour')?.value;
+ 
+  return this.hours.filter(hour => hour >= prevhour)
+}
+
+if(request == 'End')
+{
+   
+  return this.hours.filter(hour => hour >= Number(Starthour));
+}
+ 
+
+ return this.hours
+   
 }
 
 
 
-updateSessionTimings(i: number) {
+updateSessionTimings(i: number)
+ {
+  return;
   const session = this.sessions.at(i);
   const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
 
