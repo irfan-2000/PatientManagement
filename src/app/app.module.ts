@@ -29,6 +29,9 @@ import { MatInputModule } from '@angular/material/input';
 import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.component';
 import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.component';
 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,7 +59,7 @@ import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.compo
       positionClass: 'toast-bottom-left',
       progressBar: true,
     }), // ToastrModule to show toasts
-
+    MatAutocompleteModule
   ],
   providers: [
     provideClientHydration(withEventReplay())
