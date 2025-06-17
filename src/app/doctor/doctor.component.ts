@@ -293,10 +293,14 @@ export class DoctorComponent {
         });
 
 
-      } catch (error: any) {
+      } catch (error: any) 
+      {
         console.error('Error:', error);
         this.ErrorMsg = "An error occurred while submitting the form.";
       }
+
+
+
     } else {
       this.ErrorMsg = "Please fill all the fields.";
 

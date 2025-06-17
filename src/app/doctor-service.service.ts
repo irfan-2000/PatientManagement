@@ -197,7 +197,36 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
 
 
 
+ 
+ DoctorSessions(formData: any) {
+  const token = localStorage.getItem('token');  
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctorSession`, formData, {
+    headers: headers,
+    withCredentials: true
+  });
+} 
 
+
+
+GetDoctorSessions()
+{
+ const token = localStorage.getItem('token');  
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  
+  return this.http.get<any>(`${this.baseurl}api/GetDoctorSessions`, {
+    headers: headers,
+    withCredentials: true
+  }); 
+}
 
 
 
