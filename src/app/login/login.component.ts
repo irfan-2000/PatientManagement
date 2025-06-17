@@ -56,7 +56,7 @@ export class LoginComponent {
       {
       // localStorage.setItem('Token',response.token); 
        localStorage.setItem('HospitalId',response.hosiptalId);
-       this.router.navigate(['/doctor']);
+       this.router.navigate(['/doctors  ']);
       }
       if(response.status == 401)
         {
