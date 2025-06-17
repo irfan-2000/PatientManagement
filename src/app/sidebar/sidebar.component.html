@@ -42,26 +42,66 @@
 
         <!-- Patients -->
         <li>
-          <a href="/patients" [ngClass]="getNavClasses('patients')" (click)="handleMenuClick('patients')">
+          <!-- <button [ngClass]="getNavClasses('patients')" (click)="handleMenuClick('patients')">
             <i class="fas fa-user-injured mr-3"></i>
             <span *ngIf="isSidebarOpen">Patients</span>
-          </a>
+          </button> -->
+          <div>
+            <button
+              class="flex items-center justify-between p-2 text-gray-700 hover:bg-blue-50 rounded-lg w-full"
+              [class.bg-blue-50]="activeMenu === 'patients'"
+              (click)="handleMenuClick('patients')"
+            >
+            <div class="flex items-center">
+              <i class="fas fa-user-injured mr-3"></i>
+              <span *ngIf="isSidebarOpen">Patients</span>
+            </div>
+            <i *ngIf="isSidebarOpen" class="fas fa-chevron-down text-sm transition-transform"
+              [class.rotate-180]="openSubmenu === 'patients'"></i>
+          </button>
+          <!-- Submenu -->
+            <ul
+              class="pl-6 mt-2 space-y-2"
+              *ngIf="openSubmenu === 'patients'"
+              [class.hidden]="!isSidebarOpen"
+            >
+            <li>
+              <a href="/patients" [ngClass]="getNavClasses('patientDetails')" (click)="handleSubmenuClick('patientDetails')">
+                <i class="fas fa-user mr-3"></i>
+                <span *ngIf="isSidebarOpen">Patient Details</span>
+              </a>
+            </li>
+            <li>
+              <a href="/addeditpatient" [ngClass]="getNavClasses('addpatient')" (click)="handleSubmenuClick('addpatient')">
+                <i class="fas fa-plus mr-3"></i>
+                <span *ngIf="isSidebarOpen">Add Patient</span>
+              </a>
+            </li>
+          </ul>
+        </div>
         </li>
 
         <!-- Appointments -->
         <li>
-          <a href="#" [ngClass]="getNavClasses('appointments')" (click)="handleMenuClick('appointments')">
+          <a href="/appointments" [ngClass]="getNavClasses('appointments')" (click)="handleMenuClick('appointments')">
             <i class="fas fa-calendar-check mr-3"></i>
             <span *ngIf="isSidebarOpen">Appointments</span>
+          </a>
+        </li>
+
+        <!-- Services -->
+        <li>
+          <a href="/services" [ngClass]="getNavClasses('services')" (click)="handleMenuClick('services')">
+            <i class="fa-solid fa-server mr-3"></i>
+            <span *ngIf="isSidebarOpen">Services</span>
           </a>
         </li>
 
         <!-- Departments -->
         <li>
           <div>
-              <a
-                href="#"
-                class="flex items-center justify-between p-2 text-gray-700 hover:bg-blue-50 rounded-lg"
+              <button
+                class="flex items-center justify-between p-2 text-gray-700 hover:bg-blue-50 rounded-lg w-full"
                 [class.bg-blue-50]="activeMenu === 'departments'"
                 (click)="handleMenuClick('departments')"
               >
@@ -71,7 +111,7 @@
               </div>
               <i *ngIf="isSidebarOpen" class="fas fa-chevron-down text-sm transition-transform"
                 [class.rotate-180]="openSubmenu === 'departments'"></i>
-            </a>
+            </button>
             <!-- Submenu -->
               <ul
                 class="pl-6 mt-2 space-y-2"
@@ -103,9 +143,8 @@
         <!-- Reports -->
         <li>
           <div>
-              <a
-                href="#"
-                class="flex items-center justify-between p-2 text-gray-700 hover:bg-blue-50 rounded-lg"
+              <button
+                class="flex items-center justify-between p-2 text-gray-700 hover:bg-blue-50 rounded-lg w-full"
                 [class.bg-blue-50]="activeMenu === 'reports'"
                 (click)="handleMenuClick('reports')"
               >
@@ -117,7 +156,7 @@
                   class="fas fa-chevron-down text-sm transition-transform"
                   [class.rotate-180]="openSubmenu === 'reports'"
                 ></i>
-            </a>
+            </button>
             <!-- Submenu -->
               <ul
                 class="pl-6 mt-2 space-y-2"

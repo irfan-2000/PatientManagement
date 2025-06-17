@@ -19,11 +19,14 @@ export class LoginComponent {
     
  constructor(private docservice:DoctorServiceService,private router: Router)
  {
+  this.CheckRememberMe();
  this.loginForm = new FormGroup(
   {
-    UserId:new FormControl('',[Validators.required]),
+    UserId:new FormControl('Receptionist_IRFAN_HOSP0001001',[Validators.required]),
     Password:new FormControl('',[Validators.required]),
-    Role:new FormControl('',[Validators.required])
+    Role:new FormControl('',[Validators.required]),
+    HospitalId:new FormControl( '',[Validators.required]),
+    RememberMe:new FormControl(false)
   });
 
  }
@@ -37,7 +40,7 @@ export class LoginComponent {
     }
     if(this.loginForm.get('UserId')?.invalid)
     {
-      this.ValidationErrorMsg ="enter user id";      return;
+      this.ValidationErrorMsg ="UserId is required";     return;
     }
     if(this.loginForm.get('Password')?.invalid)
     {
@@ -47,16 +50,24 @@ export class LoginComponent {
     {
       this.ValidationErrorMsg ="Select the Role";      return;
     }
-    
+    if(this.loginForm.get('HospitalId')?.invalid)
+    {
+      this.ValidationErrorMsg ="Enter the Hospital";      return;
+    }
+
+
+    localStorage.clear();
     try
     {
       const response = await this.docservice.ValidateLogin(this.loginForm);
 
       if(response.status === 200)
       {
+
       // localStorage.setItem('Token',response.token); 
-       localStorage.setItem('HospitalId',response.hosiptalId);
-       this.router.navigate(['/doctors  ']);
+       localStorage.setItem('HospitalId',response.hospitalId);
+       localStorage.setItem('token',response.token);
+       this.router.navigate(['doctors']);
       }
       if(response.status == 401)
         {
@@ -72,5 +83,39 @@ export class LoginComponent {
     
   }
 
+
+
+
+  CheckRememberMe()
+  {
+     try {
+      const response =this.docservice.CheckRememberMe( ).subscribe({
+          next: (response: any) =>
+          {
+             
+            this.loginForm.patchValue({
+              HospitalId: response.txtHospitalId,
+              UserId: response.txtId,
+              Password: response.txtPassword,
+              Role: response.txtRole,
+              RememberMe: response.ChkRememberMe
+
+
+            });
+
+            
+          },
+          error: (error: any) =>
+           { 
+          },
+        });
+    } catch (error: any) 
+    {
+      console.error('API error');
+      return error;
+    
+    
+    }
+  }
 
 }

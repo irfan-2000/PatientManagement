@@ -9,7 +9,10 @@ import { Component, ElementRef, HostListener, inject, Input, Output, EventEmitte
 export class MultiselectComponent
 {
   @Input() items: any[] = [];
- 
+
+  @Input() DoctorSpecializations:any[] = []; // Array of items to select from
+
+  @Input() Selecteditems : any[] = []; // Array of selected item IDs 
 
   @Input() placeholder: String = "Select items";
   
@@ -24,25 +27,38 @@ export class MultiselectComponent
   filteredItems: any[] = [];
   selectedItems: string[] = [];
   
-  ngOnInit() 
-  { 
-     debugger
-this.filteredItems = [...this.items];
-if(this.isEditing)
-{ 
-  this.items.forEach((item) =>
-     {
-    this.toggleItem(item);
-  });
+constructor()
+{
+  
   
 } 
 
+
+ 
+
+  ngOnInit() 
+  { 
+     
+this.selectedItems = [...this.Selecteditems]; // Initialize selected items from input
+  this.filteredItems = [...this.items]; // Initialize filtered items from input
+  this.isDropdownVisible = false; // Dropdown is initially hidden
+ 
+   
+  if(this.isEditing)
+{ 
+  this.filteredItems = [...this.DoctorSpecializations]
+  this.filteredItems.forEach((item) =>
+     {
+    this.toggleItem(item);
+  });
+}
 
 }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) 
   {
+     
     if (!this.elementRef.nativeElement.contains(event.target))
        {
       this.isDropdownVisible = false;
@@ -63,6 +79,7 @@ if(this.isEditing)
 
   toggleItem(item: any) 
   {
+     
     const itemName = item.name;
     const index = this.selectedItems.indexOf(itemName);
     

@@ -1,0 +1,145 @@
+<!-- patient.component.html -->
+<div class="flex">
+
+    <app-sidebar></app-sidebar>
+    <div class="container mx-auto px-4 py-4 h-dvh overflow-y-auto">
+        <div class="flex justify-end mb-4">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded" (click)="openAddEditSession()">Add Session</button>
+        </div>
+        <table class="w-full  border-collapse min-w-max">
+            <thead class="sticky top-0">
+                <tr class="bg-blue-600 text-white">
+                    <th class="px-4 py-2 text-left text-sm font-semibold">ID</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold">Doctor</th>
+                     <th class="px-4 py-2 text-left text-sm font-semibold">Day</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold">Time Slot (mins)</th>
+                    <th class="px-4 py-2 text-left text-sm font-semibold">Sessions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100" *ngIf="doctorSessions?.length">
+                <tr *ngFor="let doctor of doctorSessions">
+
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ doctor.doctorId }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ doctor.doctorName }} - {{doctor.email}}</td>
+                            <td class="px-4 py-3 text-sm text-gray-800 flex items-center gap-1 flex-wrap">
+                    <span *ngFor="let day of (doctor.dayId?.split(',') || [])"
+                            class="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs">
+                         {{ daysOfTheWeek[+day] }}
+                    </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-800">{{ doctor.timeSlot }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800">
+                        <div   class="mb-1">
+                            <div class="font-medium">{{ doctor.startTime }} -{{ doctor.endTime }}</div>
+                            <div class="text-xs text-gray-500"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Popup form -->
+        <div *ngIf="showAdddEditSessionPopup"
+            class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+           
+           <form [formGroup]="sessionForm"   class="p-4 pb-0 border rounded-lg shadow-md bg-white max-w-3xl mx-auto space-y-6 max-h-[90vh] overflow-y-auto">
+
+  <h2 class="text-lg font-bold">Add Session</h2>
+
+  <!-- Doctor Dropdown -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Doctor Name</label>
+    <select formControlName="doctorId" class="w-full border px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <option value="" disabled>Select a doctor</option>
+      <option *ngFor="let doctor of doctors" [value]="doctor.doctorId">
+        {{ doctor.doctorId }} - {{ doctor.firstName }} {{ doctor.lName }} - {{ doctor.email }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Slot Duration -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Time Slot (minutes)</label>
+    <select formControlName="slotDuration" class="border px-2 py-1 rounded w-full">
+      <option *ngFor="let minute of minutes" [value]="minute">
+        {{ minute.toString().padStart(2, '0') }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Available Days -->
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">Available Days</label>
+    <div class="flex flex-wrap gap-4">
+      <label class="flex items-center gap-1">
+        <input type="checkbox" value="all" (change)="toggleAllDays($event)" class="form-checkbox" /> All
+      </label>
+      <label *ngFor="let day of daysOfTheWeek; let i = index" class="flex items-center gap-1">
+        <input type="checkbox" [value]="i" (change)="onDaySelect($event)" class="form-checkbox" [checked]="selectedDays.includes(i)" />
+        {{ day }}
+      </label>
+    </div>
+  </div>
+
+  <!-- Sessions -->
+  <div formArrayName="sessions">
+    <label class="block text-sm font-medium text-gray-700 mb-2">Sessions</label>
+
+    <div  *ngFor="let session of sessions.controls; let i = index" [formGroupName]="i" class="border p-3 rounded mb-3">
+      <div class="font-semibold mb-2">Session {{ i + 1 }}</div>
+
+      <div class="flex items-center gap-2 justify-between">
+        <!-- Start Time -->
+        <div>
+          <label>Start Time</label>
+          <div class="flex gap-2 mb-2">
+           <select formControlName="startHour" class="border px-2 py-1 rounded" (change)="updateSessionTimings(i)">
+  <option *ngFor="let hour of getAvailableStartHours(i)" [value]="hour">
+    {{ hour.toString().padStart(2, '0') }}
+  </option>
+</select>
+
+
+            <select formControlName="startMinute" class="border px-2 py-1 rounded"  (change)="updateSessionTimings(i)">
+              <option *ngFor="let minute of minutes" [value]="minute">{{ minute.toString().padStart(2, '0') }}</option>
+            </select>
+          
+        </div>
+        </div>
+
+        <!-- End Time -->
+        <div>
+          <label>End Time</label>
+          <div class="flex gap-2 mb-2">
+            <select formControlName="endHour" class="border px-2 py-1 rounded" (change)="updateSessionTimings(i)">
+              <option *ngFor="let hour of hours" [value]="hour">{{ hour.toString().padStart(2, '0') }}</option>
+            </select>
+            <select formControlName="endMinute" class="border px-2 py-1 rounded" (change)="updateSessionTimings(i)">
+              <option *ngFor="let minute of minutes" [value]="minute">{{ minute.toString().padStart(2, '0') }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button class="text-red-500 text-sm" *ngIf="i>0" (click)="removeSession(i)">Remove</button>
+    </div>
+
+    <button type="button" class="text-blue-500 hover:text-blue-600" (click)="addSession()">+ Add Session</button>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex gap-2 justify-end sticky bottom-[-4px] bg-white p-4">
+    <button type="button" class="bg-red-500 text-white px-4 py-2 rounded" (click)="closeAddEditSession()">Close</button>
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded" (click)="submitForm()">Submit</button>
+  </div>
+</form>
+
+
+
+
+        </div>
+
+
+
+    </div>
+</div>

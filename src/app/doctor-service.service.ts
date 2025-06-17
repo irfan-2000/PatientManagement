@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { error } from 'console';
 import { json } from 'stream/consumers';
 import { environment } from './environments/environment';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,18 +17,21 @@ export class DoctorServiceService {
 
 
 
-constructor(private http:HttpClient  ){}
+constructor(private http:HttpClient ,private router :Router ){}
 
 ValidateLogin(logindata: any): Promise<any> 
 {
-  const { UserId, Password, Role } = logindata.value;
+  const { UserId, Password, Role,HospitalId,RememberMe } = logindata.value;
 
   const body = 
   {
     Id: UserId,
     Password: Password,
-    Role: Role
+    Role: Role,
+    HospitalId:HospitalId,
+    rememberMe: RememberMe
   };
+   
 
   // Set headers to send JSON
   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -42,26 +46,37 @@ ValidateLogin(logindata: any): Promise<any>
 }
 
 
-  AddUpdateDoctor(formData:any )
-  { 
+ AddUpdateDoctor(formData: any) {
+  const token = localStorage.getItem('token');  
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
   
-   return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctor`, formData, {
-     withCredentials: true
-   });
-  }
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctor`, formData, {
+    headers: headers,
+    withCredentials: true
+  });
+}
+
 
  
-
 GetDoctorDetails(doctorId: number): Promise<any> 
 { 
+  const token = localStorage.getItem('token'); // Or wherever you store your token
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
   const params = new HttpParams()
     .set('DoctorId', doctorId.toString())
-    .set('HospitalId', this.HospitalId);
-
+ 
   return this.http.get<any>(`${this.baseurl}api/GetDoctorDetails`, 
   { 
-    params, // ✅ Send as query params
-    withCredentials: true // ✅ Ensures cookies (JWT) are sent
+    params,
+    headers,
+    withCredentials: true  
   })
   .toPromise()
   .then(response => response)
@@ -70,6 +85,7 @@ GetDoctorDetails(doctorId: number): Promise<any>
       return error;
   });
 }
+
 
 
 GetAllDoctors(): Promise<any> 
@@ -78,15 +94,24 @@ GetAllDoctors(): Promise<any>
 if(!this.HospitalId)
   alert("Unkown Error Occured Please Login again");
 
+const token = localStorage.getItem('token'); // Or wherever you store your token
 
-const params = new HttpParams().set('HospitalId',this.HospitalId);
-  return this.http.get<any>(`${this.baseurl}api/GetAllDoctors`, 
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+
+   return this.http.get<any>(`${this.baseurl}api/GetAllDoctors`, 
   { 
-    params,
+      headers,withCredentials: true,
   })
   .toPromise()
   .then(response => response)
   .catch(error => {
+    if (error.status == 401) 
+        {
+        this.router.navigate(['/login']);
+        return;
+      }
       console.error("API Error", error);
       return error;
   });
@@ -95,16 +120,24 @@ const params = new HttpParams().set('HospitalId',this.HospitalId);
 
 GetSpecialization(): Promise<any> 
 {  
-if(!this.HospitalId)
-  alert("Unkown Error Occured Please Login again");
-const params = new HttpParams().set('HospitalId',this.HospitalId);
-  return this.http.get<any>(`${this.baseurl}api/GetSpecialization`, 
+const token = localStorage.getItem('token'); // Or wherever you store your token
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+  
+   return this.http.get<any>(`${this.baseurl}api/GetSpecialization`, 
   { 
-    params,
+     headers,withCredentials: true,
   })
   .toPromise()
   .then(response => response)
   .catch(error => {
+    if (error.status == 401) 
+        {
+        this.router.navigate(['']);
+        return;
+      }
       console.error("API Error", error);
       return error;
   });
@@ -116,14 +149,20 @@ const params = new HttpParams().set('HospitalId',this.HospitalId);
 
 DeleteDoctor(Id:Number): Promise<any> 
 {  
-if(!this.HospitalId)
-  alert("Unkown Error Occured Please Login again");
+
+const token = localStorage.getItem('token'); // Or wherever you store your token
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+ 
+
 const params = new HttpParams()
-.set('HospitalId',this.HospitalId)
+ 
 .set('DoctorId',Id.toString());
   return this.http.delete<any>(`${this.baseurl}DeleteDoctor`, 
   { 
-    params,
+    params,headers
   })
   .toPromise()
   .then(response => response)
@@ -142,12 +181,52 @@ const params = new HttpParams()
 
 
 
+CheckRememberMe() 
+{ 
+
+return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
+{
+  headers:new HttpHeaders({'Content-Type':'application/json'}),
+  withCredentials:true
+  
+});
+  
+  
+  }
 
 
 
 
+ 
+ DoctorSessions(formData: any) {
+  const token = localStorage.getItem('token');  
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctorSession`, formData, {
+    headers: headers,
+    withCredentials: true
+  });
+} 
 
 
+
+GetDoctorSessions()
+{
+ const token = localStorage.getItem('token');  
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  
+  return this.http.get<any>(`${this.baseurl}api/GetDoctorSessions`, {
+    headers: headers,
+    withCredentials: true
+  }); 
+}
 
 
 

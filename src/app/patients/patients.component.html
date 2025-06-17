@@ -1,329 +1,477 @@
-<div class="flex">
-
-<app-sidebar></app-sidebar>
-
 <!-- patient.component.html -->
-<<<<<<< HEAD
-<div class="container mx-auto px-4 py-4">
-
-  <div class="overflow-x-auto">
-    <table class="min-w-full border-collapse border border-gray-200">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-4 py-2 border">Patient ID</th>
-          <th class="px-4 py-2 border">Full Name</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">DOB</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Gender</th>
-          <th class="px-4 py-2 border">Phone</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Registration Date & Time</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Last visited Date</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Treated By Doctor</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Treatment Plan</th>
-          <th class="px-4 py-2 border hidden lg:table-cell">Test Reports of last vist</th>
-
-          
-
-          <th class="px-4 py-2 border">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let patient of patients" class="hover:bg-gray-50 transition-colors">
-          <td class="px-4 py-2 border">{{ patient.patientId }}</td>
-          <td class="px-4 py-2 border">{{ patient.fullName }}</td>
-          <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.dob }}</td>
-          <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.gender }}</td>
-          <td class="px-4 py-2 border">{{ patient.phone }}</td>
-          <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.visitDateTime | date:'short' }}</td>
-          <td class="px-4 py-2 border"></td>
-          
-          <td class="px-4 py-2 border"></td>
-          <td class="px-4 py-2 border">p1,p2,p3</td>
-
-          <td class="px-4 py-2 border"> test reports Integrated pdf,last visit prescription</td>
-          <td class="px-4 py-2 border text-center">
-            <button class="text-blue-500 hover:text-blue-700 mx-1" (click)="openPatientModal(patient, 'Updates')">
-              <i class="fas fa-edit"></i> <!-- Edit Icon -->
-            </button>
-          
-            <!-- Patient History Button -->
-            <button class="text-green-500 hover:text-green-700 mx-1" (click)="openPatientModal(patient,'History')">
-              <i class="fas fa-history"></i> <!-- History Icon -->
-            </button>
-          
-            <!-- Delete Button -->
-            <button class="text-red-500 hover:text-red-700 mx-1" (click)="openPatientModal(patient.patientId,'Delete')">
-              <i class="fas fa-trash"></i> <!-- Delete Icon -->
-            </button>
-          </td>
-          
-
-
-
-
-
-        </tr>
-      </tbody>
-
-
-
-    </table>
-  </div>
-=======
 <div class="flex">
 
   <app-sidebar></app-sidebar>
-  <div class="container mx-auto px-4 py-4">
+  <div class="container mx-auto px-4 py-4 h-dvh overflow-y-auto">
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full border-collapse border border-gray-200">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-4 py-2 border">Patient ID</th>
-            <th class="px-4 py-2 border">Full Name</th>
-            <th class="px-4 py-2 border hidden lg:table-cell">DOB</th>
-            <th class="px-4 py-2 border hidden lg:table-cell">Gender</th>
-            <th class="px-4 py-2 border">Phone</th>
-            <th class="px-4 py-2 border hidden lg:table-cell">Visit Date & Time</th>
-            <th class="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let patient of patients" class="hover:bg-gray-50 transition-colors">
-            <td class="px-4 py-2 border">{{ patient.patientId }}</td>
-            <td class="px-4 py-2 border">{{ patient.fullName }}</td>
-            <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.dob }}</td>
-            <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.gender }}</td>
-            <td class="px-4 py-2 border">{{ patient.phone }}</td>
-            <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.visitDateTime | date:'short' }}</td>
-            <td class="px-4 py-2 border text-center">
-              <button class="text-blue-500 hover:text-blue-700" (click)="openPatientModal(patient,'Updates')">
-                <i class="fas fa-eye"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
->>>>>>> f3a3ef2a477993e22d576bfa061fde1bbe43c259
+    <div class="flex flex-col h-full">
+      <!-- Tab Headers -->
+      <div class="flex border-b border-gray-200">
+        <button *ngFor="let tab of tabs" (click)="activeTab = tab; currentPatientIdForReportDetail = '';" [ngClass]="{
+              'border-b-2 border-blue-500 text-blue-600': activeTab === tab,
+              'text-gray-500 hover:text-gray-700': activeTab !== tab
+            }" class="px-6 py-3 text-sm font-medium focus:outline-none">
+          {{ tab }}
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="flex-1 p-4 bg-white">
+        <!-- Patient details Tab -->
+        <div *ngIf="activeTab === 'Patient Details'">
+          <div class="mb-4 flex justify-between items-center flex-wrap gap-2">
+            <h2 class="text-lg font-semibold">Patient Details</h2>
+            <div class="border rounded-lg pl-3">
+              <i class="fas fa-search text-gray-500"></i>
+              <input type="text" class="px-3 py-2 focus:outline-none" placeholder="Search by Id or Name"
+                (keyup.enter)="searchPatient($event)">
+            </div>
+            <!-- <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i> Dummy button 1
+              </button> -->
+          </div>
+
+          <!-- Table would go here -->
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full border-collapse border border-gray-200">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th class="px-4 py-2 border">Patient ID</th>
+                  <th class="px-4 py-2 border">Full Name</th>
+                  <th class="px-4 py-2 border hidden lg:table-cell">DOB</th>
+                  <th class="px-4 py-2 border hidden lg:table-cell">Age</th>
+                  <th class="px-4 py-2 border hidden lg:table-cell">Gender</th>
+                  <th class="px-4 py-2 border">Phone</th>
+                  <th class="px-4 py-2 border hidden lg:table-cell">Visit Date & Time</th>
 
 
-    <div *ngIf="ShowPatient" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        <div class="flex justify-between items-center p-4 border-b">
-          <h3 class="text-lg font-semibold text-gray-800">
-            {{ isAdding ? 'Add New Patient' : 'Edit Patient Details' }}
-          </h3>
-          <button (click)="cancel()" class="text-gray-400 hover:text-gray-600 transition-colors">
-            <i class="fas fa-times fa-lg"></i>
-          </button>
+                  <th class="px-4 py-2 border hidden lg:table-cell">Created By</th>
+
+                  <th class="px-4 py-2 border hidden lg:table-cell">Created On</th>
+
+                  <th class="px-4 py-2 border">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let patient of patients" class="hover:bg-gray-50 transition-colors">
+                  <td class="px-4 py-2 border">{{ patient.patientId }}</td>
+                  <td class="px-4 py-2 border">{{ patient.patientName }}</td>
+                  <td class="px-4 py-2 border">{{ patient.dob }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.age }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.gender }}</td>
+                  <td class="px-4 py-2 border">{{ patient.phoneNumber }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.lastVisitDate  }}</td>
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.createdBy }}</td>
+
+                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.createdOn  }}</td>
+
+
+                  <td class="px-4 py-2 border text-center flex gap-2">
+                    <button class="text-green-500 hover:text-green-700" (click)="navigateToReportDetails(patient)">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="text-blue-500 hover:text-blue-700" (click)="navigateToAddEditPatient(patient)">
+                      <i class="fas fa-pencil"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-4">
-          <form [formGroup]="patientForm" class="formClass grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Personal Information -->
-            <h2
-              class="font-semibold col-span-full  text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
-              Personal Information
-            </h2>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input type="text" formControlName="fullName" class="w-full px-3 py-2 border rounded-lg text-sm">
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-              <input type="date" formControlName="dob" class="w-full px-3 py-2 border rounded-lg text-sm">
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-              <select formControlName="gender" class="w-full px-3 py-2 border rounded-lg text-sm">
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
-              <select formControlName="bloodGroup" class="w-full px-3 py-2 border rounded-lg text-sm">
-                <option value="">Select Blood Group</option>
-                <option *ngFor="let bg of bloodGroups" [value]="bg">{{bg}}</option>
-              </select>
-            </div>
-
-            <h2
-              class="font-semibold col-span-full  mt-8 text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
-              Contact Details </h2>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input type="tel" formControlName="phone" class="w-full px-3 py-2 border rounded-lg text-sm">
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input type="email" formControlName="email" class="w-full px-3 py-2 border rounded-lg text-sm">
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-              <textarea rows="1" formControlName="address"
-                class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
-            </div>
-
-
-            <!-- Medical Information -->
-            <h2
-              class="font-semibold col-span-full  mt-8 text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
-              Health Information </h2>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Height (cm)</label>
-              <input type="number" formControlName="height" class="w-full px-3 py-2 border rounded-lg text-sm">
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
-              <input type="number" formControlName="weight" class="w-full px-3 py-2 border rounded-lg text-sm">
-            </div>
-            <div formArrayName="allergies">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Allergies</label>
-              <div *ngFor="let allergy of allergies.controls; let i = index" class="flex gap-2 mb-2">
-                <input [formControlName]="i" class="flex-1 px-3 py-2 border rounded-lg text-sm">
-                <button type="button" (click)="removeAllergy(i)" class="text-red-500 hover:text-red-700">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-              <button type="button" (click)="addAllergy()" class="text-sm text-blue-500 hover:text-blue-700">
-                + Add Allergy
+        <div *ngIf="activeTab === 'Patient Report Details' && currentPatientIdForReportDetail">
+          <div class="mb-4 flex flex-col">
+            <h2 class="text-lg font-semibold">{{currentPatientDetails.patientName}} ({{currentPatientDetails.age}}y
+              {{currentPatientDetails.gender}})</h2>
+            <div class="mt-2 flex gap-2 flex-wrap">
+              <!-- Need to replace the href with the actual link -->
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                Recent Prescription
+              </a>
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                Recent Test Reports
+              </a>
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                All Prescriptions
+              </a>
+              <a href="/patients"
+                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                All Test Reports
+              </a>
+              <button (click)="toggleAddDiv()"
+                class="border border-blue-600 bg-blue-600 text-white px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                <i class="fas mr-2" [ngClass]="{'fa-plus': !showAddDiv, 'fa-minus': showAddDiv}"></i> {{!showAddDiv?'Add New':'Close'}}
               </button>
             </div>
+            <!-- <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i> Dummy button 2
+              </button> -->
+          </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Past Medical History</label>
-              <!-- Similar structure for medical history -->
-              <div *ngFor="let allergy of pastMedicalHistory.controls; let i = index" class="flex gap-2 mb-2">
-                <input [formControlName]="i" class="flex-1 px-3 py-2 border rounded-lg text-sm">
-                <button type="button" (click)="removeMedicalHistory(i)" class="text-red-500 hover:text-red-700">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-              <button type="button" (click)="addMedicalHistory()" class="text-sm text-blue-500 hover:text-blue-700">
-                + Add History
-              </button>
+          <!-- Table would go here -->
+          <div *ngIf="showAddDiv" class="space-y-3 mb-6">
+
+            <!-- Dynamic report form -->
+            <div *ngIf="IsShowReportForm" class="bg-white p-4 mb-4 rounded-lg shadow-md border border-gray-400">
+              <h2 class="text-lg font-semibold mb-2">Reports</h2>
+
+              <form [formGroup]="ReportForm">
+                <div formArrayName="reports">
+                  <div *ngFor="let report of reports.controls; let i = index" [formGroupName]="i"
+                    class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 border p-3 rounded-lg shadow">
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Report name</label>
+                      <input type="text" formControlName="reportName"
+                        class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Report Type</label>
+                      <input type="text" formControlName="reportType" placeholder="ex:Presecription or Test reportname"
+                        class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium"> Date</label>
+                      <input type="date" formControlName="reportDate"
+                        class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Description</label>
+                      <textarea type="textarea" rows="1" formControlName="reportDescription"
+                        class="form-control border rounded-lg px-2 py-1 resize-vertical"></textarea>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Report File</label>
+                      <input type="file" (change)="onFileChange($event, i)" formControlName="reportFile"
+                        class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
+                    <a [href]="reportPath" *ngIf="EnableFileUpdate" target="_blank"
+                      class="text-blue-600 hover:underline">
+                      View Report
+                    </a>
+
+
+                    <div *ngIf="i > 0" class="col-span-3 text-right">
+                      <button type="button" (click)="removeReport(i)" class="text-red-600 font-bold">X Remove</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="my-2" *ngIf="!EnableFileUpdate">
+                  <button type="button" (click)="adddynamicReport()"
+                    class="text-blue-500 font-bold hover:text-blue-700">
+                    <i class="fas fa-plus mr-2"></i>Add</button>
+                </div>
+                <div class="flex justify-end">
+                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 ml-auto"
+                    (click)="Submitreports()">Submit</button>
+                </div>
+              </form>
             </div>
 
-            <!-- Visit Information -->
-            <h2
-              class="font-semibold col-span-full  mt-8 text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
-              Appointment Details </h2>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Visit Date & Time</label>
-              <input type="datetime-local" formControlName="visitDateTime"
-                class="w-full px-3 py-2 border rounded-lg text-sm">
-            </div>
+            <!-- Dynamic prescription form -->
+            <!-- <div *ngIf="IsShowPrescriptionForm" class="bg-white p-4 mb-4 rounded-lg shadow-md border border-gray-400">
+              <h2 class="text-lg font-semibold mb-2">Prescriptions</h2>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
-              <textarea rows="1" formControlName="reasonForVisit"
-                class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
-            </div>
+              <form [formGroup]="PrescriptionForm">
+                <div formArrayName="prescriptions">
+                  <div *ngFor="let prescription of prescriptions.controls; let i = index" [formGroupName]="i"
+                    class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 border p-3 rounded-lg shadow">
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Diagnosis</label>
-              <textarea rows="1" formControlName="diagnosis"
-                class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
-            </div>
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Prescription name</label>
+                      <input type="text" formControlName="prescriptionName"
+                        class="form-control border rounded-lg px-2 py-1" />
+                    </div>
 
-            <!-- Form Actions -->
-            <div class="col-span-full flex justify-end space-x-3 mt-4">
-              <button type="button" (click)="cancel()" class="px-4 py-2 text-gray-600 hover:text-gray-800">
-                Cancel
-              </button>
-              <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg">
-                {{ isAdding ? 'Add Patient' : 'Save Changes' }}
-              </button>
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Prescription Type</label>
+                      <input type="text" formControlName="prescriptionType"
+                        class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Date</label>
+                      <input type="date" formControlName="prescriptionDate"
+                        class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Description</label>
+                      <textarea type="textarea" rows="1" formControlName="prescriptionDescription"
+                        class="form-control border rounded-lg px-2 py-1 resize-vertical"></textarea>
+                    </div>
+
+                    <div>
+                      <label class="block text-sm text-gray-500 font-medium">Prescription File</label>
+                      <input type="file" (change)="onFileChangePrescription($event, i)"
+                        formControlName="prescriptionFile" class="form-control border rounded-lg px-2 py-1" />
+                    </div>
+
+                    <div *ngIf="i > 0" class="col-span-3 text-right">
+                      <button type="button" (click)="removePrescription(i)" class="text-red-600 font-bold">X
+                        Remove</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="my-2">
+                  <button type="button" (click)="adddynamicPrescription()"
+                    class="text-blue-500 font-bold hover:text-blue-700">
+                    <i class="fas fa-plus mr-2"></i>Add</button>
+                </div>
+                <div class="flex justify-end">
+                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 ml-auto"
+                    (click)="Submitprescriptions()">Submit</button>
+                </div>
+              </form>
+
+            </div> -->
+
+          </div>
+
+
+          <div class="card-body border border-dashed border-x-0 border-b-0">
+            <div class="overflow-x-auto max-h-[calc(100vh-335px)]">
+              <table class="min-w-full text-sm text-left text-gray-700">
+                <thead class="bg-gray-100 text-gray-700 uppercase text-xs sticky top-0 z-10">
+                  <tr>
+                    <th class="px-4 py-3">#</th>
+                    <th class="px-4 py-3">Report Name</th>
+                    <th class="px-4 py-3">Report Type</th>
+                    <th class="px-4 py-3">Description</th>
+                    <th class="px-4 py-3">Reason for visit</th>
+                    <th class="px-4 py-3">Upload</th>
+                    <th class="px-4 py-3">View</th>
+                    <th class="px-4 py-3">Created By</th>
+                    <th class="px-4 py-3">Updated By</th>
+                    <th class="px-4 py-3">Action</th>
+                  </tr>
+                </thead>
+
+                <tbody *ngFor="let group of PatientReportDetails" >
+                  <!-- Group Header -->
+                  <tr>
+                    <td colspan="7" class="bg-gray-50 font-semibold px-4 py-2 text-sm text-gray-800">
+                      Date: {{ group.date.split(' ')[0] }}
+                    </td>
+                  </tr>
+
+                  <!-- Reports Rows -->
+                  <tr *ngFor="let report of group.patientReport; let i = index" class="hover:bg-gray-50 transition">
+                    <td class="px-4 py-2">{{ i + 1 }}</td>
+                    <td class="px-4 py-2">{{ report.reportName }}</td>
+                    <td class="px-4 py-2">{{report.reportType}}</td>
+
+                    <td class="px-4 py-2" title="{{report.description}}" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      {{report.description}}
+                    </td>
+                    <td>
+                      <!-- Reason for visit -->
+                    </td>
+
+                    <td class="px-4 py-2">
+                      <label for="reportFileUpdate" class="cursor-pointer bg-blue-100 px-3 py-1 rounded-md text-blue-600 hover:text-blue-700 flex items-center justify-center flex-wrap gap-2">
+                        <i class="fas fa-file-upload"></i> Upload
+                      </label>
+                      <input type="file" [disabled]="!EnableFileUpdate" class="block w-full text-sm text-gray-600
+                     file:mr-3 file:py-1 file:px-3
+                     file:rounded-md file:border-0
+                     file:bg-blue-100 file:text-blue-700
+                     hover:file:bg-blue-200 hidden" id="reportFileUpdate" />
+                    </td>
+                    <td class="px-4 py-2">
+                      <a [href]="report.reportPath" target="_blank" class="text-blue-600 hover:underline">
+                        View Report
+                      </a>
+                    </td>
+                    <td class="px-4 py-2">{{ report.createdBy || '—' }}</td>
+                    <td class="px-4 py-2">{{ report.updatedBy || '—' }}</td>
+                    <td class="px-4 py-2 space-x-2">
+                      <button (click)="OnEditReport(report)"
+                        class="text-white bg-yellow-500 hover:bg-yellow-600 text-xs px-3 py-1 rounded">
+                        <i class="fas fa-pencil"></i>
+                      </button>
+                      <i class="fas fa-trash text-red-500 cursor-pointer hover:text-red-700 transition"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-          </form>
+          </div>
+        </div>
+        <!-- Content when condition is false -->
+        <div *ngIf="activeTab === 'Patient Report Details' && !currentPatientIdForReportDetail"
+          class="p-4 text-gray-500 text-center">
+          No patient selected. <br> Please go to the Patient Details tab and click on the eye button to view the
+          respective patient report details.
+        </div>
+
+
+        <div *ngIf="activeTab === 'Extra Tab'">
+          <div class="mb-4 flex justify-between items-center">
+            <h2 class="text-lg font-semibold">Extra Tab</h2>
+            <!-- <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
+                <i class="fas fa-plus mr-2"></i> Dummy button 3
+              </button> -->
+          </div>
+
+          <!-- Table would go here -->
         </div>
       </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
   </div>
-<<<<<<< HEAD
 
-<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" *ngIf="isHistoryPopupOpen">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl relative">
-    
-    <!-- Close Button -->
-    <button (click)="CloseHispotyPopup()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">✖</button>
-    
-    <!-- Header Section (Patient Info) -->
-    <h2 class="text-xl font-semibold mb-2">Patient Visit History</h2>
-    <div class="bg-gray-100 p-3 rounded mb-4">
-      <p><strong>Name:</strong> {{ patient.name }}</p>
-      <p><strong>Allergies:</strong> {{ patient.allergies || 'None' }}</p>
-      <p><strong>Past Diseases:</strong> {{ patient.pastDiseases || 'No history' }}</p>
-    </div>
-    
-    <!-- Visit History Table -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full bg-white border border-gray-300">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="py-2 px-4 border">Date</th>
-            <th class="py-2 px-4 border">Doctor</th>
-            <th class="py-2 px-4 border">Diagnosis</th>
-            <th class="py-2 px-4 border">Treatment Plan</th>
-            
-            <th class="py-2 px-4 border">Test Report</th>
-            <th class="py-2 px-4 border">Prescription</th>
-            <th class="py-2 px-4 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let visit of patient.visits" class="text-center">
-            <td class="py-2 px-4 border">{{ visit.date }}</td>
-            <td class="py-2 px-4 border">{{ visit.doctor }}</td>
-            <td class="py-2 px-4 border">{{ visit.diagnosis }}</td>
-            <td class="py-2 px-4 border">A,b,c,</td>
-            <td class="py-2 px-4 border">Blood,Sugar,Xray,abc,xyz</td>
-            <td class="py-2 px-4 border">Open</td>
-            
-            <td class="py-2 px-4 border">
-              <button (click)="viewDetails(visit)" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                View Details
+
+
+  <div *ngIf="ShowPatient" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div class="flex justify-between items-center p-4 border-b">
+        <h3 class="text-lg font-semibold text-gray-800">
+          {{ isAdding ? 'Add New Patient' : 'Edit Patient Details' }}
+        </h3>
+        <button (click)="cancel()" class="text-gray-400 hover:text-gray-600 transition-colors">
+          <i class="fas fa-times fa-lg"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto p-4">
+        <form [formGroup]="patientForm" class="formClass grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Personal Information -->
+          <h2
+            class="font-semibold col-span-full  text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
+            Personal Information
+          </h2>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <input type="text" formControlName="fullName" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+            <input type="date" formControlName="dob" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+            <select formControlName="gender" class="w-full px-3 py-2 border rounded-lg text-sm">
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+            <select formControlName="bloodGroup" class="w-full px-3 py-2 border rounded-lg text-sm">
+              <option value="">Select Blood Group</option>
+              <option *ngFor="let bg of bloodGroups" [value]="bg">{{bg}}</option>
+            </select>
+          </div>
+
+          <h2
+            class="font-semibold col-span-full  mt-8 text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
+            Contact Details </h2>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input type="tel" formControlName="phone" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" formControlName="email" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <textarea rows="1" formControlName="address" class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+          </div>
+
+
+          <!-- Medical Information -->
+          <h2
+            class="font-semibold col-span-full  mt-8 text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
+            Health Information </h2>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Height (cm)</label>
+            <input type="number" formControlName="height" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
+            <input type="number" formControlName="weight" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+          <div formArrayName="allergies">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Allergies</label>
+            <div *ngFor="let allergy of allergies.controls; let i = index" class="flex gap-2 mb-2">
+              <input [formControlName]="i" class="flex-1 px-3 py-2 border rounded-lg text-sm">
+              <button type="button" (click)="removeAllergy(i)" class="text-red-500 hover:text-red-700">
+                <i class="fas fa-times"></i>
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+            <button type="button" (click)="addAllergy()" class="text-sm text-blue-500 hover:text-blue-700">
+              + Add Allergy
+            </button>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Past Medical History</label>
+            <!-- Similar structure for medical history -->
+            <div *ngFor="let allergy of pastMedicalHistory.controls; let i = index" class="flex gap-2 mb-2">
+              <input [formControlName]="i" class="flex-1 px-3 py-2 border rounded-lg text-sm">
+              <button type="button" (click)="removeMedicalHistory(i)" class="text-red-500 hover:text-red-700">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <button type="button" (click)="addMedicalHistory()" class="text-sm text-blue-500 hover:text-blue-700">
+              + Add History
+            </button>
+          </div>
+
+          <!-- Visit Information -->
+          <h2
+            class="font-semibold col-span-full  mt-8 text-gray-700 text-base md:text-md border-l-[4px] pl-2 border-blue-500">
+            Appointment Details </h2>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Visit Date & Time</label>
+            <input type="datetime-local" formControlName="visitDateTime"
+              class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
+            <textarea rows="1" formControlName="reasonForVisit"
+              class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Diagnosis</label>
+            <textarea rows="1" formControlName="diagnosis"
+              class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="col-span-full flex justify-end space-x-3 mt-4">
+            <button type="button" (click)="cancel()" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg">
+              {{ isAdding ? 'Add Patient' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-</div>
-
-=======
->>>>>>> f3a3ef2a477993e22d576bfa061fde1bbe43c259
-</div>

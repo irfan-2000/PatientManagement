@@ -20,6 +20,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
 import { CourseSuggestionComponent } from './course-suggestion/course-suggestion.component';
+import { AppointmentsComponent } from './appointments/appointments.component';
+import { LoaderComponent } from './shared/loader/loader.component';
+
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.component';
+import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.component';
 
 @NgModule({
   declarations: [
@@ -32,11 +40,17 @@ import { CourseSuggestionComponent } from './course-suggestion/course-suggestion
     ServicesComponent,
     PatientsComponent,
     CourseSuggestionComponent,
+    AppointmentsComponent,
+    LoaderComponent,
+    AddEditPatientComponent,
+    DoctorSessionsComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,CommonModule,FormsModule,ReactiveFormsModule,HttpClientModule,RouterModule,
-    BrowserAnimationsModule, // This is used by the toastr module for animations
+    BrowserAnimationsModule,MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule, // This is used by the toastr module for animations
     ToastrModule.forRoot({
       timeOut: 5000,
       positionClass: 'toast-bottom-left',
