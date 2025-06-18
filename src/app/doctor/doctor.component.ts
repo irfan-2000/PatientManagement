@@ -183,16 +183,16 @@ export class DoctorComponent {
   showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
     switch (type) {
       case 'success':
-        this.toastr.success(message, title);
+        this.toastr.success(message, title || "Success");
         break;
       case 'error':
-        this.toastr.error(message, title);
+        this.toastr.error(message, title || "Error");
         break;
       case 'warning':
-        this.toastr.warning(message, title);
+        this.toastr.warning(message, title || "Warning");
         break;
       case 'info':
-        this.toastr.info(message, title);
+        this.toastr.info(message, title || "Information");
         break;
       default:
         console.error('Invalid toast type');

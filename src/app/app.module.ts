@@ -56,7 +56,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatInputModule, // This is used by the toastr module for animations
     ToastrModule.forRoot({
       timeOut: 5000,
-      positionClass: 'toast-bottom-left',
+      positionClass: 'toast-top-right',
       progressBar: true,
     }), // ToastrModule to show toasts
     MatAutocompleteModule

@@ -6,6 +6,7 @@ import { json } from 'stream/consumers';
 import { findIndex } from 'rxjs';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-doctor-sessions',
@@ -29,7 +30,7 @@ export class DoctorSessionsComponent implements OnInit {
   hours = Array.from({ length: 24 }, (_, i) => i); // 0 - 23
   minutes = Array.from({ length: 12 }, (_, i) => i * 5);
 
-  constructor(private doctorservice: DoctorServiceService, private router: Router, private fb: FormBuilder) {
+  constructor(private doctorservice: DoctorServiceService, private router: Router, private fb: FormBuilder, private toastr: ToastrService) {
     this.sessionForm = this.fb.group({
       doctorId: [null, [Validators.required, this.validateDoctorSelection.bind(this)]],
       slotDuration: [30, Validators.required],
@@ -89,9 +90,8 @@ export class DoctorSessionsComponent implements OnInit {
 
 
 
-  displayFn =( doctorId: string ):string =>
-  {
-     
+  displayFn = (doctorId: string): string => {
+
     console.log("DisplayFn called with:", doctorId, this.doctors);
     if (!doctorId || !this.doctors) return '';
     const doctor = this.doctors.find(d => {
@@ -200,7 +200,7 @@ export class DoctorSessionsComponent implements OnInit {
         endtime: `${end}`
       };
     });
-     
+
     const payload = {
       doctorId: formValue.doctorId,
       timeSlot: formValue.slotDuration,
@@ -240,6 +240,24 @@ export class DoctorSessionsComponent implements OnInit {
 
   }
 
+  showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
+    switch (type) {
+      case 'success':
+        this.toastr.success(message, title);
+        break;
+      case 'error':
+        this.toastr.error(message, title);
+        break;
+      case 'warning':
+        this.toastr.warning(message, title);
+        break;
+      case 'info':
+        this.toastr.info(message, title);
+        break;
+      default:
+        console.error('Invalid toast type');
+    }
+  }
 
 
   getAvailableStartHours(i: number, request: string): number[] {
@@ -382,16 +400,16 @@ export class DoctorSessionsComponent implements OnInit {
       if (response?.status === 200) {
         this.doctors = response.doctorsData || [];
         console.log("After assigning", this.doctors);
-         
-       this.filteredDoctors = this.sessionForm.get('doctorId')!.valueChanges.pipe(
-        startWith(''),
-        map(value => {
-          if (typeof value === 'string') {
-            return this._filterDoctors(value);
-          }
-          return this.doctors;
-        })
-      );
+
+        this.filteredDoctors = this.sessionForm.get('doctorId')!.valueChanges.pipe(
+          startWith(''),
+          map(value => {
+            if (typeof value === 'string') {
+              return this._filterDoctors(value);
+            }
+            return this.doctors;
+          })
+        );
       }
       if (response.status == 401) {
         this.router.navigate(['/login']);
@@ -439,13 +457,13 @@ export class DoctorSessionsComponent implements OnInit {
   }
 
 
-OldPayload:any = {}
+  OldPayload: any = {}
 IsEditing:boolean = false;
-  EditSession(item:any)
-  {
-console.log("editing items",item);
+  EditSession(item: any) {
+    this.showToast('warning', 'Editing session', '');
+    console.log("editing items", item);
 this.IsEditing = true;
-this.OldPayload = item;
+    this.OldPayload = item;
 
 this.sessionForm.patchValue({
 slotDuration:Number(item.timeSlot),
