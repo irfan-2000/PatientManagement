@@ -14,6 +14,7 @@
           <th class="px-4 py-2 text-left text-sm font-semibold">Day</th>
           <th class="px-4 py-2 text-left text-sm font-semibold">Time Slot (mins)</th>
           <th class="px-4 py-2 text-left text-sm font-semibold">Sessions</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-100" *ngIf="doctorSessions?.length">
@@ -34,6 +35,25 @@
               <div class="text-xs text-gray-500"></div>
             </div>
           </td>
+<td>
+  <button 
+    type="button" 
+    (click)="EditSession(doctor)" 
+    class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded">
+    Edit
+  </button>
+</td>
+<td>
+  <button 
+    type="button" 
+    (click)="EditSession(doctor)" 
+    class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1 px-3 rounded">
+    Edit
+  </button>
+</td>
+
+
+
         </tr>
       </tbody>
     </table>
@@ -137,6 +157,7 @@
           </div>
 
           <button type="button" class="text-blue-500 hover:text-blue-600" (click)="addSession()">+ Add Session</button>
+          
         </div>
 
         <!-- Action Buttons -->

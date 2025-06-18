@@ -19,7 +19,7 @@ export class DoctorSessionsComponent implements OnInit {
   sessionForm!: FormGroup;
   showAdddEditSessionPopup = false;
   doctors: any[] = [];
-  filteredDoctors: Observable<any[]> = of([]);
+  filteredDoctors: any = Observable<any[]> //= of([]);
   selectedDoctor: any = null;
 
   doctorSessions: any = {}
@@ -87,7 +87,11 @@ export class DoctorSessionsComponent implements OnInit {
     });
   }
 
-  displayFn(doctorId: string): string {
+
+
+  displayFn =( doctorId: string ):string =>
+  {
+     
     console.log("DisplayFn called with:", doctorId, this.doctors);
     if (!doctorId || !this.doctors) return '';
     const doctor = this.doctors.find(d => {
@@ -196,7 +200,7 @@ export class DoctorSessionsComponent implements OnInit {
         endtime: `${end}`
       };
     });
-    debugger
+     
     const payload = {
       doctorId: formValue.doctorId,
       timeSlot: formValue.slotDuration,
@@ -284,53 +288,52 @@ export class DoctorSessionsComponent implements OnInit {
     return this.hours;
   }
 
-// Add a new method to get available minutes
-getAvailableMinutes(i: number, request: string): number[] {
-  const currentSession = this.sessions.at(i);
-  const startHour = currentSession.get('startHour')?.value;
-  const endHour = currentSession.get('endHour')?.value;
-  const startMinute = currentSession.get('startMinute')?.value;
+  // Add a new method to get available minutes
+  getAvailableMinutes(i: number, request: string): number[] {
+    const currentSession = this.sessions.at(i);
+    const startHour = currentSession.get('startHour')?.value;
+    const endHour = currentSession.get('endHour')?.value;
+    const startMinute = currentSession.get('startMinute')?.value;
 
-  // If no hours are available, return empty array for minutes
-  if (request === 'Start' && i > 0) {
-    const prevSession = this.sessions.at(i - 1);
-    const prevEndHour = prevSession.get('endHour')?.value;
-    if (prevEndHour >= 23) {
-      return [];
-    }
-  }
-
-  if (request === 'End') {
-    if(i==0)
-    {
-      return this.minutes;
-    }
-    // If start hour is not selected or is 23, return empty array
-    if (!startHour || startHour >= 23) {
-      return [];
-    }
-
-    // Check if this is the last session and if previous session ends at 23
-    if (i > 0) {
+    // If no hours are available, return empty array for minutes
+    if (request === 'Start' && i > 0) {
       const prevSession = this.sessions.at(i - 1);
       const prevEndHour = prevSession.get('endHour')?.value;
       if (prevEndHour >= 23) {
         return [];
       }
     }
-    
-    // If start hour equals end hour, only show minutes after start minute
-    if (startHour === endHour) {
-      return this.minutes.filter(minute => minute > startMinute);
+
+    if (request === 'End') {
+      if (i == 0) {
+        return this.minutes;
+      }
+      // If start hour is not selected or is 23, return empty array
+      if (!startHour || startHour >= 23) {
+        return [];
+      }
+
+      // Check if this is the last session and if previous session ends at 23
+      if (i > 0) {
+        const prevSession = this.sessions.at(i - 1);
+        const prevEndHour = prevSession.get('endHour')?.value;
+        if (prevEndHour >= 23) {
+          return [];
+        }
+      }
+
+      // If start hour equals end hour, only show minutes after start minute
+      if (startHour === endHour) {
+        return this.minutes.filter(minute => minute > startMinute);
+      }
     }
-  }
 
     return this.minutes;
   }
 
-updateSessionTimings(i: number): void {
-  const session = this.sessions.at(i);
-  const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
+  updateSessionTimings(i: number): void {
+    const session = this.sessions.at(i);
+    const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
 
     // Update current session's end time based on start time and slot duration
     const startHour = +session.get('startHour')?.value;
@@ -344,19 +347,19 @@ updateSessionTimings(i: number): void {
       endMinute: endTime.getMinutes()
     });
 
-  // Update subsequent sessions
-  for (let j = i + 1; j < this.sessions.length; j++) {
-    const nextSession = this.sessions.at(j);
-    const prevSession = this.sessions.at(j - 1);
-    
-    // Set start time to be 1 minute after previous session's end time
-    const prevEndHour = prevSession.get('endHour')?.value;
-    const prevEndMinute = prevSession.get('endMinute')?.value;
-    
-    nextSession.patchValue({
-      startHour: prevEndHour,
-      startMinute: prevEndMinute
-    });
+    // Update subsequent sessions
+    for (let j = i + 1; j < this.sessions.length; j++) {
+      const nextSession = this.sessions.at(j);
+      const prevSession = this.sessions.at(j - 1);
+
+      // Set start time to be 1 minute after previous session's end time
+      const prevEndHour = prevSession.get('endHour')?.value;
+      const prevEndMinute = prevSession.get('endMinute')?.value;
+
+      nextSession.patchValue({
+        startHour: prevEndHour,
+        startMinute: prevEndMinute
+      });
 
       // Update end time based on new start time
       const newStartTime = new Date(0, 0, 0, prevEndHour, prevEndMinute);
@@ -379,17 +382,16 @@ updateSessionTimings(i: number): void {
       if (response?.status === 200) {
         this.doctors = response.doctorsData || [];
         console.log("After assigning", this.doctors);
-
-        // Reinitialize filtered doctors after doctors array is populated
-        this.filteredDoctors = this.sessionForm.get('doctorId')!.valueChanges.pipe(
-          startWith(''),
-          map(value => {
-            if (typeof value === 'string') {
-              return this._filterDoctors(value);
-            }
-            return this.doctors;
-          })
-        );
+         
+       this.filteredDoctors = this.sessionForm.get('doctorId')!.valueChanges.pipe(
+        startWith(''),
+        map(value => {
+          if (typeof value === 'string') {
+            return this._filterDoctors(value);
+          }
+          return this.doctors;
+        })
+      );
       }
       if (response.status == 401) {
         this.router.navigate(['/login']);
@@ -437,5 +439,20 @@ updateSessionTimings(i: number): void {
   }
 
 
+OldPayload:any = {}
+  EditSession(item:any)
+  {
+console.log("editing items",item);
+
+this.OldPayload = item;
+
+// this.sessionForm.patchValue({
+// slotDuration:item.
+
+
+// });
+
+
+  }
 
 }
