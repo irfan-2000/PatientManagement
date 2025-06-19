@@ -50,18 +50,25 @@
         <!-- Doctor Dropdown -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Doctor Name</label>
+         
           <mat-form-field class="w-full">
+          
             <mat-label>Doctor Name</mat-label>
-            <input #doctorInput matInput formControlName="doctorId" [matAutocomplete]="auto" class="w-full" required>
+
+            <input    matInput formControlName="doctorId" [matAutocomplete]="auto" class="w-full" required>
+           
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onDoctorSelected($event)">
-              <mat-option *ngFor="let doctor of filteredDoctors | async" [value]="doctor.doctorId">
+              <mat-option *ngFor="let doctor of filteredDoctors | async" [value]="doctor.doctorId"  >
                 {{ doctor.doctorId }} - {{ doctor.firstName }} {{ doctor.lName }} - {{ doctor.email }}
               </mat-option>
             </mat-autocomplete>
+
             <mat-error *ngIf="sessionForm.get('doctorId')?.hasError('required')">
               Please select a doctor from the list
             </mat-error>
+
           </mat-form-field>
+
         </div>
 
         <!-- Slot Duration -->

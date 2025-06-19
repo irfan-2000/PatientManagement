@@ -87,7 +87,8 @@ export class DoctorSessionsComponent implements OnInit {
     });
   }
 
-  displayFn(doctorId: string): string {
+  displayFn(doctorId: string): string 
+  {
     console.log("DisplayFn called with:", doctorId, this.doctors);
     if (!doctorId || !this.doctors) return '';
     const doctor = this.doctors.find(d => {
@@ -379,8 +380,7 @@ export class DoctorSessionsComponent implements OnInit {
         this.doctors = response.doctorsData || [];
         console.log("After assigning", this.doctors);
 
-        // Reinitialize filtered doctors after doctors array is populated
-        this.filteredDoctors = this.sessionForm.get('doctorId')!.valueChanges.pipe(
+         this.filteredDoctors = this.sessionForm.get('doctorId')!.valueChanges.pipe(
           startWith(''),
           map(value => {
             if (typeof value === 'string') {
@@ -389,6 +389,8 @@ export class DoctorSessionsComponent implements OnInit {
             return this.doctors;
           })
         );
+
+
       }
       if (response.status == 401) {
         this.router.navigate(['/login']);
