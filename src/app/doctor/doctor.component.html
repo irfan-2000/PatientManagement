@@ -418,14 +418,16 @@
 
 
         <!-- Terms & Conditions -->
-        <div class="col-span-full flex items-center space-x-2">
-          <input type="checkbox" formControlName="IsAgreedTerms" id="terms" class="w-4 h-4" />
-          <label for="terms" class="text-gray-600 text-sm md:text-base">
-            I accept the terms & conditions
-          </label>
-          <span *ngIf="errorMessages['IsAgreedTerms']" class="text-red-500">{{
+        <div class="col-span-full flex flex-col gap-1 items-start space-x-2">
+          <div>
+            <input type="checkbox" formControlName="IsAgreedTerms" id="terms" class="w-4 h-4" />
+            <label for="terms" class="text-gray-600 text-sm md:text-base">
+              I accept the terms & conditions
+            </label>
+          </div>
+          <p *ngIf="errorMessages['IsAgreedTerms']" class="text-red-500">{{
             errorMessages["IsAgreedTerms"]
-            }}</span>
+            }}</p>
         </div>
 
          <!-- Submit Button -->

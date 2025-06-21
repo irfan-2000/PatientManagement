@@ -425,7 +425,11 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
         this.doctorservice.AddUpdateDoctor(formData).subscribe({
           next: (response: any) => {
             if (response.status === 200) {
-              this.showToast('success', 'Doctor details updated successfully!', 'Success');
+              if(this.IsEdition){
+                this.showToast('success', 'Doctor details updated successfully!', 'Success');
+              }else{
+                this.showToast('success', 'Doctor added successfully!', 'Success');
+              }
               window.location.reload();
             }
           },
@@ -435,7 +439,9 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
             if (error.status === 401) {
             } else if (error.status === 500 && error.error) {
 
-            } else {
+            } else if(error.status === 403){
+              this.showToast('error', "A doctor with this email or mobile already exists","User conflict")
+            }else {
               console.error('Unhandled API error:', error);
             }
           },
@@ -555,10 +561,10 @@ parseCustomDate(dateStr: string): Date | null
  
 
 
-    if (this.doctorForm.get('IsActive')?.value == '' || this.doctorForm.get('IsActive')?.value == undefined || this.doctorForm.get('IsActive')?.value == null) {
-      this.errorMessages['IsActive'] = 'Status is required!';
-      errorcode = 1;
-    }
+    // if (this.doctorForm.get('IsActive')?.value == '' || this.doctorForm.get('IsActive')?.value == undefined || this.doctorForm.get('IsActive')?.value == null) {
+    //   this.errorMessages['IsActive'] = 'Status is required!';
+    //   errorcode = 1;
+    // }
 
     if (this.doctorForm.get('IsAgreedTerms')?.value == '' || this.doctorForm.get('IsAgreedTerms')?.value == undefined || this.doctorForm.get('IsAgreedTerms')?.value == null) {
       this.errorMessages['IsAgreedTerms'] = 'You must agree to the terms and conditions!';
