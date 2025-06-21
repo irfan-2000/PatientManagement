@@ -34,7 +34,7 @@ export class LoginComponent {
   async ValidateLogin()
   {
     this.Showerror= true;
-    this.loading = true;
+    this.ValidationErrorMsg = '';
     if(this.loginForm.invalid)
     {
       this.Showerror = true;
@@ -56,6 +56,7 @@ export class LoginComponent {
       this.ValidationErrorMsg ="Enter the Hospital";      return;
     }
 
+    this.loading = true;
 
     localStorage.clear();
     try
