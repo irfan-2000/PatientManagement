@@ -184,11 +184,13 @@ export class DoctorSessionsComponent implements OnInit {
     }
   }
 
-  submitForm(): void {
-    if (this.sessionForm.invalid || this.selectedDays.length === 0) {
+  submitForm(): void 
+  {
+    if (this.sessionForm.invalid || this.selectedDays.length === 0)
+       {
       alert("Please fill all required fields and select days.");
-      return;
-    }
+      return; 
+      }
 
     const formValue = this.sessionForm.value;
     const sessionsFormatted = formValue.sessions.map((s: any, index: number) => {
@@ -206,14 +208,15 @@ export class DoctorSessionsComponent implements OnInit {
       timeSlot: formValue.slotDuration,
       days: this.selectedDays,
       sessions: sessionsFormatted,
-      flag: 'I'
-    };
-
-    console.log('Final Payload:', JSON.stringify(payload));
+      flag: 'I',
+      OldPayload:this.OldPayload || null
+     };
+    
+     console.log('Final Payload:', JSON.stringify(payload));
 
     try {
       // Send formData to the backend API
-      const response = this.doctorservice.DoctorSessions(payload).subscribe({
+      const response = this.doctorservice.DoctorSessions(payload ).subscribe({
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) {
@@ -236,9 +239,67 @@ export class DoctorSessionsComponent implements OnInit {
       console.error('Error:', error);
       //  this.ErrorMsg = "An error occurred while submitting the form.";
     }
-
-
   }
+
+
+DeleteDoctorSession(item:any)
+{
+   this.EditSession(item) ; 
+    const formValue = this.sessionForm.value;
+    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => {
+      const start = `${s.startHour.toString().padStart(2, '0')}:${s.startMinute.toString().padStart(2, '0')}`;
+      const end = `${s.endHour.toString().padStart(2, '0')}:${s.endMinute.toString().padStart(2, '0')}`;
+      return {
+        sessionName: `${index + 1}`,
+        starttime: `${start}`,
+        endtime: `${end}`
+      };
+    });
+
+    const payload = {
+      doctorId: formValue.doctorId,
+      timeSlot: formValue.slotDuration,
+      days: this.selectedDays,
+      sessions: sessionsFormatted,
+      flag: 'I',
+      OldPayload:this.OldPayload || null
+     };
+    
+     console.log('Final Payload for Delete:', JSON.stringify(payload));
+
+  
+  
+  try {
+      // Send formData to the backend API
+      const response = this.doctorservice.DoctorSessions(payload ).subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200) 
+            {
+       
+          } else if (response.status === 401) {
+           }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+         }
+
+
+      });
+
+
+    } catch (error: any) {
+      console.error('Error:', error);
+      //  this.ErrorMsg = "An error occurred while submitting the form.";
+    }
+
+}
+
+
+
+
+
+
 
   showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
     switch (type) {
@@ -306,8 +367,7 @@ export class DoctorSessionsComponent implements OnInit {
     return this.hours;
   }
 
-  // Add a new method to get available minutes
-  getAvailableMinutes(i: number, request: string): number[] {
+   getAvailableMinutes(i: number, request: string): number[] {
     const currentSession = this.sessions.at(i);
     const startHour = currentSession.get('startHour')?.value;
     const endHour = currentSession.get('endHour')?.value;
@@ -459,19 +519,38 @@ export class DoctorSessionsComponent implements OnInit {
 
   OldPayload: any = {}
 IsEditing:boolean = false;
-  EditSession(item: any) {
+  EditSession(item: any) 
+  {
     this.showToast('warning', 'Editing session', '');
-    console.log("editing items", item);
-this.IsEditing = true;
-    this.OldPayload = item;
+     this.IsEditing = true;
+    this.OldPayload = JSON.stringify(item) ;
 
-this.sessionForm.patchValue({
-slotDuration:Number(item.timeSlot),
- doctorId:item.doctorId
-});
-this.selectedDays = item.dayId
+    this.sessionForm.patchValue({
+    slotDuration:Number(item.timeSlot),
+    doctorId:item.doctorId
+    });
+    this.selectedDays = item.dayId;
+      this.sessions.clear(); 
+  if (item.startTime && item.endTime) {
+    const [startHour, startMinute] = item.startTime.split(':').map(Number);
+    const [endHour, endMinute] = item.endTime.split(':').map(Number);
 
-this.openAddEditSession();
+    this.sessions.push(this.fb.group({
+      startHour: [startHour, Validators.required],
+      startMinute: [startMinute, Validators.required],
+      endHour: [endHour, Validators.required],
+      endMinute: [endMinute, Validators.required]
+    }));
+  } else {
+    // fallback: add a blank session if data is missing
+    this.addSession();
   }
+    
+  
+    this.openAddEditSession();  
+
+
+
+}
 
 }
