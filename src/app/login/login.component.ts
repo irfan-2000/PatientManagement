@@ -55,7 +55,9 @@ export class LoginComponent {
     {
       this.ValidationErrorMsg ="Enter the Hospital";      return;
     }
+
     this.loading = true;
+
     localStorage.clear();
     try
     {

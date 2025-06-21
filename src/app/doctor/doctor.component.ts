@@ -844,4 +844,30 @@ parseCustomDate(dateStr: string): Date | null
   }
 
 
+  displayFn = (doctorId: string): string => {
+
+    console.log("DisplayFn called with:", doctorId, this.doctors);
+    if (!doctorId || !this.doctors) return '';
+    const doctor = this.doctors.find(d => {
+      console.log("reh doc", d);
+      return d.doctorId == doctorId
+    });
+    console.log("Found doctor:", doctor);
+    if (doctor) {
+      console.log("Returning formatted string");
+      return `${doctor.doctorId} - ${doctor.firstName} ${doctor.lName} - ${doctor.email}`;
+    }
+    return '';
+  }
+
+
+  OnspecilaizationSelected(event: any): void {
+    console.log("Selection event:", event);
+    const doctorId = event.option.value;
+    this.selectedDoctor = this.doctors.find(d => d.doctorId === doctorId);
+    this.sessionForm.get('doctorId')?.setValue(doctorId);
+  }
+
 }
+
+
