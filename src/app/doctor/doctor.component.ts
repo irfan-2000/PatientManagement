@@ -423,23 +423,41 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
 
       try {
         this.doctorservice.AddUpdateDoctor(formData).subscribe({
-          next: (response: any) => {
-            if (response.status === 200) {
-              if(this.IsEdition){
+          next: (response: any) =>
+             {
+             if (response.status == 200)
+               {
+              if(this.IsEdition)
+                {
                 this.showToast('success', 'Doctor details updated successfully!', 'Success');
-              }else{
+              }else
+              {
                 this.showToast('success', 'Doctor added successfully!', 'Success');
-              }
+              } 
               window.location.reload();
             }
+
+        if(response.status == 403)
+              {
+              this.showToast('error', "A doctor with this email or mobile already exists","User conflict")
+            }
+
+       if(response.status == 500)
+              {
+              this.showToast('error', "Internal server error","");
+            }
+
+
           },
           error: (error: any) => {
 
             console.log(error);
-            if (error.status === 401) {
-            } else if (error.status === 500 && error.error) {
+            if (error.status == 401) {
+            } else if (error.status == 500 && error.error) {
 
-            } else if(error.status === 403){
+            }
+             else if(error.status == 403)
+              {
               this.showToast('error', "A doctor with this email or mobile already exists","User conflict")
             }else {
               console.error('Unhandled API error:', error);

@@ -49,8 +49,7 @@ ValidateLogin(logindata: any): Promise<any>
  AddUpdateDoctor(formData: any) {
   const token = localStorage.getItem('token');  
   const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
+    'Authorization': `Bearer ${token}`
   });
   
   return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctor`, formData, {
