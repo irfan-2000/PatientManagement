@@ -458,19 +458,20 @@ export class DoctorSessionsComponent implements OnInit {
 
 
   OldPayload: any = {}
+IsEditing:boolean = false;
   EditSession(item: any) {
     this.showToast('warning', 'Editing session', '');
     console.log("editing items", item);
-
+this.IsEditing = true;
     this.OldPayload = item;
 
-    // this.sessionForm.patchValue({
-    // slotDuration:item.
+this.sessionForm.patchValue({
+slotDuration:Number(item.timeSlot),
+ doctorId:item.doctorId
+});
+this.selectedDays = item.dayId
 
-
-    // });
-
-
+this.openAddEditSession();
   }
 
 }
