@@ -9,9 +9,11 @@ import { CourseSuggestionComponent } from './course-suggestion/course-suggestion
 import { AppointmentsComponent } from './appointments/appointments.component';
 import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.component';
 import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.component';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
 
 const routes: Routes = [
-{path:'',component:LoginComponent},
+{path:'login',component:LoginComponent},
+{path:'adminlogin',component:AdminLoginComponent},
 {path:'doctors',component:DoctorComponent},
 {path:'services',component:ServicesComponent},
 {path:'patients',component:PatientsComponent},

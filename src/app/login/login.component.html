@@ -31,21 +31,18 @@
           </select>
         </div>
 
+          <div class="flex justify-between items-baseline mb-4">
+            <div class="flex items-start gap-2">
+              <input type="checkbox" formControlName="RememberMe" id="rememberMe" class="mt-1" />
+              <label for="role" class="block text-sm font-medium text-gray-700">RememberMe</label>
+            </div>
+            <div>
+              <a href="#" class="text-sm text-blue-600 hover:underline">Forgot Password?</a>
+            </div>
+          </div>
 
-        <div class="mb-4">
-          <label for="role" class="block text-sm font-medium text-gray-700">RememberMe</label>
-          <input type="checkbox" formControlName="RememberMe" id="rememberMe" class="mt-1" />
-        </div>
-
-
-
-
-
-        <div class="flex justify-between items-center mb-4">
-          <a href="#" class="text-sm text-blue-600 hover:underline">Forgot Password?</a>
-        </div>
-          <div>
-              <span class="text-red-500"   *ngIf ="Showerror">{{ValidationErrorMsg}}</span>
+          <div class="my-3 font-medium text-center">
+              <span class="text-red-500" *ngIf ="Showerror">{{ValidationErrorMsg}}</span>
           </div>
           <button type="submit" (click) ="ValidateLogin()" class="w-full bg-[#004687] hover:bg-[#336b9f] text-white px-4 py-2 rounded-md">
           Login

@@ -440,7 +440,7 @@ export class DoctorSessionsComponent implements OnInit {
 
           console.log(error);
           if (error.status === 401) {
-            this.router.navigate(['/']);
+            this.router.navigate(['/login']);
 
           } else if (error.status === 500 && error.error) {
 

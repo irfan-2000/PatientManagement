@@ -135,7 +135,7 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
   .catch(error => {
     if (error.status == 401) 
         {
-        this.router.navigate(['']);
+        this.router.navigate(['/login']);
         return;
       }
       console.error("API Error", error);
