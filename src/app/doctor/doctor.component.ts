@@ -314,24 +314,59 @@ UpdateDoctorDetails(doctorform :any)
   }
 
 
-  async DeleteDoctor(Id: number) {
+  async DeleteDoctor(Id: number) 
+  {
 
-    try {
-      const response = await this.doctorservice.DeleteDoctor(Id);
-      console.log(response)
-      if (response.status === 200) {
 
-        // (type: 'success' | 'error' | 'warning' | 'info', message: string, title: string)
-        this.showToast('success', 'Delete Success!!', 'Deleted');
+
+
+      try {
+        this.doctorservice.DeleteDoctor(Id).subscribe({
+          next: (response: any) =>
+             {
+             if (response.status == 200)
+               {
+               
+              }
+
+        if(response.status == 403)
+              {
+              this.showToast('error', "A doctor with this email or mobile already exists","User conflict")
+            }
+
+       if(response.status == 500)
+              {
+              this.showToast('error', "Internal server error","");
+            }
+
+
+          },
+          error: (error: any) => {
+
+           console.log(error);
+          },
+        });
+      } catch (error: any) {
+        console.error('API error:', error);
       }
 
-      if (response.status == 500) {
-        this.showToast('error', 'Error deleting data', 'Error');
-      }
-    } catch (error: any) {
-      console.error('Error:', error);
-      this.ErrorMsg = "An error occurred while submitting the form.";
-    }
+    // try {
+    //   const response = await this.doctorservice.DeleteDoctor(Id);
+    //   console.log(response)
+    //   if (response.status === 200)
+    //      {
+
+    //     // (type: 'success' | 'error' | 'warning' | 'info', message: string, title: string)
+    //     this.showToast('success', 'Delete Success!!', 'Deleted');
+    //   }
+
+    //   if (response.status == 500) {
+    //     this.showToast('error', 'Error deleting data', 'Error');
+    //   }
+    // } catch (error: any) {
+    //   console.error('Error:', error);
+    //   this.ErrorMsg = "An error occurred while submitting the form.";
+    // }
 
   }
 

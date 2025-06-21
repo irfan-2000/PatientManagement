@@ -145,32 +145,23 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
 
 
 
+ 
 
-DeleteDoctor(Id:Number): Promise<any> 
-{  
-
-const token = localStorage.getItem('token'); // Or wherever you store your token
+DeleteDoctor(Id:Number) {
+  const token = localStorage.getItem('token');  
+  
+  let params = new HttpParams();
+  params.append("")
 
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
   });
- 
-
-const params = new HttpParams()
- 
-.set('DoctorId',Id.toString());
-  return this.http.delete<any>(`${this.baseurl}DeleteDoctor`, 
-  { 
-    params,headers
-  })
-  .toPromise()
-  .then(response => response)
-  .catch(error => {
-      console.error("API Error", error);
-      return error;
+  
+  return this.http.post<any>(`${this.baseurl}api/DeleteDoctor`, formData, {
+    headers: headers,
+    withCredentials: true
   });
 }
-
 
 
 
