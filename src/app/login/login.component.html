@@ -1,4 +1,4 @@
-<div  class="flex h-screen w-full justify-center items-center bg-gray-100">
+<div  class="flex h-screen w-full justify-center items-center bg-[url(/bg1.png)] bg-cover bg-no-repeat">
     <!-- Login Box -->
     <div class="w-full max-w-md shadow-lg rounded-2xl p-6 bg-white">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-4">Login</h2>
@@ -31,23 +31,20 @@
           </select>
         </div>
 
-
-        <div class="mb-4">
-          <label for="role" class="block text-sm font-medium text-gray-700">RememberMe</label>
-          <input type="checkbox" formControlName="RememberMe" id="rememberMe" class="mt-1" />
-        </div>
-
-
-
-
-
-        <div class="flex justify-between items-center mb-4">
-          <a href="#" class="text-sm text-blue-600 hover:underline">Forgot Password?</a>
-        </div>
-          <div>
-              <span class="text-red-500"   *ngIf ="Showerror">{{ValidationErrorMsg}}</span>
+          <div class="flex justify-between items-baseline mb-4">
+            <div class="flex items-start gap-2">
+              <input type="checkbox" formControlName="RememberMe" id="rememberMe" class="mt-1" />
+              <label for="role" class="block text-sm font-medium text-gray-700">RememberMe</label>
+            </div>
+            <div>
+              <a href="#" class="text-sm text-blue-600 hover:underline">Forgot Password?</a>
+            </div>
           </div>
-          <button type="submit" (click) ="ValidateLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+
+          <div class="my-3 font-medium text-center">
+              <span class="text-red-500" *ngIf ="Showerror">{{ValidationErrorMsg}}</span>
+          </div>
+          <button type="submit" (click) ="ValidateLogin()" class="w-full bg-[#004687] hover:bg-[#336b9f] text-white px-4 py-2 rounded-md">
           Login
         </button>
         <app-loader></app-loader>
