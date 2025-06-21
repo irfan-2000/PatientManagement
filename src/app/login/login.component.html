@@ -44,10 +44,10 @@
           <div class="my-3 font-medium text-center">
               <span class="text-red-500" *ngIf ="Showerror">{{ValidationErrorMsg}}</span>
           </div>
-          <button type="submit" (click) ="ValidateLogin()" class="w-full bg-[#004687] hover:bg-[#336b9f] text-white px-4 py-2 rounded-md">
+          <button *ngIf="!loading" type="submit" (click) ="ValidateLogin()" class="w-full bg-[#004687] hover:bg-[#336b9f] text-white px-4 py-2 rounded-md">
           Login
         </button>
-        <app-loader></app-loader>
+        <app-loader *ngIf="loading"></app-loader>
       </form>
     </div>
   </div>

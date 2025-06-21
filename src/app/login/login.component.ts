@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   
   loginForm:FormGroup;
-
+  loading:boolean = false;
   Showerror:Boolean=false;
   ValidationErrorMsg :string = "";
     
@@ -34,6 +34,7 @@ export class LoginComponent {
   async ValidateLogin()
   {
     this.Showerror= true;
+    this.loading = true;
     if(this.loginForm.invalid)
     {
       this.Showerror = true;
@@ -80,7 +81,7 @@ export class LoginComponent {
       this.ValidationErrorMsg = error.error.message;  
     }
 
-    
+    this.loading = false;
   }
 
 
