@@ -9,7 +9,7 @@
         *ngIf="showForm"
         > <i class="fa-solid fa-arrow-left"></i> Go Back</a>
       </div>
-      <div class="flex gap-2">
+      <!-- <div class="flex gap-2">
         <button (click)="showForm = true"
           class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3"
           *ngIf="!showForm">
@@ -24,7 +24,7 @@
           Import data <i class="fas fa-file-import ml-3"></i>
         </button>
         <input #fileInput type="file" accept=".json" hidden (change)="onFileImport($event)" />
-      </div>
+      </div> -->
     </div>
 
     <div *ngIf="!showForm" class="bg-white shadow-lg rounded-lg overflow-hidden">
@@ -48,6 +48,11 @@
             <option value="Active">Active</option>
             <option value="InActive">Inactive</option>
           </select>
+          <button (click)="showForm = true"
+          class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3"
+          *ngIf="!showForm">
+          Add Doctor <i class="fas fa-user-plus ml-3"></i>
+        </button>
         </div>
       </div>
 
