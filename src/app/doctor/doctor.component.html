@@ -2,10 +2,10 @@
   <app-sidebar></app-sidebar>
   <div class="px-2 bg-gray-add overflow-y-auto h-dvh w-dvw">
     <app-top-strip></app-top-strip>
-    <div class="px-3 bg-blue-500 flex justify-between">
+    <div class="px-3 flex justify-between">
       <div class="flex gap-2">
         <a href="/doctors"
-        class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3 self-start"
+        class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 py-2 text-sm rounded-lg md:text-base md:px-3 self-start mt-3"
         *ngIf="showForm"
         > <i class="fa-solid fa-arrow-left"></i> Go Back</a>
       </div>
@@ -129,14 +129,14 @@
           <label class="inline-flex items-center cursor-pointer">
             <input type="checkbox" value="" class="sr-only peer" formControlName="IsActive" checked />
             <div
-              class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
+              class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-[#004687] dark:peer-focus:ring-[#004687] dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#004687] dark:peer-checked:bg-[#004687]">
             </div>
-            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+            <span class="ms-3 text-sm font-medium text-[#004687]">
               {{ doctorForm.get("IsActive")?.value ? "Active" : "Inactive" }}
             </span>
           </label>
         </div>
-        <h2 class="font-semibold col-span-full text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-blue-500">
+        <h2 class="font-semibold col-span-full text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
           Personal details
         </h2>
         <!-- First Name -->
@@ -230,7 +230,7 @@
           <div class="relative w-48 h-48 mx-auto">
             <input type="file" id="profileImage" (change)="onFileChange($event)"  formControlName="ProfileImage"
             class="hidden w-full p-1 border rounded text-sm md:text-base md:p-2" />          
-            <label for="profileImage" class="absolute top-0 right-0 px-2 py-1 rounded-full bg-blue-500 text-white border cursor-pointer"> <i class="fa-solid fa-pen"></i> </label>
+            <label for="profileImage" class="absolute top-0 right-0 px-2 py-1 rounded-full bg-[#004687] text-white border cursor-pointer"> <i class="fa-solid fa-pen"></i> </label>
             
             <img  [src]="profileImagePreview" alt="Preview" 
             class="mt-2 w-48 h-48 rounded-full shadow-md" />
@@ -242,7 +242,7 @@
 
         <!--  Address details -->
         <h2
-          class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-blue-500">
+          class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
           Address details
         </h2>
 
@@ -289,7 +289,7 @@
 
         <!--  Professional Information -->
         <h2
-          class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-blue-500">
+          class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
           Professional Information
         </h2>
 
@@ -406,7 +406,7 @@
             }}</span>
 
           <!-- Add Qualification button -->
-          <button (click)="addQualification()" class="text-blue-500 mt-2 flex items-center text-sm md:text-base">
+          <button (click)="addQualification()" class="text-[#004687] mt-2 flex items-center text-sm md:text-base">
             Add Qualification <i class="fa-solid fa-plus ml-2"></i>
           </button>
 
@@ -420,7 +420,7 @@
         <!-- Terms & Conditions -->
         <div class="col-span-full flex flex-col gap-1 items-start space-x-2">
           <div>
-            <input type="checkbox" formControlName="IsAgreedTerms" id="terms" class="w-4 h-4" />
+            <input type="checkbox" formControlName="IsAgreedTerms" id="terms" class="w-4 h-4" style="accent-color: #004687" />
             <label for="terms" class="text-gray-600 text-sm md:text-base">
               I accept the terms & conditions
             </label>
@@ -437,7 +437,7 @@
             Cancel
           </button>
           <button (click)="FinalSubmitDoctorForm()"
-            class="px-2 bg-blue-500 text-white rounded border-width- border-blue-500 hover:bg-blue-700 hover:border-blue-700 text-sm md:text-base md:px-4 py-2">
+            class="px-2 text-white rounded border-[#004687] bg-[#004687] hover:bg-[#336b9f] hover:border-[#336b9f] text-sm md:text-base md:px-4 py-2">
             Submit
           </button>
         </div>
