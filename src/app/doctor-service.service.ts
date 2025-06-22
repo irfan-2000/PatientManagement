@@ -147,19 +147,20 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
 
  
 
-DeleteDoctor(Id:Number) {
+DeleteDoctor(Id: number) {
   const token = localStorage.getItem('token');  
   
   let params = new HttpParams();
-  params.append("")
+  params = params.append("DoctorId", Id.toString());
 
   const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`
-  });
+    'Authorization': `Bearer ${token}`  });
   
-  return this.http.post<any>(`${this.baseurl}api/DeleteDoctor`, formData, {
+  return this.http.post<any>(`${this.baseurl}api/DeleteDoctor`, {}, {
     headers: headers,
-    withCredentials: true
+
+    withCredentials: true,
+    params
   });
 }
 
