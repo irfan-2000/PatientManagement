@@ -24,8 +24,9 @@ export class DoctorSessionsComponent implements OnInit {
   selectedDoctor: any = null;
 
   doctorSessions: any = {}
-  daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  selectedDays: number[] = [];
+  daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+   selectedDays: number[] = [];
 
   hours = Array.from({ length: 24 }, (_, i) => i); // 0 - 23
   minutes = Array.from({ length: 12 }, (_, i) => i * 5);
@@ -33,7 +34,7 @@ export class DoctorSessionsComponent implements OnInit {
   constructor(private doctorservice: DoctorServiceService, private router: Router, private fb: FormBuilder, private toastr: ToastrService) {
     this.sessionForm = this.fb.group({
       doctorId: [null, [Validators.required, this.validateDoctorSelection.bind(this)]],
-      slotDuration: [30, Validators.required],
+      slotDuration: [{value:30,  disabled:true }],
       sessions: this.fb.array([])
     });
 
@@ -62,7 +63,8 @@ export class DoctorSessionsComponent implements OnInit {
     );
   }
 
-  onDoctorSelected(event: any): void {
+  onDoctorSelected(event: any): void
+   {
     console.log("Selection event:", event);
     const doctorId = event.option.value;
     this.selectedDoctor = this.doctors.find(d => d.doctorId === doctorId);
@@ -172,7 +174,8 @@ export class DoctorSessionsComponent implements OnInit {
     }
   }
 
-  onDaySelect(event: any): void {
+  onDaySelect(event: any): void
+   {
     const value = parseInt(event.target.value, 10);
     if (event.target.checked) {
       if (!this.selectedDays.includes(value)) this.selectedDays.push(value);
@@ -209,14 +212,21 @@ export class DoctorSessionsComponent implements OnInit {
       days: this.selectedDays,
       sessions: sessionsFormatted,
       flag: 'I',
-      OldPayload:this.OldPayload || null
+            IsEditing:this.IsEditing 
+      //OldPayload : this.OldPayload
+      
      };
-    
-     console.log('Final Payload:', JSON.stringify(payload));
 
+     debugger
+     const OldPayload =
+      {
+      OldPayload : this.OldPayload
+     }
+    
+ 
     try {
       // Send formData to the backend API
-      const response = this.doctorservice.DoctorSessions(payload ).subscribe({
+      const response = this.doctorservice.DoctorSessions(payload ,OldPayload).subscribe({
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) {
@@ -241,8 +251,7 @@ export class DoctorSessionsComponent implements OnInit {
     }
   }
 
-
-DeleteDoctorSession(item:any)
+ DeleteDoctorSession(item:any)
 {
    this.EditSession(item) ; 
     const formValue = this.sessionForm.value;
@@ -256,13 +265,14 @@ DeleteDoctorSession(item:any)
       };
     });
 
+
     const payload = {
       doctorId: formValue.doctorId,
       timeSlot: formValue.slotDuration,
       days: this.selectedDays,
       sessions: sessionsFormatted,
-      flag: 'I',
-      OldPayload:this.OldPayload || null
+      flag: 'I'
+      //OldPayload:this.OldPayload || null
      };
     
      console.log('Final Payload for Delete:', JSON.stringify(payload));
@@ -271,7 +281,7 @@ DeleteDoctorSession(item:any)
   
   try {
       // Send formData to the backend API
-      const response = this.doctorservice.DoctorSessions(payload ).subscribe({
+      const response = this.doctorservice.DeleteDoctor(payload ).subscribe({
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) 
@@ -290,8 +300,7 @@ DeleteDoctorSession(item:any)
 
     } catch (error: any) {
       console.error('Error:', error);
-      //  this.ErrorMsg = "An error occurred while submitting the form.";
-    }
+     }
 
 }
 
@@ -523,13 +532,22 @@ IsEditing:boolean = false;
   {
     this.showToast('warning', 'Editing session', '');
      this.IsEditing = true;
-    this.OldPayload = JSON.stringify(item) ;
+    this.OldPayload =  (item) ;
 
     this.sessionForm.patchValue({
     slotDuration:Number(item.timeSlot),
     doctorId:item.doctorId
     });
+     
+    
     this.selectedDays = item.dayId;
+     this.selectedDays = (typeof item.dayId === 'string')
+  ? item.dayId.split(',').map(Number)
+  : Array.isArray(item.dayId)
+    ? item.dayId
+    : [];
+
+
       this.sessions.clear(); 
   if (item.startTime && item.endTime) {
     const [startHour, startMinute] = item.startTime.split(':').map(Number);

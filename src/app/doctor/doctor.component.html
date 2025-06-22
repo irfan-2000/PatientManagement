@@ -67,9 +67,7 @@
               <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">
                 Doctor
               </th>
-              <th class="p-3 text-left whitespace-nowrap hidden md:table-cell">
-                Clinic
-              </th>
+               
               <th class="p-3 text-left hidden lg:table-cell">Email</th>
               <th class="p-3 text-left hidden md:table-cell">Mobile</th>
               <th class="p-3 text-left hidden lg:table-cell">Specialization</th>
@@ -88,8 +86,7 @@
                   doctor.name
                   }}</span>
               </td>
-              <td class="p-3 hidden md:table-cell">{{ doctor.clinic }}</td>
-              <td class="p-3 hidden lg:table-cell">{{ doctor.email }}</td>
+               <td class="p-3 hidden lg:table-cell">{{ doctor.email }}</td>
               <td class="p-3 hidden md:table-cell">{{ doctor.mobile }}</td>
               <td class="p-3 hidden lg:table-cell">{{doctor.specialization}}</td>
               <td class="p-3">
@@ -401,8 +398,8 @@
 
 
  
-         <span *ngIf="errorMessages['qualification']" class="text-red-500">{{
-            errorMessages["qualification"]
+         <span *ngIf="errorMessages['Qualifications']" class="text-red-500">{{
+            errorMessages["Qualifications"]
             }}</span>
 
           <!-- Add Qualification button -->

@@ -420,7 +420,7 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
         formData.append("DoctorId", this.doctorId.toString())
       }
       const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
-
+debugger
       const specializationIds = selectedSpecializationNames
         .map((name: string) => {
           const specialization = this.specializations.find(spec => spec.name === name);
@@ -428,7 +428,7 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
         })
       // .filter((id: null) => id !== null); // Remove null values
 
-      formData.append("Specialization", (specializationIds));
+      formData.append("Specialization", JSON.stringify(selectedSpecializationNames));
 
 
 
@@ -608,17 +608,17 @@ parseCustomDate(dateStr: string): Date | null
       errorcode = 1;
     }
 
-    if (this.doctorForm.get('Qualifications')?.value.length < 1 || this.doctorForm.get('Qualifications')?.value == undefined || this.doctorForm.get('Qualifications')?.value == null) {
+    if (this.doctorForm.get('Qualifications')?.value.length < 1 || this.doctorForm.get('Qualifications')?.value == undefined || this.doctorForm.get('Qualifications')?.value == null) 
+      {
       this.errorMessages['Qualifications'] = 'Please enter at least 1 qualifications!';
       errorcode = 1;
     }
+  if (this.ValidateQualification() === 1) 
+    {
+    errorcode = 1;
+  }
+
  
-
-
-    // if (this.doctorForm.get('IsActive')?.value == '' || this.doctorForm.get('IsActive')?.value == undefined || this.doctorForm.get('IsActive')?.value == null) {
-    //   this.errorMessages['IsActive'] = 'Status is required!';
-    //   errorcode = 1;
-    // }
 
     if (this.doctorForm.get('IsAgreedTerms')?.value == '' || this.doctorForm.get('IsAgreedTerms')?.value == undefined || this.doctorForm.get('IsAgreedTerms')?.value == null) {
       this.errorMessages['IsAgreedTerms'] = 'You must agree to the terms and conditions!';
@@ -638,7 +638,8 @@ parseCustomDate(dateStr: string): Date | null
     return emailPattern.test(email);
   }
 
-  ValidateQualification(): number {
+  ValidateQualification(): number 
+  {
     const qualifications = this.doctorForm.get('Qualifications') as FormArray;
 
     if (!qualifications || qualifications.length === 0) {
@@ -653,17 +654,17 @@ parseCustomDate(dateStr: string): Date | null
       const year = control.get('yearOfGraduation')?.value;
 
       if (!qualification) {
-        this.errorMessages['qualification'] = 'Qualification is required!';
+        this.errorMessages['Qualifications'] = 'Qualification is required!';
         return 1;
       }
 
       if (!institution) {
-        this.errorMessages['qualification'] = 'Institution is required!';
+        this.errorMessages['Qualifications'] = 'Institution is required!';
         return 1;
       }
 
       if (!year) {
-        this.errorMessages['qualification'] = 'Year of graduation is required!';
+        this.errorMessages['Qualifications'] = 'Year of graduation is required!';
         return 1;
       }
     }

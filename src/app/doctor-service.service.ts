@@ -147,11 +147,11 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
 
  
 
-DeleteDoctor(Id: number) {
+DeleteDoctor(payload:any) {
   const token = localStorage.getItem('token');  
   
   let params = new HttpParams();
-  params = params.append("DoctorId", Id.toString());
+  params = params.append("payload", payload.toString());
 
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`  });
@@ -189,14 +189,15 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
 
 
  
- DoctorSessions(formData: any ) {
+ DoctorSessions(formData: any,OldPayload:any = '' ) 
+ {
   const token = localStorage.getItem('token');  
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   });
  
-  debugger
+ 
   return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctorSession`, formData, {
     headers: headers,
     withCredentials: true

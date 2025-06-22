@@ -19,7 +19,7 @@ export class LoginComponent {
     
  constructor(private docservice:DoctorServiceService,private router: Router)
  {
-  this.CheckRememberMe();
+  //this.CheckRememberMe();
  this.loginForm = new FormGroup(
   {
     UserId:new FormControl('Receptionist_IRFAN_HOSP0001001',[Validators.required]),
