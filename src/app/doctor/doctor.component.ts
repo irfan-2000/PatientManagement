@@ -326,7 +326,8 @@ UpdateDoctorDetails(doctorform :any)
              {
              if (response.status == 200)
                {
-               
+              this.showToast('success', "Doctor has been deleted","")
+               this.GetAllDoctors()
               }
 
         if(response.status == 403)
