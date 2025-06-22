@@ -8,7 +8,7 @@
       <!-- Tab Headers -->
       <div class="flex border-b border-gray-200">
         <button *ngFor="let tab of tabs" (click)="activeTab = tab; currentPatientIdForReportDetail = '';" [ngClass]="{
-              'border-b-2 border-blue-500 text-blue-600': activeTab === tab,
+              'border-b-2 border-[#004687] text-[#004687]': activeTab === tab,
               'text-gray-500 hover:text-gray-700': activeTab !== tab
             }" class="px-6 py-3 text-sm font-medium focus:outline-none">
           {{ tab }}
@@ -33,46 +33,46 @@
 
           <!-- Table would go here -->
 
-          <div class="overflow-x-auto">
-            <table class="min-w-full border-collapse border border-gray-200">
-              <thead class="bg-gray-100">
-                <tr>
-                  <th class="px-4 py-2 border">Patient ID</th>
-                  <th class="px-4 py-2 border">Full Name</th>
-                  <th class="px-4 py-2 border hidden lg:table-cell">DOB</th>
-                  <th class="px-4 py-2 border hidden lg:table-cell">Age</th>
-                  <th class="px-4 py-2 border hidden lg:table-cell">Gender</th>
-                  <th class="px-4 py-2 border">Phone</th>
-                  <th class="px-4 py-2 border hidden lg:table-cell">Visit Date & Time</th>
+          <div class="overflow-x-auto shadow-lg rounded-lg">
+            <table class="min-w-full border-collapse">
+              <thead class="top-0">
+                <tr class="bg-[#004687] text-white">
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Patient ID</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Full Name</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">DOB</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Age</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Gender</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Phone</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Visit Date & Time</th>
 
 
-                  <th class="px-4 py-2 border hidden lg:table-cell">Created By</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Created By</th>
 
-                  <th class="px-4 py-2 border hidden lg:table-cell">Created On</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Created On</th>
 
-                  <th class="px-4 py-2 border">Actions</th>
+                  <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let patient of patients" class="hover:bg-gray-50 transition-colors">
-                  <td class="px-4 py-2 border">{{ patient.patientId }}</td>
-                  <td class="px-4 py-2 border">{{ patient.patientName }}</td>
-                  <td class="px-4 py-2 border">{{ patient.dob }}</td>
-                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.age }}</td>
-                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.gender }}</td>
-                  <td class="px-4 py-2 border">{{ patient.phoneNumber }}</td>
-                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.lastVisitDate  }}</td>
-                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.createdBy }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.patientId }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.patientName }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.dob }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{ patient.age }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{ patient.gender }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.phoneNumber }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{ patient.lastVisitDate  }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{ patient.createdBy }}</td>
 
-                  <td class="px-4 py-2 border hidden lg:table-cell">{{ patient.createdOn  }}</td>
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{ patient.createdOn  }}</td>
 
 
-                  <td class="px-4 py-2 border text-center flex gap-2">
-                    <button class="text-green-500 hover:text-green-700" (click)="navigateToReportDetails(patient)">
+                  <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 text-center flex gap-2">
+                    <button class="bg-orange-400 text-white px-2 ml-2 rounded-lg py-1 hover:bg-orange-500 text-center text-sm md:text-base md:px-3" (click)="navigateToReportDetails(patient)">
                       <i class="fas fa-eye"></i>
                     </button>
-                    <button class="text-blue-500 hover:text-blue-700" (click)="navigateToAddEditPatient(patient)">
-                      <i class="fas fa-pencil"></i>
+                    <button class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3" (click)="navigateToAddEditPatient(patient)">
+                      <i class="fa-solid fa-pen"></i>
                     </button>
                   </td>
                 </tr>
@@ -88,23 +88,23 @@
             <div class="mt-2 flex gap-2 flex-wrap">
               <!-- Need to replace the href with the actual link -->
               <a href="/patients"
-                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                class="border border-[#004687] text-[#004687] px-3 py-1 rounded hover:text-white hover:bg-[#004687] flex items-center">
                 Recent Prescription
               </a>
               <a href="/patients"
-                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                class="border border-[#004687] text-[#004687] px-3 py-1 rounded hover:text-white hover:bg-[#004687] flex items-center">
                 Recent Test Reports
               </a>
               <a href="/patients"
-                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                class="border border-[#004687] text-[#004687] px-3 py-1 rounded hover:text-white hover:bg-[#004687] flex items-center">
                 All Prescriptions
               </a>
               <a href="/patients"
-                class="border border-blue-600 text-blue-600 px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                class="border border-[#004687] text-[#004687] px-3 py-1 rounded hover:text-white hover:bg-[#004687] flex items-center">
                 All Test Reports
               </a>
               <button (click)="toggleAddDiv()"
-                class="border border-blue-600 bg-blue-600 text-white px-3 py-1 rounded hover:text-white hover:bg-blue-700 flex items-center">
+                class="border border-[#004687] bg-[#004687] text-white px-3 py-1 rounded hover:text-white hover:bg-[#336b9f] flex items-center">
                 <i class="fas mr-2" [ngClass]="{'fa-plus': !showAddDiv, 'fa-minus': showAddDiv}"></i> {{!showAddDiv?'Add New':'Close'}}
               </button>
             </div>
@@ -169,11 +169,11 @@
 
                 <div class="my-2" *ngIf="!EnableFileUpdate">
                   <button type="button" (click)="adddynamicReport()"
-                    class="text-blue-500 font-bold hover:text-blue-700">
+                    class="text-[#004687] font-bold hover:text-[#336b9f]">
                     <i class="fas fa-plus mr-2"></i>Add</button>
                 </div>
                 <div class="flex justify-end">
-                  <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-700 ml-auto"
+                  <button type="submit" class="bg-[#004687] text-white px-3 py-1 rounded-md hover:bg-[#336b9f] ml-auto"
                     (click)="Submitreports()">Submit</button>
                 </div>
               </form>
