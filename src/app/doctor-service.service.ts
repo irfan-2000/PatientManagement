@@ -49,8 +49,7 @@ ValidateLogin(logindata: any): Promise<any>
  AddUpdateDoctor(formData: any) {
   const token = localStorage.getItem('token');  
   const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
+    'Authorization': `Bearer ${token}`
   });
   
   return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctor`, formData, {
@@ -135,7 +134,7 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
   .catch(error => {
     if (error.status == 401) 
         {
-        this.router.navigate(['']);
+        this.router.navigate(['/login']);
         return;
       }
       console.error("API Error", error);
@@ -146,32 +145,24 @@ const token = localStorage.getItem('token'); // Or wherever you store your token
 
 
 
+ 
 
-DeleteDoctor(Id:Number): Promise<any> 
-{  
-
-const token = localStorage.getItem('token'); // Or wherever you store your token
+DeleteDoctor(payload:any) {
+  const token = localStorage.getItem('token');  
+  
+  let params = new HttpParams();
+  params = params.append("payload", payload.toString());
 
   const headers = new HttpHeaders({
-    'Authorization': `Bearer ${token}`
-  });
- 
+    'Authorization': `Bearer ${token}`  });
+  
+  return this.http.post<any>(`${this.baseurl}api/DeleteDoctor`, {}, {
+    headers: headers,
 
-const params = new HttpParams()
- 
-.set('DoctorId',Id.toString());
-  return this.http.delete<any>(`${this.baseurl}DeleteDoctor`, 
-  { 
-    params,headers
-  })
-  .toPromise()
-  .then(response => response)
-  .catch(error => {
-      console.error("API Error", error);
-      return error;
+    withCredentials: true,
+    params
   });
 }
-
 
 
 
@@ -198,19 +189,37 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
 
 
  
- DoctorSessions(formData: any) {
+ DoctorSessions(formData: any,OldPayload:any = '' ) 
+ {
   const token = localStorage.getItem('token');  
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   });
-  
+ 
+ 
   return this.http.post<any>(`${this.baseurl}api/AddUpdateDoctorSession`, formData, {
     headers: headers,
     withCredentials: true
   });
 } 
 
+ 
+ DeleteDoctorSessions(formData: any )
+  {
+  const token = localStorage.getItem('token');  
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+ 
+  debugger
+  return this.http.post<any>(`${this.baseurl}api/DeleteDoctorSession`, formData, {
+    headers: headers,
+    withCredentials: true
+  });
+  
+} 
 
 
 GetDoctorSessions()

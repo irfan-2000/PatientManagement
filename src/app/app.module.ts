@@ -30,6 +30,8 @@ import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.com
 import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.component';
 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
+import { TopStripComponent } from './top-strip/top-strip.component';
 
 
 @NgModule({
@@ -47,6 +49,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     LoaderComponent,
     AddEditPatientComponent,
     DoctorSessionsComponent,
+    AdminLoginComponent,
+    TopStripComponent,
   ],
   imports: [
     BrowserModule,

@@ -24,8 +24,9 @@ export class DoctorSessionsComponent implements OnInit {
   selectedDoctor: any = null;
 
   doctorSessions: any = {}
-  daysOfTheWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  selectedDays: number[] = [];
+  daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+   selectedDays: number[] = [];
 
   hours = Array.from({ length: 24 }, (_, i) => i); // 0 - 23
   minutes = Array.from({ length: 12 }, (_, i) => i * 5);
@@ -33,7 +34,7 @@ export class DoctorSessionsComponent implements OnInit {
   constructor(private doctorservice: DoctorServiceService, private router: Router, private fb: FormBuilder, private toastr: ToastrService) {
     this.sessionForm = this.fb.group({
       doctorId: [null, [Validators.required, this.validateDoctorSelection.bind(this)]],
-      slotDuration: [30, Validators.required],
+      slotDuration: [{value:30,  disabled:true }],
       sessions: this.fb.array([])
     });
 
@@ -62,7 +63,8 @@ export class DoctorSessionsComponent implements OnInit {
     );
   }
 
-  onDoctorSelected(event: any): void {
+  onDoctorSelected(event: any): void
+   {
     console.log("Selection event:", event);
     const doctorId = event.option.value;
     this.selectedDoctor = this.doctors.find(d => d.doctorId === doctorId);
@@ -195,7 +197,8 @@ this.sessions.push(this.fb.group({
     }
   }
 
-  onDaySelect(event: any): void {
+  onDaySelect(event: any): void
+   {
     const value = parseInt(event.target.value, 10);
     if (event.target.checked) {
       if (!this.selectedDays.includes(value)) this.selectedDays.push(value);
@@ -209,10 +212,11 @@ this.sessions.push(this.fb.group({
 
   submitForm(): void 
   {
-    if (this.sessionForm.invalid || this.selectedDays.length === 0) {
+    if (this.sessionForm.invalid || this.selectedDays.length === 0)
+       {
       alert("Please fill all required fields and select days.");
-      return;
-    }
+      return; 
+      }
 
     const formValue = this.sessionForm.value;
     const sessionsFormatted = formValue.sessions.map((s: any, index: number) => {
@@ -230,17 +234,22 @@ this.sessions.push(this.fb.group({
       timeSlot: formValue.slotDuration,
       days: this.selectedDays,
       sessions: sessionsFormatted,
-      flag: 'I'
-    };  
+      flag: 'I',
+            IsEditing:this.IsEditing 
+      //OldPayload : this.OldPayload
+      
+     };
 
-    console.log("Old Payload",this.OldPayload);
-    console.log('Final Payload:', JSON.stringify(payload));
-
-    debugger
-
+     debugger
+     const OldPayload =
+      {
+      OldPayload : this.OldPayload
+     }
+    
+ 
     try {
       // Send formData to the backend API
-      const response = this.doctorservice.DoctorSessions(payload).subscribe({
+      const response = this.doctorservice.DoctorSessions(payload ,OldPayload).subscribe({
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) {
@@ -263,9 +272,66 @@ this.sessions.push(this.fb.group({
       console.error('Error:', error);
       //  this.ErrorMsg = "An error occurred while submitting the form.";
     }
-
-
   }
+
+ DeleteDoctorSession(item:any)
+{
+   this.EditSession(item) ; 
+    const formValue = this.sessionForm.value;
+    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => {
+      const start = `${s.startHour.toString().padStart(2, '0')}:${s.startMinute.toString().padStart(2, '0')}`;
+      const end = `${s.endHour.toString().padStart(2, '0')}:${s.endMinute.toString().padStart(2, '0')}`;
+      return {
+        sessionName: `${index + 1}`,
+        starttime: `${start}`,
+        endtime: `${end}`
+      };
+    });
+
+
+    const payload = {
+      doctorId: formValue.doctorId,
+      timeSlot: formValue.slotDuration,
+      days: this.selectedDays,
+      sessions: sessionsFormatted,
+      flag: 'I'
+      //OldPayload:this.OldPayload || null
+     };
+    
+     console.log('Final Payload for Delete:', JSON.stringify(payload));
+
+  
+  
+  try {
+      // Send formData to the backend API
+      const response = this.doctorservice.DeleteDoctor(payload ).subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200) 
+            {
+       
+          } else if (response.status === 401) {
+           }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+         }
+
+
+      });
+
+
+    } catch (error: any) {
+      console.error('Error:', error);
+     }
+
+}
+
+
+
+
+
+
 
   showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
     switch (type) {
@@ -332,8 +398,7 @@ this.sessions.push(this.fb.group({
     return this.hours;
   }
 
-  // Add a new method to get available minutes
-  getAvailableMinutes(i: number, request: string): number[] {
+   getAvailableMinutes(i: number, request: string): number[] {
     const currentSession = this.sessions.at(i);
     const startHour = currentSession.get('startHour')?.value;
     const endHour = currentSession.get('endHour')?.value;
@@ -470,7 +535,7 @@ this.sessions.push(this.fb.group({
 
           console.log(error);
           if (error.status === 401) {
-            this.router.navigate(['/']);
+            this.router.navigate(['/login']);
 
           } else if (error.status === 500 && error.error) {
 
@@ -488,51 +553,48 @@ this.sessions.push(this.fb.group({
 
 
   OldPayload: any = {}
-  IsEditing:boolean = false;
-  EditSession(item: any)
-   {
- 
-   // this.showToast('warning', 'Editing session', '');
-    console.log("editing items", item,item.startTime.split(':')[0]);
-    this.IsEditing = true;
-    this.OldPayload = item;
+IsEditing:boolean = false;
+  EditSession(item: any) 
+  {
+    this.showToast('warning', 'Editing session', '');
+     this.IsEditing = true;
+    this.OldPayload =  (item) ;
 
     this.sessionForm.patchValue({
-      slotDuration: Number(item.timeSlot) || 30,
-      doctorId: item.doctorId     
+    slotDuration:Number(item.timeSlot),
+    doctorId:item.doctorId
     });
-
-  
-    this.selectedDays = item.dayId
-    this.openAddEditSession();
-
+     
     
-    const Timingpayload  ={
-      startHour: item.startTime.split(':')[0],
-      startMinute: item.startTime.split(':')[1],
-      endHour: item.endTime.split(':')[0] ,
-      endMinute: item.endTime.split(':')[1]
-    };
- 
-     debugger
+    this.selectedDays = item.dayId;
+     this.selectedDays = (typeof item.dayId === 'string')
+  ? item.dayId.split(',').map(Number)
+  : Array.isArray(item.dayId)
+    ? item.dayId
+    : [];
 
 
-      
+      this.sessions.clear(); 
+  if (item.startTime && item.endTime) {
+    const [startHour, startMinute] = item.startTime.split(':').map(Number);
+    const [endHour, endMinute] = item.endTime.split(':').map(Number);
 
-      this.addSession(Timingpayload);
-
+    this.sessions.push(this.fb.group({
+      startHour: [startHour, Validators.required],
+      startMinute: [startMinute, Validators.required],
+      endHour: [endHour, Validators.required],
+      endMinute: [endMinute, Validators.required]
+    }));
+  } else {
+    // fallback: add a blank session if data is missing
+    this.addSession();
   }
+    
+  
+    this.openAddEditSession();  
 
 
 
-
-
-
-
-
-
-
-
-
+}
 
 }

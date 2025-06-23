@@ -10,6 +10,7 @@ import { DoctorServiceService } from '../doctor-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { error } from 'console';
 import { Router } from '@angular/router';
+import { map, Observable, startWith } from 'rxjs';
 
 
 @Component({
@@ -44,7 +45,7 @@ export class DoctorComponent {
   years: number[] = [];
 
   specializations: { specializationId: string; name: string; hospitalId: string; status: string }[] = [];
-
+  filteredSpecialization:any = Observable<any[]>
   doctorForm: FormGroup;
   Allitems: { specializationId: string; name: string; hospitalId: string; status: string; }[] = [];
 
@@ -98,9 +99,33 @@ export class DoctorComponent {
 
   }
 
+  private _filterSpecialization(value: string): any[] {
+    if (!value) return this.specializations;
+    const filterValue = value.toLowerCase().trim();
+    // Replace hyphens with spaces for searching
+    const searchTerms = filterValue.replace(/-/g, ' ').split(' ').filter(term => term.length > 0);
+
+    return this.specializations.filter(spec => {
+      const specString = `${spec.name}`.toLowerCase();
+      return searchTerms.every(term => specString.includes(term));
+    });
+  }
+
   ngOnInit() {
     this.GetSpecialization();
     this.GetAllDoctors();
+
+    this.filteredSpecialization = this.doctorForm.get('Specialization')!.valueChanges.pipe(
+      startWith(''),
+      map(value => {
+        console.log("Filter value:", value);
+        if (typeof value === 'string') {
+          return this._filterSpecialization(value);
+        }
+        return this.doctors;
+      })
+    );
+
   }
 
 
@@ -153,182 +178,26 @@ export class DoctorComponent {
     }
   }
 
-
-  onSpecializationChange(selectedItems: string[]) 
-  {
-     
-   
-    
-   // this.GetSpecialization()
-   this.doctorForm.controls['Specialization'].setValue(selectedItems);
-
-  }
-
-  // Handle file selection for profile image
-  onFileImport(event: any) {
-
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.profileImagePreview = e.target.result; // Update the preview image
-
-        this.doctorForm.patchValue({ ProfileImage: e.target.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
   SubmitDoctorForm: object = {}
 
   showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
     switch (type) {
       case 'success':
-        this.toastr.success(message, title || "Success");
+        this.toastr.success(message, title);
         break;
       case 'error':
-        this.toastr.error(message, title || "Error");
+        this.toastr.error(message, title);
         break;
       case 'warning':
-        this.toastr.warning(message, title || "Warning");
+        this.toastr.warning(message, title);
         break;
       case 'info':
-        this.toastr.info(message, title || "Information");
+        this.toastr.info(message, title);
         break;
       default:
         console.error('Invalid toast type');
     }
   }
-
-
-  submitForm() {
-
-
-    // Check if the form is valid
-    if (this.ValidateFormFields() > 0) {
-
-      const formData = new FormData();
-
-      formData.append('Firstname', this.doctorForm.get('FirstName')?.value || '');
-      formData.append('LastName', this.doctorForm.get('LastName')?.value || '');
-      formData.append('Email', this.doctorForm.get('Email')?.value || '');
-      formData.append('Mobile', this.doctorForm.get('Mobile')?.value || '');
-      formData.append('Dob', this.doctorForm.get('Dob')?.value || '');
-      formData.append('Age', this.doctorForm.get('Age')?.value || '');
-      formData.append('Gender', this.doctorForm.get('Gender')?.value || '');
-      formData.append('Experience', this.doctorForm.get('Experience')?.value || '0');
-      formData.append('Full_Address', this.doctorForm.get('Full_Address')?.value || '');
-      formData.append('City', this.doctorForm.get('City')?.value || '');
-      formData.append('Country', this.doctorForm.get('Country')?.value || '');
-      formData.append('PostalCode', this.doctorForm.get('PostalCode')?.value || '');
-      formData.append('IsActive', this.doctorForm.get('IsActive')?.value ? 'true' : 'false');
-
-      console.log("Raw Qualifications:", this.qualificationsArray.value);
-      console.log("Type of Qualifications:", typeof this.qualificationsArray.value);
-      console.log("JSON.stringify(Qualifications):", JSON.stringify(this.qualificationsArray.value));
-
-      formData.append("Qualifications", JSON.stringify(this.qualificationsArray.value));
-
-      if (this.doctorId !== undefined && this.doctorId !== null) {
-        formData.append("DoctorId", this.doctorId.toString())
-      }
-      const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
-
-      const specializationIds = selectedSpecializationNames
-        .map((name: string) => {
-          const specialization = this.specializations.find(spec => spec.name === name);
-          return specialization ? specialization.specializationId : null;
-        })
-      // .filter((id: null) => id !== null); // Remove null values
-
-      formData.append("Specialization", (specializationIds));
-
-      // Append Profile Image (if any)
-      // Append Profile Image (if any)
-
-      const fileInput = document.getElementById('profileImage') as HTMLInputElement;
-
-      if (fileInput && fileInput.files && fileInput.files.length > 0) {
-        formData.append('ProfileImage', fileInput.files[0]);
-      }
-
-
-      if (!(fileInput.files && fileInput.files.length > 0)) {
-
-        if (this.profileImagePreview != null && this.profileImagePreview != undefined) {
-          const url = "https://localhost:7203/Uploads/DoctorImages/638775881075810250.png";
-          const image = this.profileImagePreview.toString();
-
-          const imageName = image.split("DoctorImages/")[1];
-          console.log(imageName); // Output: "638775881075810250.png"
-          formData.append('PreviewImage', imageName.toString() || "");
-
-        }
-      }
-
-      // Append Hospital ID
-      const hospitalId = localStorage.getItem('HospitalId');
-      if (hospitalId) {
-        formData.append('HospitalId', hospitalId);
-      }
-
-
-      try {
-        // Send formData to the backend API
-        const response = this.doctorservice.AddUpdateDoctor(formData).subscribe({
-          next: (response: any) => {
-            console.log(response);
-            if (response.status == 200) {
-              this.showToast('success', 'Add Success!!', 'Add');
-              window.location.reload();
-            } else if (response.status === 401) {
-              this.showToast('error', 'Unauthorized access', 'Error');
-            }
-          },
-          error: (error: any) => {
-            console.error('Error:', error);
-            this.ErrorMsg = "An error occurred while submitting the form.";
-          }
-
-
-        });
-
-
-      } catch (error: any) 
-      {
-        console.error('Error:', error);
-        this.ErrorMsg = "An error occurred while submitting the form.";
-      }
-
-
-
-    } else {
-      this.ErrorMsg = "Please fill all the fields.";
-
-      // Collect error messages for invalid fields
-      const errorMessages: { [key: string]: string } = {};
-      Object.keys(this.doctorForm.controls).forEach(key => {
-        const control = this.doctorForm.get(key);
-
-        // Handle FormArray separately
-        if (control instanceof FormArray) {
-          const formArray = control as FormArray;
-          formArray.controls.forEach((formControl, index) => {
-            if (formControl instanceof FormControl && formControl.invalid) {
-              errorMessages[`${key}[${index}]`] = this.getErrorMessage(formControl, `${key}[${index}]`);
-            }
-          });
-        } else if (control instanceof FormControl && control.invalid) {
-          errorMessages[key] = this.getErrorMessage(control, key);
-        }
-      });
-
-      // Log or display the error messages
-      console.log('Form Errors:', errorMessages);
-      this.displayErrorMessages(errorMessages); // Call a method to display errors in the UI
-    }
-  }
-
  
 UpdateDoctorDetails(doctorform :any)
 {
@@ -339,33 +208,6 @@ UpdateDoctorDetails(doctorform :any)
 
   this. GetDoctorDetails(doctorform.id);
 
-  }
-
-  // Helper function to get error messages
-  getErrorMessage(control: FormControl, controlName: string): string {
-    if (control.hasError('required')) {
-      return `${controlName} is required.`;
-    } else if (control.hasError('email')) {
-      return 'Please enter a valid email.';
-    } else if (control.hasError('invalidDate')) {
-      return 'Please enter a valid date.';
-    } else if (control.hasError('futureDate')) {
-      return 'Date cannot be in the future.';
-    } else if (control.hasError('pattern')) {
-      return 'Please enter a valid value.';
-    } else if (control.hasError('min')) {
-      return `Value must be greater than or equal to ${control.errors?.['min'].min}.`;
-    } else if (control.hasError('requiredTrue')) {
-      return 'You must accept the terms & conditions.';
-    }
-    // Add more custom error messages as needed
-    return 'Invalid value.';
-  }
-
-
-
-  displayErrorMessages(errorMessages: { [key: string]: string }) {
-    this.errorMessages = errorMessages; // Update the errorMessages variable
   }
 
   // Reset form to default values
@@ -390,15 +232,6 @@ UpdateDoctorDetails(doctorform :any)
       reader.readAsDataURL(file);
     }
   }
-
-
-  onSelectionChange(selectedItems: string[]) {
-    console.log('Selected Items:', selectedItems);
-    // Handle the selected items here
-  }
-
-
-
 
   numbersOnly(event: KeyboardEvent) {
     const input = event.key;
@@ -460,7 +293,16 @@ UpdateDoctorDetails(doctorform :any)
       if (response.status === 200) {
 
         this.specializations = response.specializationData;
-         
+        this.filteredSpecialization = this.doctorForm.get('Specialization')!.valueChanges.pipe(
+          startWith(''),
+          map(value => {
+            console.log("Filter value:", value);
+            if (typeof value === 'string') {
+              return this._filterSpecialization(value);
+            }
+            return this.doctors;
+          })
+        );
      }
 
       if (response.status == 401) {
@@ -473,24 +315,60 @@ UpdateDoctorDetails(doctorform :any)
   }
 
 
-  async DeleteDoctor(Id: number) {
+  async DeleteDoctor(Id: number) 
+  {
 
-    try {
-      const response = await this.doctorservice.DeleteDoctor(Id);
-      console.log(response)
-      if (response.status === 200) {
 
-        // (type: 'success' | 'error' | 'warning' | 'info', message: string, title: string)
-        this.showToast('success', 'Delete Success!!', 'Deleted');
+
+
+      try {
+        this.doctorservice.DeleteDoctor(Id).subscribe({
+          next: (response: any) =>
+             {
+             if (response.status == 200)
+               {
+              this.showToast('success', "Doctor has been deleted","")
+               this.GetAllDoctors()
+              }
+
+        if(response.status == 403)
+              {
+              this.showToast('error', "A doctor with this email or mobile already exists","User conflict")
+            }
+
+       if(response.status == 500)
+              {
+              this.showToast('error', "Internal server error","");
+            }
+
+
+          },
+          error: (error: any) => {
+
+           console.log(error);
+          },
+        });
+      } catch (error: any) {
+        console.error('API error:', error);
       }
 
-      if (response.status == 500) {
-        this.showToast('error', 'Error deleting data', 'Error');
-      }
-    } catch (error: any) {
-      console.error('Error:', error);
-      this.ErrorMsg = "An error occurred while submitting the form.";
-    }
+    // try {
+    //   const response = await this.doctorservice.DeleteDoctor(Id);
+    //   console.log(response)
+    //   if (response.status === 200)
+    //      {
+
+    //     // (type: 'success' | 'error' | 'warning' | 'info', message: string, title: string)
+    //     this.showToast('success', 'Delete Success!!', 'Deleted');
+    //   }
+
+    //   if (response.status == 500) {
+    //     this.showToast('error', 'Error deleting data', 'Error');
+    //   }
+    // } catch (error: any) {
+    //   console.error('Error:', error);
+    //   this.ErrorMsg = "An error occurred while submitting the form.";
+    // }
 
   }
 
@@ -543,7 +421,7 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
         formData.append("DoctorId", this.doctorId.toString())
       }
       const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
-
+debugger
       const specializationIds = selectedSpecializationNames
         .map((name: string) => {
           const specialization = this.specializations.find(spec => spec.name === name);
@@ -551,7 +429,7 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
         })
       // .filter((id: null) => id !== null); // Remove null values
 
-      formData.append("Specialization", (specializationIds));
+      formData.append("Specialization", JSON.stringify(selectedSpecializationNames));
 
 
 
@@ -582,19 +460,43 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
 
       try {
         this.doctorservice.AddUpdateDoctor(formData).subscribe({
-          next: (response: any) => {
-            if (response.status === 200) {
-              this.showToast('success', 'Doctor details updated successfully!', 'Success');
+          next: (response: any) =>
+             {
+             if (response.status == 200)
+               {
+              if(this.IsEdition)
+                {
+                this.showToast('success', 'Doctor details updated successfully!', 'Success');
+              }else
+              {
+                this.showToast('success', 'Doctor added successfully!', 'Success');
+              } 
               window.location.reload();
             }
+
+        if(response.status == 403)
+              {
+              this.showToast('error', "A doctor with this email or mobile already exists","User conflict")
+            }
+
+       if(response.status == 500)
+              {
+              this.showToast('error', "Internal server error","");
+            }
+
+
           },
           error: (error: any) => {
 
             console.log(error);
-            if (error.status === 401) {
-            } else if (error.status === 500 && error.error) {
+            if (error.status == 401) {
+            } else if (error.status == 500 && error.error) {
 
-            } else {
+            }
+             else if(error.status == 403)
+              {
+              this.showToast('error', "A doctor with this email or mobile already exists","User conflict")
+            }else {
               console.error('Unhandled API error:', error);
             }
           },
@@ -707,17 +609,17 @@ parseCustomDate(dateStr: string): Date | null
       errorcode = 1;
     }
 
-    if (this.doctorForm.get('Qualifications')?.value.length < 1 || this.doctorForm.get('Qualifications')?.value == undefined || this.doctorForm.get('Qualifications')?.value == null) {
+    if (this.doctorForm.get('Qualifications')?.value.length < 1 || this.doctorForm.get('Qualifications')?.value == undefined || this.doctorForm.get('Qualifications')?.value == null) 
+      {
       this.errorMessages['Qualifications'] = 'Please enter at least 1 qualifications!';
       errorcode = 1;
     }
+  if (this.ValidateQualification() === 1) 
+    {
+    errorcode = 1;
+  }
+
  
-
-
-    if (this.doctorForm.get('IsActive')?.value == '' || this.doctorForm.get('IsActive')?.value == undefined || this.doctorForm.get('IsActive')?.value == null) {
-      this.errorMessages['IsActive'] = 'Status is required!';
-      errorcode = 1;
-    }
 
     if (this.doctorForm.get('IsAgreedTerms')?.value == '' || this.doctorForm.get('IsAgreedTerms')?.value == undefined || this.doctorForm.get('IsAgreedTerms')?.value == null) {
       this.errorMessages['IsAgreedTerms'] = 'You must agree to the terms and conditions!';
@@ -737,7 +639,8 @@ parseCustomDate(dateStr: string): Date | null
     return emailPattern.test(email);
   }
 
-  ValidateQualification(): number {
+  ValidateQualification(): number 
+  {
     const qualifications = this.doctorForm.get('Qualifications') as FormArray;
 
     if (!qualifications || qualifications.length === 0) {
@@ -752,17 +655,17 @@ parseCustomDate(dateStr: string): Date | null
       const year = control.get('yearOfGraduation')?.value;
 
       if (!qualification) {
-        this.errorMessages['qualification'] = 'Qualification is required!';
+        this.errorMessages['Qualifications'] = 'Qualification is required!';
         return 1;
       }
 
       if (!institution) {
-        this.errorMessages['qualification'] = 'Institution is required!';
+        this.errorMessages['Qualifications'] = 'Institution is required!';
         return 1;
       }
 
       if (!year) {
-        this.errorMessages['qualification'] = 'Year of graduation is required!';
+        this.errorMessages['Qualifications'] = 'Year of graduation is required!';
         return 1;
       }
     }
@@ -845,4 +748,30 @@ parseCustomDate(dateStr: string): Date | null
   }
 
 
+  displayFn = (specializationId: string): string => {
+
+    console.log("DisplayFn called with:", specializationId, this.specializations);
+    if (!specializationId || !this.doctors) return '';
+    const spec = this.specializations.find(d => {
+      console.log("reh doc", d);
+      return d.specializationId == specializationId
+    });
+    console.log("Found Specializa:", spec);
+    if (spec) {
+      console.log("Returning formatted string");
+      return `${spec.name}`;
+    }
+    return '';
+  }
+
+  selectedSpecialization:any;
+  OnspecilaizationSelected(event: any): void {
+    console.log("Selection event:", event);
+    const specializationId = event.option.value;
+    this.selectedSpecialization = this.specializations.find(d => d.specializationId == specializationId);
+    this.doctorForm.get('Specialization')?.setValue(specializationId);
+  }
+
 }
+
+

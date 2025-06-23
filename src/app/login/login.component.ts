@@ -13,13 +13,13 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   
   loginForm:FormGroup;
-
+  loading:boolean = false;
   Showerror:Boolean=false;
   ValidationErrorMsg :string = "";
     
  constructor(private docservice:DoctorServiceService,private router: Router)
  {
-  this.CheckRememberMe();
+  //this.CheckRememberMe();
  this.loginForm = new FormGroup(
   {
     UserId:new FormControl('Receptionist_IRFAN_HOSP0001001',[Validators.required]),
@@ -34,6 +34,7 @@ export class LoginComponent {
   async ValidateLogin()
   {
     this.Showerror= true;
+    this.ValidationErrorMsg = '';
     if(this.loginForm.invalid)
     {
       this.Showerror = true;
@@ -55,6 +56,7 @@ export class LoginComponent {
       this.ValidationErrorMsg ="Enter the Hospital";      return;
     }
 
+    this.loading = true;
 
     localStorage.clear();
     try
@@ -80,7 +82,7 @@ export class LoginComponent {
       this.ValidationErrorMsg = error.error.message;  
     }
 
-    
+    this.loading = false;
   }
 
 
