@@ -7,6 +7,7 @@ import { findIndex } from 'rxjs';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { connect } from 'net';
 
 @Component({
   selector: 'app-doctor-sessions',
@@ -126,7 +127,6 @@ export class DoctorSessionsComponent implements OnInit {
 
   addSession(): void {
     const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
-
     // Calculate start time for new session
     let startHour = 0;
     let startMinute = 0;
@@ -331,11 +331,11 @@ export class DoctorSessionsComponent implements OnInit {
 
 
   getAvailableStartHours(i: number, request: string): number[] {
+    console.log("reh ", i, request)
     if (request === 'Start') {
       if (i === 0) {
         return this.hours;
       }
-
       // Get the previous session's end hour
       const prevSession = this.sessions.at(i - 1);
       const prevEndHour = prevSession.get('endHour')?.value;
@@ -351,9 +351,19 @@ export class DoctorSessionsComponent implements OnInit {
 
     if (request === 'End') {
       const currentSession = this.sessions.at(i);
+      console.log("Reh inside end", request)
       const startHour = currentSession.get('startHour')?.value;
+      const endHour = currentSession.get('endHour')?.value
+      console.log("reh eh init", endHour)
       if (i == 0) {
-        return this.hours.filter(hour => hour >= startHour);
+        const ho = this.hours.filter(hour => hour >= startHour);
+        console.log("Before hou", ho, endHour == 0 ? ho[0] : endHour)
+        // debugger;
+        currentSession.patchValue({
+          endHour: endHour == 0 ? ho[0] : endHour
+        })
+        console.log("hou", ho, endHour)
+        return ho
       }
 
       // If no start hour is selected or no hours are available after start hour
