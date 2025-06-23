@@ -230,10 +230,13 @@ export class DoctorSessionsComponent implements OnInit {
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) {
-            //this.showToast('success', 'Add Success!!', 'Add');
-            // window.location.reload();
-          } else if (response.status === 401) {
-            // this.showToast('error', 'Unauthorized access', 'Error');
+            this.showToast('success', 'Your session was successfully added!', '');
+            this.closeAddEditSession();
+            this.GetDoctorSessions();
+          } else if (response.status == 401) {
+            this.showToast('error', 'Session overlap', '');
+          }else if (response.status == 500) {
+            this.showToast('error', 'Internal server error', '');
           }
         },
         error: (error: any) => {
