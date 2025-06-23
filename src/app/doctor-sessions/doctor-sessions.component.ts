@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { DoctorServiceService } from '../doctor-service.service';
 import { Router } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Form, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { json } from 'stream/consumers';
 import { findIndex } from 'rxjs';
 import { Observable, of } from 'rxjs';
@@ -90,8 +90,7 @@ export class DoctorSessionsComponent implements OnInit {
 
 
 
-  displayFn = (doctorId: string): string 
-  => {
+  displayFn = (doctorId: string) => {
 
     console.log("DisplayFn called with:", doctorId, this.doctors);
     if (!doctorId || !this.doctors) return '';
@@ -117,20 +116,26 @@ export class DoctorSessionsComponent implements OnInit {
     this.sessions.clear();
     this.selectedDays = [];
     this.addSession();
+    this.IsEditing= false;
   }
 
   get sessions(): FormArray {
     return this.sessionForm.get('sessions') as FormArray;
   }
 
-  addSession(): void {
+  addSession(q:any = ""): void 
+  {
+     
+
+
+
     const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
 
-    // Calculate start time for new session
-    let startHour = 0;
+     let startHour = 0;
     let startMinute = 0;
 
-    if (this.sessions.length > 0) {
+    if (this.sessions.length > 0) 
+      {
       const prevSession = this.sessions.at(this.sessions.length - 1);
       const prevEndHour = prevSession.get('endHour')?.value;
       console.log("reh prevEndHour", prevEndHour);
@@ -139,19 +144,36 @@ export class DoctorSessionsComponent implements OnInit {
       startMinute = 0;
 
       // Handle case where end hour is 23
-      if (startHour > 23) {
+      if (startHour > 23)
+         {
         startHour = 0;
       }
     }
-    console.log("reh startHour", startHour);
 
-    this.sessions.push(this.fb.group({
+    if(q != "" && q != undefined )
+    {
+       this.sessionForm.reset();
+    this.sessions.clear();
+       this.sessions.push(this.fb.group({
+     startHour: [ q.startHour, Validators.required],
+      startMinute: [q.startMinute, Validators.required],
+      endHour: [q.endHour, Validators.required],
+      endMinute: [q.endMinute, Validators.required]
+    }));
+
+ 
+    }else{
+this.sessions.push(this.fb.group({
       startHour: [startHour, Validators.required],
       startMinute: [startMinute, Validators.required],
       endHour: [0, Validators.required],
       endMinute: [30, Validators.required]
     }));
 
+    }
+
+    
+ 
     // Update timings for the new session
     this.updateSessionTimings(this.sessions.length - 1);
   }
@@ -185,7 +207,8 @@ export class DoctorSessionsComponent implements OnInit {
     }
   }
 
-  submitForm(): void {
+  submitForm(): void 
+  {
     if (this.sessionForm.invalid || this.selectedDays.length === 0) {
       alert("Please fill all required fields and select days.");
       return;
@@ -208,9 +231,12 @@ export class DoctorSessionsComponent implements OnInit {
       days: this.selectedDays,
       sessions: sessionsFormatted,
       flag: 'I'
-    };
+    };  
 
+    console.log("Old Payload",this.OldPayload);
     console.log('Final Payload:', JSON.stringify(payload));
+
+    debugger
 
     try {
       // Send formData to the backend API
@@ -267,8 +293,7 @@ export class DoctorSessionsComponent implements OnInit {
         return this.hours;
       }
 
-      // Get the previous session's end hour
-      const prevSession = this.sessions.at(i - 1);
+       const prevSession = this.sessions.at(i - 1);
       const prevEndHour = prevSession.get('endHour')?.value;
 
       // If previous session ends at 23, return empty array
@@ -350,7 +375,8 @@ export class DoctorSessionsComponent implements OnInit {
     return this.minutes;
   }
 
-  updateSessionTimings(i: number): void {
+  updateSessionTimings(i: number): void 
+  {
     const session = this.sessions.at(i);
     const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
 
@@ -367,7 +393,8 @@ export class DoctorSessionsComponent implements OnInit {
     });
 
     // Update subsequent sessions
-    for (let j = i + 1; j < this.sessions.length; j++) {
+    for (let j = i + 1; j < this.sessions.length; j++) 
+      {
       const nextSession = this.sessions.at(j);
       const prevSession = this.sessions.at(j - 1);
 
@@ -461,20 +488,51 @@ export class DoctorSessionsComponent implements OnInit {
 
 
   OldPayload: any = {}
-IsEditing:boolean = false;
-  EditSession(item: any) {
-    this.showToast('warning', 'Editing session', '');
-    console.log("editing items", item);
-this.IsEditing = true;
+  IsEditing:boolean = false;
+  EditSession(item: any)
+   {
+ 
+   // this.showToast('warning', 'Editing session', '');
+    console.log("editing items", item,item.startTime.split(':')[0]);
+    this.IsEditing = true;
     this.OldPayload = item;
 
-this.sessionForm.patchValue({
-slotDuration:Number(item.timeSlot),
- doctorId:item.doctorId
-});
-this.selectedDays = item.dayId
+    this.sessionForm.patchValue({
+      slotDuration: Number(item.timeSlot) || 30,
+      doctorId: item.doctorId     
+    });
 
-this.openAddEditSession();
+  
+    this.selectedDays = item.dayId
+    this.openAddEditSession();
+
+    
+    const Timingpayload  ={
+      startHour: item.startTime.split(':')[0],
+      startMinute: item.startTime.split(':')[1],
+      endHour: item.endTime.split(':')[0] ,
+      endMinute: item.endTime.split(':')[1]
+    };
+ 
+     debugger
+
+
+      
+
+      this.addSession(Timingpayload);
+
   }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

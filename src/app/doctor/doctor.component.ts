@@ -108,7 +108,8 @@ export class DoctorComponent {
   createQualification(q: any = ""): FormGroup 
   {
 
-    if (q != "" && q != undefined) {
+    if (q != "" && q != undefined) 
+      {
 
       return new FormGroup({
         qualificationId:  new FormControl(q.qualificationId || null), // Optional, can be null for new qualifications
