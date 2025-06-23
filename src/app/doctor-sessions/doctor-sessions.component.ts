@@ -7,6 +7,7 @@ import { findIndex } from 'rxjs';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { connect } from 'net';
 
 @Component({
   selector: 'app-doctor-sessions',
@@ -126,7 +127,6 @@ export class DoctorSessionsComponent implements OnInit {
 
   addSession(): void {
     const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
-
     // Calculate start time for new session
     let startHour = 0;
     let startMinute = 0;
@@ -330,27 +330,67 @@ export class DoctorSessionsComponent implements OnInit {
   }
 
 
- // Simplified and corrected session dropdown logic
+  getAvailableStartHours(i: number, request: string): number[] {
+    console.log("reh ", i, request)
+    if (request === 'Start') {
+      if (i === 0) {
+        return this.hours;
+      }
+      // Get the previous session's end hour
+      const prevSession = this.sessions.at(i - 1);
+      const prevEndHour = prevSession.get('endHour')?.value;
 
-getAvailableStartHours(i: number, type: string): number[]
- {  if (i === 0) return this.hours;
+      // If previous session ends at 23, return empty array
+      if (prevEndHour >= 23) {
+        return [];
+      }
 
-  const prev = this.sessions.at(i - 1);
-  const prevEndHour = +prev.get('endHour')?.value;
-  const prevEndMinute = +prev.get('endMinute')?.value;
+      // Return only hours that are after the previous session's end hour
+      return this.hours.filter(hour => hour > prevEndHour);
+    }
 
-  if (prevEndHour >= 23 && prevEndMinute >= 59) return [];
+    if (request === 'End') {
+      const currentSession = this.sessions.at(i);
+      console.log("Reh inside end", request)
+      const startHour = currentSession.get('startHour')?.value;
+      const endHour = currentSession.get('endHour')?.value
+      console.log("reh eh init", endHour)
+      if (i == 0) {
+        const ho = this.hours.filter(hour => hour >= startHour);
+        console.log("Before hou", ho, endHour == 0 ? ho[0] : endHour)
+        // debugger;
+        currentSession.patchValue({
+          endHour: endHour == 0 ? ho[0] : endHour
+        })
+        console.log("hou", ho, endHour)
+        return ho
+      }
 
-   return this.hours.filter(hour => hour > prevEndHour || (hour === prevEndHour && prevEndMinute < 59));
+      // If no start hour is selected or no hours are available after start hour
+      if (!startHour || startHour >= 23) {
+        return [];
+      }
 
+      // Check if this is the last session and if previous session ends at 23
+      if (i > 0) {
+        const prevSession = this.sessions.at(i - 1);
+        const prevEndHour = prevSession.get('endHour')?.value;
+        if (prevEndHour >= 23) {
+          return [];
+        }
+      }
+
+      return this.hours.filter(hour => hour >= startHour);
+    }
+
+    return this.hours;
   }
 
-
-getAvailableMinutes(i: number, type: string): number[] {
-  const session = this.sessions.at(i);
-  const startHour = session.get('startHour')?.value;
-  const endHour = session.get('endHour')?.value;
-  const startMinute = session.get('startMinute')?.value;
+   getAvailableMinutes(i: number, request: string): number[] {
+    const currentSession = this.sessions.at(i);
+    const startHour = currentSession.get('startHour')?.value;
+    const endHour = currentSession.get('endHour')?.value;
+    const startMinute = currentSession.get('startMinute')?.value;
 
   if (type === 'End' && startHour === endHour) {
     return this.minutes.filter(m => m > startMinute);
