@@ -7,6 +7,7 @@ import { findIndex } from 'rxjs';
 import { Observable, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { connect } from 'net';
 
 @Component({
   selector: 'app-doctor-sessions',
@@ -39,7 +40,7 @@ export class DoctorSessionsComponent implements OnInit {
     });
 
     this.sessionForm.get('slotDuration')?.valueChanges.subscribe(() => {
-      //this.updateSessionTimings();
+      this.updateSessionTimings();
     });
 
     this.addSession();
@@ -125,63 +126,101 @@ export class DoctorSessionsComponent implements OnInit {
     return this.sessionForm.get('sessions') as FormArray;
   }
 
-  addSession(q:any = ""): void 
-  { 
-    const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
+// addSession(): void {
+//   const slotDuration = +this.sessionForm.get('slotDuration')?.value || 30;
 
-     let startHour = 0;
-    let startMinute = 0;
+//   // Force update of all previous sessions to ensure end times are correct
+//   this.updateSessionTimings();
 
-    if (this.sessions.length > 0) 
-      {
-      const prevSession = this.sessions.at(this.sessions.length - 1);
-      const prevEndHour = prevSession.get('endHour')?.value;
-      console.log("reh prevEndHour", prevEndHour);
-      // Set start time to be the next hour after previous session's end time
-      startHour = +prevEndHour + 1;
-      startMinute = 0;
+//   let startHour = 0;
+//   let startMinute = 0;
 
-      // Handle case where end hour is 23
-      if (startHour > 23)
-         {
-        startHour = 0;
-      }
+//   if (this.sessions.length > 0) {
+//     const prev = this.sessions.at(this.sessions.length - 1);
+//     startHour = +prev.get('endHour')?.value;
+//     startMinute = +prev.get('endMinute')?.value;
+//   }
+
+//   const sessionGroup = this.fb.group({
+//     startHour: [startHour, Validators.required],
+//     startMinute: [startMinute, Validators.required],
+//     endHour: [0, Validators.required],
+//     endMinute: [0, Validators.required]
+//   });
+
+//   // Add reactive update listeners
+//   sessionGroup.get('startHour')?.valueChanges.subscribe(() => {
+//     const idx = this.sessions.length - 1;
+//     this.updateSessionTimings(idx);
+//   });
+//   sessionGroup.get('startMinute')?.valueChanges.subscribe(() => {
+//     const idx = this.sessions.length - 1;
+//     this.updateSessionTimings(idx);
+//   });
+// setTimeout(() => {
+//   this.sessions.push(sessionGroup);
+//   this.updateSessionTimings(this.sessions.length - 1);
+// }, 1);
+
+// }
+addSession(): void {
+  let startHour = 9;
+  let startMinute = 0;
+
+  if (this.sessions.length > 0) 
+    {
+    const last = this.sessions.at(this.sessions.length - 1);
+    startHour = +last.get('endHour')?.value || 0;
+    startMinute = +last.get('endMinute')?.value || 0;
     }
 
-    if(q != "" && q != undefined )
-    {
-       this.sessionForm.reset();
-    this.sessions.clear();
-       this.sessions.push(this.fb.group({
-     startHour: [ q.startHour, Validators.required],
-      startMinute: [q.startMinute, Validators.required],
-      endHour: [q.endHour, Validators.required],
-      endMinute: [q.endMinute, Validators.required]
-    }));
+  const sessionGroup = this.fb.group({
+    startHour: [startHour, Validators.required],
+    startMinute: [startMinute, Validators.required],
+    endHour: [startHour + 1 <= 23 ? startHour + 1 : 23, Validators.required],
+    endMinute: [startMinute, Validators.required]
+  });
+
+  // Auto-adjust next session start time when end time changes
+  sessionGroup.get('endHour')?.valueChanges.subscribe(() => this.syncNextSessions());
+  sessionGroup.get('endMinute')?.valueChanges.subscribe(() => this.syncNextSessions());
+
+  this.sessions.push(sessionGroup);
+}
+syncNextSessions(): void
+ {
+  const sessions = this.sessions;
+  for (let i = 1; i < sessions.length; i++) {
+    const prev = sessions.at(i - 1);
+    const current = sessions.at(i);
+
+    const prevEndHour = +prev.get('endHour')?.value;
+    const prevEndMinute = +prev.get('endMinute')?.value;
+
+    current.patchValue({
+      startHour: prevEndHour,
+      startMinute: prevEndMinute
+    }, { emitEvent: false });
+  }
+}
+formatTime(hour: number, minute: number): string {
+  const h = hour % 12 || 12;
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  const m = minute.toString().padStart(2, '0');
+  return `${h}:${m} ${ampm}`;
+}
+
+
 
  
-    }else{
-  this.sessions.push(this.fb.group({
-      startHour: [startHour, Validators.required],
-      startMinute: [startMinute, Validators.required],
-      endHour: [0, Validators.required],
-      endMinute: [30, Validators.required]
-    }));
 
-    }
-
-     
-    this.updateSessionTimings(this.sessions.length - 1);
+ removeSession(index: number): void {
+  this.sessions.removeAt(index);
+  for (let i = index; i < this.sessions.length; i++) {
+    this.updateSessionTimings(i);
   }
+}
 
-  removeSession(index: number): void {
-    this.sessions.removeAt(index);
-
-    // Update timings for all subsequent sessions
-    if (index < this.sessions.length) {
-      this.updateSessionTimings(index);
-    }
-  }
 
   toggleAllDays(event: any): void {
     if (event.target.checked) {
@@ -246,9 +285,13 @@ export class DoctorSessionsComponent implements OnInit {
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) {
-            //this.showToast('success', 'Add Success!!', 'Add');
-           } else if (response.status === 401) {
-            // this.showToast('error', 'Unauthorized access', 'Error');
+            this.showToast('success', 'Your session was successfully added!', '');
+            this.closeAddEditSession();
+            this.GetDoctorSessions();
+          } else if (response.status == 401) {
+            this.showToast('error', 'Session overlap', '');
+          }else if (response.status == 500) {
+            this.showToast('error', 'Internal server error', '');
           }
         },
         error: (error: any) => 
@@ -345,248 +388,95 @@ export class DoctorSessionsComponent implements OnInit {
   }
 
 
+getAvailableStartHours(i: number): number[] 
+{
+  debugger
+  if (i === 0) return this.hours;
+
+  const prev = this.sessions.at(i - 1);
+  const prevEndHour = +prev.get('endHour')?.value;
+  const prevEndMinute = +prev.get('endMinute')?.value;
+
+   return this.hours.filter(h => h > prevEndHour || (h === prevEndHour));
+}
 
 
-  getAvailableHours(i: number, request: string  ): number[] 
-  {
-    const prevSession = this.sessions.at(this.sessions.length - 1);
-    const prevEndHour = prevSession.get('endHour')?.value;
-     
-     
+getAvailableStartMinutes(i: number): number[]
+ {
+  if (i === 0) return this.minutes;
 
-    let starthour;
-    let startminute;
+  const prev = this.sessions.at(i - 1);
+  const prevEndHour = +prev.get('endHour')?.value;
+  const prevEndMinute = +prev.get('endMinute')?.value;
 
-    let endHour;
-    let endminute;
+  const current = this.sessions.at(i);
+  const selectedHour = +current.get('startHour')?.value;
 
-       let GetSessionNumber;
-       let PrevSessionNumber;
+  if (selectedHour > prevEndHour) return this.minutes;
+  return this.minutes.filter(m => m >= prevEndMinute);
+}
 
-    for(let i =1 ;i<=(this.sessions.length);i++)
-    {
-      if(i == 1 && request =='Start'  ) 
-      {
-          GetSessionNumber = this.sessions.at(i-1);
-          let SetHour = GetSessionNumber.get('startHour')?.value ;
-          this.hours = this.hours; 
-        
-      }
+getAvailableEndHours(i: number): number[]
+ {
+  const session = this.sessions.at(i);
+  const startHour = +session.get('startHour')?.value;
+  const startMinute = +session.get('startMinute')?.value;
 
-      
-       if(i == 1 && request =='End' ) 
-      {
-            GetSessionNumber = this.sessions.at(i-1);
-          let starthour = GetSessionNumber.get('startHour')?.value ;
-           
-          let filteredhours = this.hours.filter(hours=>hours>=starthour);
-           return filteredhours;
-        
-      }
-    
-      else
-      {
+  if (isNaN(startHour) || isNaN(startMinute)) return [];
 
+  return this.hours.filter(h => h > startHour || (h === startHour));
+}
+getAvailableEndMinutes(i: number): number[] 
+{
+  const session = this.sessions.at(i);
+  const startHour = +session.get('startHour')?.value;
+  const startMinute = +session.get('startMinute')?.value;
+  const endHour = +session.get('endHour')?.value;
 
+  if (isNaN(startHour) || isNaN(startMinute) || isNaN(endHour)) return [];
 
-      }
- 
-       
-    }
-return this.hours;
-    // if(this.sessions.length > 1)
-    // {
-
-    // }
-
-    // else
-    // {
-    //   return this.hours.filter(hour => hour >= PreviousEndHour);
-    // }
-
-
-
-    // if (request === 'Start')
-    //    {
-    //   if (i === 0) 
-    //     {
-    //     return this.hours;
-    //   }
- 
-       
-    //    const prevSession = this.sessions.at(i - 1);
-    //   const prevEndHour = prevSession.get('endHour')?.value;
-
-      
-      
-    //   if (prevEndHour >= 23) 
-    //     {
-    //     return [];
-    //    }
-
-
-    // //   return this.hours.filter(hour => hour > prevEndHour);
-    // }
-
-    // if (request === 'End') 
-    //   {
-    //   const currentSession = this.sessions.at(i);
-    //   const startHour = currentSession.get('startHour')?.value;
-    //   if (i == 0) {
-    //     return this.hours.filter(hour => hour >= startHour);
-    //   }
-
-    //   // If no start hour is selected or no hours are available after start hour
-    //   if (!startHour || startHour >= 23) {
-    //     return [];
-    //   }
-
-    //   // Check if this is the last session and if previous session ends at 23
-    //   if (i > 0) {
-    //     const prevSession = this.sessions.at(i - 1);
-    //     const prevEndHour = prevSession.get('endHour')?.value;
-    //     if (prevEndHour >= 23) {
-    //       return [];
-    //     }
-    //   }
-
-    //   return this.hours.filter(hour => hour >= startHour);
-    // }
-
-    // return this.hours;
-
+  if (endHour === startHour) {
+    return this.minutes.filter(m => m > startMinute);
   }
+  return this.minutes;
+}
 
 
 
 
 
-   getAvailableMinutes(i: number, request: string): number[] 
-   {
-    const currentSession = this.sessions.at(i);
-    const startHour = currentSession.get('startHour')?.value;
-    const endHour = currentSession.get('endHour')?.value;
-    const startMinute = currentSession.get('startMinute')?.value;
+updateSessionTimings(i: number = 0): void {
+  const slot = +this.sessionForm.get('slotDuration')?.value || 30;
 
+  for (let j = i; j < this.sessions.length; j++) {
+    const session = this.sessions.at(j);
+    let sh = 0;
+    let sm = 0;
 
-       let GetSessionNumber;
-       let PrevSessionNumber;
+    if (j === 0) {
+      sh = +session.get('startHour')?.value || 0;
+      sm = +session.get('startMinute')?.value || 0;
+    } else {
+      const prev = this.sessions.at(j - 1);
+      sh = +prev.get('endHour')?.value;
+      sm = +prev.get('endMinute')?.value;
 
-  for(let i =1 ;i<=(this.sessions.length);i++)
-    {
-
-    if(i == 1 && request =='Start' ) 
-      {
-
-          GetSessionNumber = this.sessions.at(i-1);
-          let SetHour = GetSessionNumber.get('startMinute')?.value ;
-           this.minutes = this.minutes;
-        
-      }
- 
-     if( i == 1 && request =='End' ) 
-       {
-          GetSessionNumber = this.sessions.at(i-1);
-
-          let startminute = GetSessionNumber.get('endMinute')?.value ;
-          debugger
-          if(GetSessionNumber.get('startHour')?.value == GetSessionNumber.get('endHour')?.value)
-          {
-              let filteredminutes = this.minutes.filter(minutes=>minutes >= startminute);
-             return filteredminutes;
-          }else
-          {
-            return this.minutes
-          }
-        
-              
-        }
-
-
+      session.patchValue({
+        startHour: sh,
+        startMinute: sm
+      }, { emitEvent: false });
     }
 
+    const st = new Date(0, 0, 0, sh, sm);
+    const et = new Date(st.getTime() + slot * 60000);
 
-
- 
-    // // If no hours are available, return empty array for minutes
-    // if (request === 'Start' && i > 0) {
-    //   const prevSession = this.sessions.at(i - 1);
-    //   const prevEndHour = prevSession.get('endHour')?.value;
-    //   if (prevEndHour >= 23) {
-    //     return [];
-    //   }
-    // }
-
-    // if (request === 'End') {
-    //   if (i == 0) {
-    //     return this.minutes;
-    //   }
-    //   // If start hour is not selected or is 23, return empty array
-    //   if (!startHour || startHour >= 23) {
-    //     return [];
-    //   }
-
-    //   // Check if this is the last session and if previous session ends at 23
-    //   if (i > 0) {
-    //     const prevSession = this.sessions.at(i - 1);
-    //     const prevEndHour = prevSession.get('endHour')?.value;
-    //     if (prevEndHour >= 23) {
-    //       return [];
-    //     }
-    //   }
-
-    //   // If start hour equals end hour, only show minutes after start minute
-    //   if (startHour === endHour) {
-    //     return this.minutes.filter(minute => minute > startMinute);
-    //   }
-    // }
-
-    return this.minutes;
+    session.patchValue({
+      endHour: et.getHours(),
+      endMinute: et.getMinutes()
+    }, { emitEvent: false });
   }
+}
 
-  updateSessionTimings(i: number): void 
-  {
-    // debugger
-    // const session = this.sessions.at(i);
-    // const slotDuration = this.sessionForm.get('slotDuration')?.value || 30;
-
-    // // Update current session's end time based on start time and slot duration
-    // const startHour = +session.get('startHour')?.value;
-    // const startMinute = +session.get('startMinute')?.value;
-
-    // const startTime = new Date(0, 0, 0, startHour, startMinute);
-    // const endTime = new Date(startTime.getTime() + slotDuration * 60000);
-
-    // session.patchValue({
-    //   endHour: endTime.getHours(),
-    //   endMinute: endTime.getMinutes()
-    // });
-
-    // // Update subsequent sessions
-    // for (let j = i + 1; j < this.sessions.length; j++) 
-    //   {
-    //   const nextSession = this.sessions.at(j);
-    //   const prevSession = this.sessions.at(j - 1);
-
-    //   // Set start time to be 1 minute after previous session's end time
-    //   const prevEndHour = prevSession.get('endHour')?.value;
-    //   const prevEndMinute = prevSession.get('endMinute')?.value;
-
-    //   nextSession.patchValue({
-    //     startHour: prevEndHour,
-    //     startMinute: prevEndMinute
-    //   });
-
-    //   // Update end time based on new start time
-    //   const newStartTime = new Date(0, 0, 0, prevEndHour, prevEndMinute);
-    //   const newEndTime = new Date(newStartTime.getTime() + slotDuration * 60000);
-
-    //   nextSession.patchValue({
-    //     endHour: newEndTime.getHours(),
-    //     endMinute: newEndTime.getMinutes()
-    //   });
-    // }
-  }
 
 
 
