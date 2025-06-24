@@ -47,6 +47,25 @@ export class DoctorSessionsComponent implements OnInit {
 
   }
 
+  // Modal related things
+  showModal = false;
+  currentDoctorToDelete:any
+  openModal(doctor:any) {
+    this.showModal = true;
+    this.currentDoctorToDelete = doctor;
+    console.log("reh doc", doctor)
+  }
+
+  closeModal(result: boolean) {
+    this.showModal = false;
+    console.log('User chose:', result);
+    // true = delete, false = cancel
+    if(result){
+      this.DeleteDoctorSession(this.currentDoctorToDelete);
+    }
+    this.currentDoctorToDelete = null
+  }
+
   ngOnInit() {
     this.GetAllDoctors();
     this.GetDoctorSessions();
