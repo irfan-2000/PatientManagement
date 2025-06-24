@@ -421,7 +421,7 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
         formData.append("DoctorId", this.doctorId.toString())
       }
       const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
-debugger
+ 
       const specializationIds = selectedSpecializationNames
         .map((name: string) => {
           const specialization = this.specializations.find(spec => spec.name === name);
