@@ -181,16 +181,27 @@ addSession(): void {
     endMinute: [startMinute, Validators.required]
   });
 
-  // Auto-adjust next session start time when end time changes
+  
   sessionGroup.get('endHour')?.valueChanges.subscribe(() => this.syncNextSessions());
   sessionGroup.get('endMinute')?.valueChanges.subscribe(() => this.syncNextSessions());
 
+
+
+ 
+
   this.sessions.push(sessionGroup);
+   setTimeout(() => {
+      sessionGroup.get('endHour')?.valueChanges.subscribe(() => this.syncNextSessions());
+  sessionGroup.get('endMinute')?.valueChanges.subscribe(() => this.syncNextSessions());
+  }, 1);
+
 }
+
 syncNextSessions(): void
  {
   const sessions = this.sessions;
-  for (let i = 1; i < sessions.length; i++) {
+  for (let i = 1; i < sessions.length; i++) 
+    {
     const prev = sessions.at(i - 1);
     const current = sessions.at(i);
 
@@ -202,17 +213,17 @@ syncNextSessions(): void
       startMinute: prevEndMinute
     }, { emitEvent: false });
   }
+ 
+
 }
-formatTime(hour: number, minute: number): string {
+
+formatTime(hour: number, minute: number): string 
+{
   const h = hour % 12 || 12;
   const ampm = hour >= 12 ? 'PM' : 'AM';
   const m = minute.toString().padStart(2, '0');
   return `${h}:${m} ${ampm}`;
-}
-
-
-
- 
+} 
 
  removeSession(index: number): void {
   this.sessions.removeAt(index);
@@ -245,6 +256,7 @@ formatTime(hour: number, minute: number): string {
 
   submitForm(): void 
   {
+    this.ValidSesion()
     if (this.sessionForm.invalid || this.selectedDays.length === 0)
        {
       alert("Please fill all required fields and select days.");
@@ -252,7 +264,8 @@ formatTime(hour: number, minute: number): string {
       }
 
     const formValue = this.sessionForm.value;
-    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => {
+    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => 
+      {
       const start = `${s.startHour.toString().padStart(2, '0')}:${s.startMinute.toString().padStart(2, '0')}`;
       const end = `${s.endHour.toString().padStart(2, '0')}:${s.endMinute.toString().padStart(2, '0')}`;
       return {
@@ -361,13 +374,7 @@ formatTime(hour: number, minute: number): string {
      }
 
 }
-
-
-
-
-
-
-
+ 
   showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
     switch (type) {
       case 'success':
@@ -390,13 +397,14 @@ formatTime(hour: number, minute: number): string {
 
 getAvailableStartHours(i: number): number[] 
 {
-  debugger
-  if (i === 0) return this.hours;
+   
+  if (i === 0)  return this.hours;
 
   const prev = this.sessions.at(i - 1);
   const prevEndHour = +prev.get('endHour')?.value;
   const prevEndMinute = +prev.get('endMinute')?.value;
 
+  this.syncNextSessions();
    return this.hours.filter(h => h > prevEndHour || (h === prevEndHour));
 }
 
@@ -421,11 +429,15 @@ getAvailableEndHours(i: number): number[]
   const session = this.sessions.at(i);
   const startHour = +session.get('startHour')?.value;
   const startMinute = +session.get('startMinute')?.value;
-
-  if (isNaN(startHour) || isNaN(startMinute)) return [];
-
+debugger
+  if (isNaN(startHour) || isNaN(startMinute))
+    {
+    return [];
+    } 
+ 
   return this.hours.filter(h => h > startHour || (h === startHour));
 }
+
 getAvailableEndMinutes(i: number): number[] 
 {
   const session = this.sessions.at(i);
@@ -442,10 +454,37 @@ getAvailableEndMinutes(i: number): number[]
 }
 
 
+ErrorMesage:any ;
+ErrorSessionNumber:any;
+ValidSesion()
+{
+
+    const formValue = this.sessionForm.value;
+    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => 
+      {
+         
+      const startHour = `${s.startHour.toString().padStart(2, '0')}:${s.startMinute.toString().padStart(2, '0')}`;
+      const endHour = `${s.endHour.toString().padStart(2, '0')}:${s.endMinute.toString().padStart(2, '0')}`;
+     
+     
+     
+        if( s.endHour < s.startHour)
+        {
+            this.ErrorMesage = ` Invalid Session at session${index + 1 } End hour is greater an start hour `
+            this.ErrorSessionNumber = +index;
+            return;
+        }
+
+       
+    });
+    
+
+}
 
 
 
-updateSessionTimings(i: number = 0): void {
+updateSessionTimings(i: number = 0): void 
+{
   const slot = +this.sessionForm.get('slotDuration')?.value || 30;
 
   for (let j = i; j < this.sessions.length; j++) {

@@ -168,16 +168,17 @@
     <div *ngFor="let session of sessions.controls; let i = index" [formGroupName]="i"
          class="border border-gray-300 p-4 rounded-lg mb-4 bg-gray-50 space-y-4">
 
-      <!-- Header -->
-      <div class="flex justify-between items-center">
+        <!-- *ngIf="ErrorSessionNumber == i" -->
+      <div class="flex justify-between items-center"  >
         <h3 class="text-lg font-semibold text-gray-700">Session {{ i + 1 }}</h3>
-          <div class="text-sm text-gray-500 mt-1">
-  Session Time: 
-  {{ formatTime(session.get('startHour')?.value, session.get('startMinute')?.value) }} 
-  to 
-  {{ formatTime(session.get('endHour')?.value, session.get('endMinute')?.value) }}
-</div>
-        <button *ngIf="i > 0" type="button"
+            <div class="text-sm text-gray-500 mt-1" >
+              Session Time: 
+              {{ formatTime(session.get('startHour')?.value, session.get('startMinute')?.value) }} 
+              to 
+              {{ formatTime(session.get('endHour')?.value, session.get('endMinute')?.value) }}
+           </div>
+       
+           <button *ngIf="i > 0" type="button"
                 class="text-red-600 hover:text-red-800 text-sm font-medium"
                 (click)="removeSession(i)">
           Remove
@@ -190,7 +191,7 @@
 
         <label class="block text-sm font-medium text-gray-600 mb-1">Start Time</label>
         <div class="flex gap-2">
-          <select formControlName="startHour"
+          <select formControlName="startHour"  
                   class="border border-gray-300 rounded px-3 py-2 w-28 focus:outline-none focus:ring focus:border-blue-500">
             <option *ngFor="let hour of getAvailableStartHours(i)" [value]="hour">
               {{ hour | number:'2.0' }}
@@ -238,6 +239,10 @@
 
         <!-- Action Buttons -->
         <div class="flex gap-2 justify-end sticky bottom-[-4px] bg-white p-4">
+
+          <span class="text-red-500">{{ ErrorMesage}}</span>
+
+
           <button type="button" class="bg-red-500 text-white px-4 py-2 rounded"
             (click)="closeAddEditSession()">Close</button>
           <button type="submit" class="bg-[#004687] hover:bg-[#336b9f] text-white px-4 py-2 rounded" (click)="submitForm()">Submit</button>
