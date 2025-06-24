@@ -23,9 +23,9 @@ export class LoginComponent {
  this.loginForm = new FormGroup(
   {
     UserId:new FormControl('Receptionist_IRFAN_HOSP0001001',[Validators.required]),
-    Password:new FormControl('',[Validators.required]),
-    Role:new FormControl('',[Validators.required]),
-    HospitalId:new FormControl( '',[Validators.required]),
+    Password:new FormControl('123',[Validators.required]),
+    Role:new FormControl('Receptionist',[Validators.required]),
+    HospitalId:new FormControl('HOSP0001',[Validators.required]),
     RememberMe:new FormControl(false)
   });
 
