@@ -205,8 +205,12 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
 } 
 
  
- DeleteDoctorSessions(formData: any )
+ DeleteDoctorSessions(payload: any )
   {
+      let params = new HttpParams()
+    .set('doctorId', payload.doctorId)
+    .set('SessionNumber', payload.sessions[0]?.sessionName || '');
+     
   const token = localStorage.getItem('token');  
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`,
@@ -214,10 +218,12 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
   });
  
   debugger
-  return this.http.post<any>(`${this.baseurl}api/DeleteDoctorSession`, formData, {
-    headers: headers,
-    withCredentials: true
-  });
+ return this.http.post<any>(`${this.baseurl}api/DeleteDoctorSession`, {}, {
+  headers: headers,
+  withCredentials: true,
+  params: params
+});
+
   
 } 
 

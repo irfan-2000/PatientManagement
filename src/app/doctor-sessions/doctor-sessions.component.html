@@ -82,7 +82,7 @@
         </div>
 
         <!-- Slot Duration -->
-        <div>
+        <div class="hidden">
           <label class="block text-sm font-medium text-gray-700 mb-1">Time Slot (minutes)</label>
           <select formControlName="slotDuration" class="border px-2 py-1 rounded w-full">
             <option *ngFor="let minute of minutes" [value]="minute">
@@ -166,11 +166,11 @@
       <div class="flex justify-between items-center">
         <h3 class="text-lg font-semibold text-gray-700">Session {{ i + 1 }}</h3>
           <div class="text-sm text-gray-500 mt-1">
-  Session Time: 
-  {{ formatTime(session.get('startHour')?.value, session.get('startMinute')?.value) }} 
-  to 
-  {{ formatTime(session.get('endHour')?.value, session.get('endMinute')?.value) }}
-</div>
+        Session Time: 
+        {{ formatTime(session.get('startHour')?.value, session.get('startMinute')?.value) }} 
+        to 
+        {{ formatTime(session.get('endHour')?.value, session.get('endMinute')?.value) }}
+      </div>
         <button *ngIf="i > 0" type="button"
                 class="text-red-600 hover:text-red-800 text-sm font-medium"
                 (click)="removeSession(i)">

@@ -185,11 +185,14 @@ addSession(): void {
   sessionGroup.get('endMinute')?.valueChanges.subscribe(() => this.syncNextSessions());
 
   this.sessions.push(sessionGroup);
+
 }
+
 syncNextSessions(): void
  {
   const sessions = this.sessions;
-  for (let i = 1; i < sessions.length; i++) {
+  for (let i = 1; i < sessions.length; i++) 
+    {
     const prev = sessions.at(i - 1);
     const current = sessions.at(i);
 
@@ -202,7 +205,9 @@ syncNextSessions(): void
     }, { emitEvent: false });
   }
 }
-formatTime(hour: number, minute: number): string {
+
+formatTime(hour: number, minute: number): string
+ {
   const h = hour % 12 || 12;
   const ampm = hour >= 12 ? 'PM' : 'AM';
   const m = minute.toString().padStart(2, '0');
@@ -284,13 +289,17 @@ formatTime(hour: number, minute: number): string {
       const response = this.doctorservice.DoctorSessions(payload ,OldPayload).subscribe({
         next: (response: any) => {
           console.log(response);
-          if (response.status == 200) {
+          if (response.status == 200)
+             {
             this.showToast('success', 'Your session was successfully added!', '');
             this.closeAddEditSession();
             this.GetDoctorSessions();
-          } else if (response.status == 401) {
+
+          } else if (response.status == 403) 
+            {
             this.showToast('error', 'Session overlap', '');
-          }else if (response.status == 500) {
+          }else if (response.status == 500 ) 
+            {
             this.showToast('error', 'Internal server error', '');
           }
         },
@@ -332,21 +341,26 @@ formatTime(hour: number, minute: number): string {
       flag: 'I'
       //OldPayload:this.OldPayload || null
      };
-    
+    debugger
      console.log('Final Payload for Delete:', JSON.stringify(payload));
 
   
   
   try {
       // Send formData to the backend API
-      const response = this.doctorservice.DeleteDoctor(payload ).subscribe({
+      const response = this.doctorservice.DeleteDoctorSessions(payload ).subscribe({
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) 
             {
+            this.showToast('success', 'Your session has been deleted!', '');
+                this,this.GetDoctorSessions();
+              
        
-          } else if (response.status === 401) {
-           }
+          } else if (response.status == 500)
+             {
+            this.showToast('error', 'Internal server error', '');
+            }
         },
         error: (error: any) => {
           console.error('Error:', error);
@@ -390,7 +404,7 @@ formatTime(hour: number, minute: number): string {
 
 getAvailableStartHours(i: number): number[] 
 {
-  debugger
+   
   if (i === 0) return this.hours;
 
   const prev = this.sessions.at(i - 1);
