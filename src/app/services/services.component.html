@@ -5,7 +5,7 @@
       <!-- Tab Navigation -->
       <div class="flex border-b border-gray-200 mb-4">
         <button *ngFor="let tab of tabs" (click)="activeTab = tab.id"
-          [class]="activeTab === tab.id ? 'px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600' : 'px-4 py-2 font-medium text-gray-500 hover:text-gray-700'">
+          [class]="activeTab === tab.id ? 'px-4 py-2 font-medium text-[#004687] border-b-2 border-[#004687]' : 'px-4 py-2 font-medium text-gray-500 hover:text-gray-700'">
           {{ tab.label }}
         </button>
       </div>
@@ -18,37 +18,37 @@
           View Specializations
         </button> -->
         <button (click)="AddUpdateSpecialization('Add')"
-          class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm flex items-center ml-auto mb-3">
+          class="bg-[#004687] hover:bg-[#336b9f] text-white px-3 py-1.5 rounded-md text-sm flex items-center ml-auto mb-3">
           <i class="fas fa-plus mr-2"></i>
           Add Specialization
         </button>
-
-        <!-- Specialization Popup Modal -->
-          <table class="w-full border-collapse">
-            <thead class="text-gray-600 bg-blue-500 text-white sticky top-0 text-white">
-            <tr>
-              <th class="px-4 py-2 text-start">Name</th>
-              <th class="px-4 py-2 text-start">Status</th>
-              <th class="px-4 py-2 text-start">Actions</th>
+      <div class="overflow-x-auto shadow-lg rounded-lg">
+          <table class="min-w-full border-collapse">
+            <thead class="sticky top-0">
+            <tr class="bg-[#004687] text-white">
+              <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Name</th>
+              <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Status</th>
+              <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of specializations" class="hover:bg-gray-50 transition-all">
-              <td class="p-2 text-gray-700">{{ item.name }}</td>
-              <td class="p-2 text-gray-700">{{ item.status }}</td>
-              <td class="p-2">
-                <button class="text-blue-500 hover:text-blue-700 px-2"
+              <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ item.name }}</td>
+              <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ item.status }}</td>
+              <td class="p-2 md:p-3">
+                <button title="Edit" class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3"
                   (click)="AddUpdateSpecialization('Update', item)">
-                  <i class="fas fa-pen"></i>
+                  <i class="fa-solid fa-pen"></i>
                 </button>
-                <button class="text-red-500 hover:text-red-700 px-2"
+                <button title="Delete" class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3"
                   (click)="DeleteSpecialization(item.specializationId)">
-                  <i class="fas fa-trash"></i>
+                  <i class="fa-solid fa-trash"></i>
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
+      </div>
 
         <div *ngIf="ShowSpecialization"
           class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -56,7 +56,8 @@
             <!-- Header -->
             <div class="flex justify-between items-center p-4 border-b">
               <h3 class="text-lg font-semibold text-gray-800">
-                {{ isAdding ? 'Add New Specialization' : 'Specialization List' }}
+                <!-- {{ isAdding ? 'Add New Specialization' : 'Specialization List' }} -->
+                  Add New Specialization
               </h3>
               <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
                 <i class="fas fa-times fa-lg"></i>
@@ -65,43 +66,6 @@
 
             <!-- Content -->
             <div class="flex-1 overflow-y-auto p-4">
-              <div *ngIf="!isAdding">
-                <!-- List View -->
-                <!-- <div class="mb-4 flex justify-end">
-                  <button (click)="AddUpdateSpecialization('Add')"
-                    class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-sm flex items-center">
-                    <i class="fas fa-plus mr-2"></i>
-                    Add Specialization
-                  </button>
-                </div> -->
-
-                <!-- Specialization List -->
-                <table class="w-full border-collapse border border-gray-200 shadow-md rounded-lg">
-                  <thead>
-                    <tr class="bg-gray-100 text-gray-700">
-                      <th class="p-2 border border-gray-300">Name</th>
-                      <th class="p-2 border border-gray-300">Status</th>
-                      <th class="p-2 border border-gray-300">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of specializations" class="hover:bg-gray-50 transition-all">
-                      <td class="p-2 border border-gray-300 text-gray-700">{{ item.name }}</td>
-                      <td class="p-2 border border-gray-300 text-gray-700">{{ item.status }}</td>
-                      <td class="p-2 border border-gray-300 text-center">
-                        <button class="text-blue-500 hover:text-blue-700 px-2"
-                          (click)="AddUpdateSpecialization('Update', item)">
-                          <i class="fas fa-pen"></i>
-                        </button>
-                        <button class="text-red-500 hover:text-red-700 px-2"
-                          (click)="DeleteSpecialization(item.specializationId)">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
 
               <!-- Add/Edit Form -->
               <form *ngIf="isAdding" [formGroup]="Specializationform" class="space-y-4">
@@ -125,12 +89,12 @@
                 <div *ngIf="SuccessMsg" class="text-green-500 text-sm">{{ SuccessMsg }}</div>
 
                 <div class="flex justify-end space-x-3 pt-4">
-                  <button type="button" (click)="isAdding = false"
+                  <button type="button" (click)="closeModal()"
                     class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium">
                     Cancel
                   </button>
                   <button type="submit" (click)="submitForm()"
-                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium">
+                    class="px-4 py-2 bg-[#004687] hover:bg-[#336b9f] text-white rounded-lg text-sm font-medium">
                     Save Changes
                   </button>
                 </div>
@@ -143,36 +107,36 @@
       <!-- Tab 2 Content - Services -->
       <div *ngIf="activeTab === 'services'">
         <button
-        class="bg-blue-500 hover:bg-blue-600 text-white p-4 text-base rounded-md transition-all duration-200 flex items-center ml-auto md:px-4 md:py-2 mb-2"
+        class="bg-[#004687] hover:bg-[#336b9f] text-white p-4 text-base rounded-md transition-all duration-200 flex items-center ml-auto md:px-4 md:py-2 mb-2"
         (click)="AddUpdateServices('Add')">
         <i class="fas fa-plus md:mr-1"></i> <span class="hidden md:inline">Add Service</span>
       </button>
         <div class="card-body border-gray-300 border-end-0 border-start-0 border-bottom-0 max-h-[82vh] overflow-auto">
-          <div class="customTable table-responsive table-card mb-1 pb-6">
-            <table class="w-full border-collapse align-middle">
-              <thead class="text-gray-600 bg-blue-500 text-white sticky top-0">
-                <tr>
-                  <th class="p-3 border-b border-gray-200 text-start">ID</th>
-                  <th class="p-3 border-b border-gray-200 text-start hidden lg:table-cell">ServiceID</th>
-                  <th class="p-3 border-b border-gray-200 text-start hidden lg:table-cell">Name</th>
-                  <th class="p-3 border-b border-gray-200 text-start">Doctor</th>
-                  <th class="p-3 border-b border-gray-200 text-start hidden lg:table-cell">Charges</th>
-                  <th class="p-3 border-b border-gray-200 text-start hidden lg:table-cell">Duration</th>
-                  <th class="p-3 border-b border-gray-200 text-start">Status</th>
-                  <th class="p-3 border-b border-gray-200 text-start">Action</th>
+          <div class="overflow-x-auto shadow-lg rounded-lg">
+            <table class="min-w-full border-collapse">
+              <thead class="sticky top-0">
+                <tr class="bg-[#004687] text-white">
+                  <th class="p-3 border-b border-gray-200 text-left">ID</th>
+                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">ServiceID</th>
+                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">Name</th>
+                  <th class="p-3 border-b border-gray-200 text-left">Doctor</th>
+                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">Charges</th>
+                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">Duration</th>
+                  <th class="p-3 border-b border-gray-200 text-left">Status</th>
+                  <th class="p-3 border-b border-gray-200 text-left">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let service of services"
                   class="hover:bg-gray-50 transition-colors border-b border-gray-200">
-                  <td class="p-3 text-gray-700">{{service.ID}}</td>
-                  <td class="p-3 text-gray-700 hidden lg:table-cell">{{service.serviceId}}</td>
-                  <td class="p-3 text-gray-700 font-medium hidden lg:table-cell">{{service.categoryName }}</td>
-                  <td class="p-3 text-gray-700">{{service.doctorName}}</td>
-                  <td class="p-3 text-gray-700 hidden lg:table-cell">${{service.charges}}</td>
-                  <td class="p-3 text-gray-700 hidden lg:table-cell">{{ convertTimeStringToReadable(service.duration) }}
+                  <td class="p-3 text-gray-700 text-left">{{service.ID}}</td>
+                  <td class="p-3 text-gray-700 hidden lg:table-cell text-left">{{service.serviceId}}</td>
+                  <td class="p-3 text-gray-700 font-medium hidden lg:table-cell text-left">{{service.categoryName }}</td>
+                  <td class="p-3 text-gray-700 text-left">{{service.doctorName}}</td>
+                  <td class="p-3 text-gray-700 hidden lg:table-cell text-left">${{service.charges}}</td>
+                  <td class="p-3 text-gray-700 hidden lg:table-cell text-left">{{ convertTimeStringToReadable(service.duration) }}
                   </td>
-                  <td class="p-3">
+                  <td class="p-3 text-left">
                     <span [ngClass]="{
                       'bg-green-100 text-green-800': service.status === '1',
                       'bg-red-100 text-red-800': service.status ==='0',
@@ -181,12 +145,12 @@
                       {{ service.status === '1' ? 'Active' : service.status === '0' ? 'Inactive' : 'Pending' }}
                     </span>
                   </td>
-                  <td class="p-3 text-center">
-                    <button class="text-blue-500 hover:text-blue-700 px-2"
+                  <td class="p-3 text-left">
+                    <button title="Edit" class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3"
                       (click)="AddUpdateServices('Update', service)">
                       <i class="fas fa-pen"></i>
                     </button>
-                    <button class="text-red-500 hover:text-red-700 px-2">
+                    <button title="Delete"  class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
                       <i class="fas fa-trash"></i>
                     </button>
                   </td>
@@ -325,7 +289,7 @@
                     Cancel
                   </button>
                   <button type="submit" (click)="onSubmitServiceForm()"
-                    class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium">
+                    class="px-4 py-2 bg-[#004687] hover:bg-[#336b9f] text-white rounded-lg text-sm font-medium">
                     {{ isAdding ? 'Add Service' : 'Save Changes' }}
                   </button>
                 </div>
@@ -336,10 +300,10 @@
       </div>
 
       <!-- Tab 3 Content - Service Categories -->
-      <div *ngIf="activeTab === 'categories'" class="p-4">
+      <div *ngIf="activeTab === 'categories'" class="p-4 overflow-y-auto h-[100%] max-h-[80vh]">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-bold">Service Categories</h2>
-          <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center" (click)="openCategoryForm('Add')">
+          <button class="bg-[#004687] text-white px-4 py-2 rounded hover:bg-[#336b9f] flex items-center" (click)="openCategoryForm('Add')">
             <span> <i class="fas fa-plus mr-2"></i> Add Category</span>
           </button>
         </div>
@@ -358,22 +322,31 @@
 
             <!-- Content -->
             <div class="flex-1 overflow-y-auto p-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Category Name" formControlName="Name" class="border p-2 rounded" />
-                <input type="text" placeholder="Description" formControlName="Description" class="border p-2 rounded" />
-                <select formControlName="Status" class="border p-2 rounded">
-                  <option value="">Select Status</option>
-                  <option value="1">Active</option>
-                  <option value="0">Inactive</option>
-                </select>
+              <div class="grid grid-cols-1 gap-4">
+                <div class="flex flex-col gap-2">
+                  <label for="name">Category Name</label>
+                  <input type="text" id="name" placeholder="Category Name" formControlName="Name" class="border p-2 rounded" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="description">Service Description</label>
+                  <input type="text" id="description" placeholder="Description" formControlName="Description" class="border p-2 rounded" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="status">Status</label>
+                  <select formControlName="Status" id="status" class="border p-2 rounded">
+                    <option value="">Select Status</option>
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                  </select>
+                </div>
               </div>
     
               <span *ngIf="ErrorMsg" class="text-red-500 text-sm">{{ ErrorMsg }}</span>
               <span *ngIf="SuccessMsg" class="text-green-500 text-sm">{{ SuccessMsg }}</span>
               <div class="mt-4 flex justify-end">
                 <button (click)="AddUpdateMainServiceCategory()"
-                  class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-2">
-                  <i class="fas fa-save mr-2"></i> Save
+                  class="bg-[#004687] text-white px-4 py-2 rounded hover:bg-[#336b9f] mr-2">
+                  Save
                 </button>
               </div>
             </div>
@@ -404,31 +377,35 @@
         </div> -->
 
         <!-- List View -->
-        <div class="overflow-x-auto">
-          <table class="min-w-full bg-white rounded-xl shadow">
-            <thead>
-              <tr class="bg-gray-100 text-left text-sm font-semibold text-gray-700">
-                <th class="p-3">#</th>
-                <th class="p-3">Category Name</th>
-                <th class="p-3">Description</th>
-                <th class="p-3">Status</th>
-                <th class="p-3 text-center">Actions</th>
+        <div class="overflow-x-auto shadow-lg rounded-lg">
+          <table class="min-w-full border-collapse">
+            <thead class="sticky top-0">
+              <tr class="bg-[#004687] text-white">
+                <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">#</th>
+                <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Category Name</th>
+                <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Description</th>
+                <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Status</th>
+                <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let category of MainserviceCategories; let i = index"
                 class="border-b hover:bg-gray-50 text-sm">
-                <td class="p-3">{{ i + 1 }}</td>
-                <td class="p-3">{{ category.categoryname }}</td>
-                <td class="p-3">{{ category.description }}</td>
-                <td class="p-3">
+                <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ i + 1 }}</td>
+                <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ category.categoryname }}</td>
+                <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ category.description }}</td>
+                <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">
                   {{ category.status === '1' ? 'Active' : 'Inactive' }}
                 </td>
-                <td class="p-3 text-center">
-                  <button (click)="openCategoryForm('Update', category)"
-                    class="text-blue-600 hover:text-blue-800 text-xs mr-2">✏️</button>
-                  <button (click)="deleteCategory(category.categoryId)"
-                    class="text-red-600 hover:text-red-800 text-xs">🗑️</button>
+                <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">
+                  <button title="Edit" (click)="openCategoryForm('Update', category)"
+                    class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <button title="Delete" (click)="deleteCategory(category.categoryId)"
+                    class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
