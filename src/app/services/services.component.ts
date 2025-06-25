@@ -156,8 +156,6 @@ async submitForm()
   {
     const formData = new FormData();
 
-    this.isAdding = false;
-
     formData.append('Name',this.Specializationform.get('Name')?.value ||'');
     formData.append('Status',this.Specializationform.get('Status')?.value ||'0');
 
@@ -178,10 +176,11 @@ async submitForm()
       console.log(JSON.stringify(formData))
      const response = await this.hospservice.AddUpdateSpecialization(formData);
 
-      if (response.status === 200) 
+      if (response.status == 200) 
       {
+        this.closeModal();
         this.GetSpecialization();
-        this.showToast('success','Add Success!!','Add');
+        this.showToast('success','Specialization added successfully.','');
       }
       if (response.status == 401) {
         return;
@@ -457,6 +456,8 @@ onSubmitServiceForm(ServiceId: any = '') {
           
           this.ErrorMsg = '';
           console.log('Service saved successfully.');
+          this.CancelServiceForm();
+          this.GetServices();
         }
       },
       error: (error: any) => {

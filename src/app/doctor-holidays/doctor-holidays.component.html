@@ -1,0 +1,92 @@
+<div class="flex">
+
+    <app-sidebar></app-sidebar>
+    <div class="w-full">
+        <app-top-strip></app-top-strip>
+        <div class="m-4">
+            <button (click)="openModal()" class="bg-[#004687] hover:bg-[#336b9f] text-white px-4 py-2 rounded-lg my-3 flex items-center gap-3 ml-auto">
+             <i class="fas fa-plus"></i> Add Holiday
+            </button>
+            <div class="overflow-x-auto shadow-lg rounded-lg">
+                <table class="min-w-full border-collapse">
+                    <thead class="sticky top-0">
+                        <tr class="bg-[#004687] text-white">
+                            <th class="p-3 border-b border-gray-200 text-left">ID</th>
+                            <th class="p-3 border-b border-gray-200 text-left">Schedule Of</th>
+                            <th class="p-3 border-b border-gray-200 text-left">Name</th>
+                            <th class="p-3 border-b border-gray-200 text-left">From Date</th>
+                            <th class="p-3 border-b border-gray-200 text-left">To Date</th>
+                            <th class="p-3 border-b border-gray-200 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let holiday of holidays"
+                            class="hover:bg-gray-50 transition-colors border-b border-gray-200">
+                            <td class="p-3 text-gray-700 text-left">{{ holiday.id }}</td>
+                            <td class="p-3 text-gray-700 text-left">{{ holiday.scheduleOf }}</td>
+                            <td class="p-3 text-gray-700 text-left">{{ holiday.name }}</td>
+                            <td class="p-3 text-gray-700 text-left">{{ holiday.fromDate }}</td>
+                            <td class="p-3 text-gray-700 text-left">{{ holiday.toDate }}</td>
+                            <td class="p-3 text-left">
+                                <button title="Edit"
+                                    class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3"
+                                    (click)="editHoliday(holiday)">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button title="Delete"
+                                    class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3"
+                                    (click)="deleteHoliday(holiday)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal -->
+            <div *ngIf="showModal" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4">Add Holiday</h2>
+
+                    <!-- Field 1 -->
+                    <label class="block mb-2 text-sm font-medium text-gray-700">Type</label>
+                    <select [(ngModel)]="holidayType"
+                        class="w-full mb-4 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500">
+                        <option value="Doctor">Doctor</option>
+                        <option value="Clinic">Clinic</option>
+                    </select>
+
+                    <!-- Field 2 -->
+                    <label class="block mb-2 text-sm font-medium text-gray-700">Schedule Date</label>
+                    <input type="date" [(ngModel)]="scheduleDate"
+                        class="w-full mb-4 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500" />
+
+                    <!-- Field 3 -->
+                    <label class="block mb-2 text-sm font-medium text-gray-700">
+                        {{ holidayType === 'Doctor' ? 'Doctor Name' : 'Clinic Name' }}
+                    </label>
+                    <select [(ngModel)]="selectedName"
+                        class="w-full mb-4 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-500">
+                        <option *ngFor="let item of (holidayType === 'Doctor' ? doctors : clinics)" [value]="item">
+                            {{ item }}
+                        </option>
+                    </select>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-end gap-3">
+                        <button (click)="cancelHoliday()"
+                            class="px-4 py-2 rounded text-gray-500 hover:text-gray-700 font-medium">
+                            Cancel
+                        </button>
+                        <button (click)="saveHoliday()"
+                            class="px-4 py-2 rounded bg-[#004687] hover:bg-[#336b9f] text-white">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

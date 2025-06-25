@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { DoctorServiceService } from '../doctor-service.service';
 import { Router } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Form, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { json } from 'stream/consumers';
 import { findIndex } from 'rxjs';
 import { Observable, of } from 'rxjs';
@@ -27,7 +27,7 @@ export class DoctorSessionsComponent implements OnInit {
   doctorSessions: any = {}
   daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-   selectedDays: number[] = [];
+  selectedDays: number[] = [];
 
   hours = Array.from({ length: 24 }, (_, i) => i); // 0 - 23
   minutes = Array.from({ length: 12 }, (_, i) => i * 5);
@@ -45,6 +45,25 @@ export class DoctorSessionsComponent implements OnInit {
 
     this.addSession();
 
+  }
+
+  // Modal related things
+  showModal = false;
+  currentDoctorToDelete:any
+  openModal(doctor:any) {
+    this.showModal = true;
+    this.currentDoctorToDelete = doctor;
+    console.log("reh doc", doctor)
+  }
+
+  closeModal(result: boolean) {
+    this.showModal = false;
+    console.log('User chose:', result);
+    // true = delete, false = cancel
+    if(result){
+      this.DeleteDoctorSession(this.currentDoctorToDelete);
+    }
+    this.currentDoctorToDelete = null
   }
 
   ngOnInit() {
@@ -93,7 +112,7 @@ export class DoctorSessionsComponent implements OnInit {
 
 
 
-  displayFn = (doctorId: string): string => {
+  displayFn = (doctorId: string) => {
 
     console.log("DisplayFn called with:", doctorId, this.doctors);
     if (!doctorId || !this.doctors) return '';
@@ -119,85 +138,88 @@ export class DoctorSessionsComponent implements OnInit {
     this.sessions.clear();
     this.selectedDays = [];
     this.addSession();
+    this.IsEditing= false;
   }
 
   get sessions(): FormArray {
     return this.sessionForm.get('sessions') as FormArray;
   }
 
-// addSession(): void {
-//   const slotDuration = +this.sessionForm.get('slotDuration')?.value || 30;
+  // addSession(): void {
+  //   const slotDuration = +this.sessionForm.get('slotDuration')?.value || 30;
 
-//   // Force update of all previous sessions to ensure end times are correct
-//   this.updateSessionTimings();
+  //   // Force update of all previous sessions to ensure end times are correct
+  //   this.updateSessionTimings();
 
-//   let startHour = 0;
-//   let startMinute = 0;
+  //   let startHour = 0;
+  //   let startMinute = 0;
 
-//   if (this.sessions.length > 0) {
-//     const prev = this.sessions.at(this.sessions.length - 1);
-//     startHour = +prev.get('endHour')?.value;
-//     startMinute = +prev.get('endMinute')?.value;
-//   }
+  //   if (this.sessions.length > 0) {
+  //     const prev = this.sessions.at(this.sessions.length - 1);
+  //     startHour = +prev.get('endHour')?.value;
+  //     startMinute = +prev.get('endMinute')?.value;
+  //   }
 
-//   const sessionGroup = this.fb.group({
-//     startHour: [startHour, Validators.required],
-//     startMinute: [startMinute, Validators.required],
-//     endHour: [0, Validators.required],
-//     endMinute: [0, Validators.required]
-//   });
+  //   const sessionGroup = this.fb.group({
+  //     startHour: [startHour, Validators.required],
+  //     startMinute: [startMinute, Validators.required],
+  //     endHour: [0, Validators.required],
+  //     endMinute: [0, Validators.required]
+  //   });
 
-//   // Add reactive update listeners
-//   sessionGroup.get('startHour')?.valueChanges.subscribe(() => {
-//     const idx = this.sessions.length - 1;
-//     this.updateSessionTimings(idx);
-//   });
-//   sessionGroup.get('startMinute')?.valueChanges.subscribe(() => {
-//     const idx = this.sessions.length - 1;
-//     this.updateSessionTimings(idx);
-//   });
-// setTimeout(() => {
-//   this.sessions.push(sessionGroup);
-//   this.updateSessionTimings(this.sessions.length - 1);
-// }, 1);
+  //   // Add reactive update listeners
+  //   sessionGroup.get('startHour')?.valueChanges.subscribe(() => {
+  //     const idx = this.sessions.length - 1;
+  //     this.updateSessionTimings(idx);
+  //   });
+  //   sessionGroup.get('startMinute')?.valueChanges.subscribe(() => {
+  //     const idx = this.sessions.length - 1;
+  //     this.updateSessionTimings(idx);
+  //   });
+  // setTimeout(() => {
+  //   this.sessions.push(sessionGroup);
+  //   this.updateSessionTimings(this.sessions.length - 1);
+  // }, 1);
 
-// }
-addSession(): void {
-  let startHour = 9;
-  let startMinute = 0;
+  // }
+  addSession(): void {
+    let startHour = 9;
+    let startMinute = 0;
 
   if (this.sessions.length > 0) 
     {
-    const last = this.sessions.at(this.sessions.length - 1);
-    startHour = +last.get('endHour')?.value || 0;
-    startMinute = +last.get('endMinute')?.value || 0;
+      const last = this.sessions.at(this.sessions.length - 1);
+      startHour = +last.get('endHour')?.value || 0;
+      startMinute = +last.get('endMinute')?.value || 0;
     }
 
-  const sessionGroup = this.fb.group({
-    startHour: [startHour, Validators.required],
-    startMinute: [startMinute, Validators.required],
-    endHour: [startHour + 1 <= 23 ? startHour + 1 : 23, Validators.required],
-    endMinute: [startMinute, Validators.required]
-  });
+    const sessionGroup = this.fb.group({
+      startHour: [startHour, Validators.required],
+      startMinute: [startMinute, Validators.required],
+      endHour: [startHour + 1 <= 23 ? startHour + 1 : 23, Validators.required],
+      endMinute: [startMinute, Validators.required]
+    });
 
-  // Auto-adjust next session start time when end time changes
-  sessionGroup.get('endHour')?.valueChanges.subscribe(() => this.syncNextSessions());
-  sessionGroup.get('endMinute')?.valueChanges.subscribe(() => this.syncNextSessions());
+
+    sessionGroup.get('endHour')?.valueChanges.subscribe(() => this.syncNextSessions());
+    sessionGroup.get('endMinute')?.valueChanges.subscribe(() => this.syncNextSessions());
+
+
+
+
 
   this.sessions.push(sessionGroup);
-
 }
-
 syncNextSessions(): void
  {
-  const sessions = this.sessions;
+    const sessions = this.sessions;
   for (let i = 1; i < sessions.length; i++) 
     {
-    const prev = sessions.at(i - 1);
-    const current = sessions.at(i);
+      const prev = sessions.at(i - 1);
+      const current = sessions.at(i);
 
-    const prevEndHour = +prev.get('endHour')?.value;
-    const prevEndMinute = +prev.get('endMinute')?.value;
+      const prevEndHour = +prev.get('endHour')?.value;
+      const prevEndMinute = +prev.get('endMinute')?.value;
 
     current.patchValue({
       startHour: prevEndHour,
@@ -205,9 +227,7 @@ syncNextSessions(): void
     }, { emitEvent: false });
   }
 }
-
-formatTime(hour: number, minute: number): string
- {
+formatTime(hour: number, minute: number): string {
   const h = hour % 12 || 12;
   const ampm = hour >= 12 ? 'PM' : 'AM';
   const m = minute.toString().padStart(2, '0');
@@ -218,12 +238,12 @@ formatTime(hour: number, minute: number): string
 
  
 
- removeSession(index: number): void {
-  this.sessions.removeAt(index);
-  for (let i = index; i < this.sessions.length; i++) {
-    this.updateSessionTimings(i);
+  removeSession(index: number): void {
+    this.sessions.removeAt(index);
+    for (let i = index; i < this.sessions.length; i++) {
+      this.updateSessionTimings(i);
+    }
   }
-}
 
 
   toggleAllDays(event: any): void {
@@ -249,14 +269,16 @@ formatTime(hour: number, minute: number): string
 
   submitForm(): void 
   {
+    this.ValidSesion()
     if (this.sessionForm.invalid || this.selectedDays.length === 0)
        {
       alert("Please fill all required fields and select days.");
-      return; 
-      }
+      return;
+    }
 
     const formValue = this.sessionForm.value;
-    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => {
+    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => 
+      {
       const start = `${s.startHour.toString().padStart(2, '0')}:${s.startMinute.toString().padStart(2, '0')}`;
       const end = `${s.endHour.toString().padStart(2, '0')}:${s.endMinute.toString().padStart(2, '0')}`;
       return {
@@ -274,19 +296,17 @@ formatTime(hour: number, minute: number): string
       flag: 'I',
             IsEditing:this.IsEditing 
       //OldPayload : this.OldPayload
-      
-     };
 
-     debugger
-     const OldPayload =
-      {
+    };
+
+    const OldPayload =
+    {
       OldPayload : this.OldPayload
-     }
-    
- 
+    }
+
+
     try {
-      // Send formData to the backend API
-      const response = this.doctorservice.DoctorSessions(payload ,OldPayload).subscribe({
+       const response = this.doctorservice.DoctorSessions(payload ,OldPayload).subscribe({
         next: (response: any) => {
           console.log(response);
           if (response.status == 200)
@@ -303,9 +323,9 @@ formatTime(hour: number, minute: number): string
             this.showToast('error', 'Internal server error', '');
           }
         },
-        error: (error: any) => {
+        error: (error: any) => 
+          {
           console.error('Error:', error);
-          //this.ErrorMsg = "An error occurred while submitting the form.";
         }
 
 
@@ -320,7 +340,7 @@ formatTime(hour: number, minute: number): string
 
  DeleteDoctorSession(item:any)
 {
-   this.EditSession(item) ; 
+  //  this.EditSession(item) ; 
     const formValue = this.sessionForm.value;
     const sessionsFormatted = formValue.sessions.map((s: any, index: number) => {
       const start = `${s.startHour.toString().padStart(2, '0')}:${s.startMinute.toString().padStart(2, '0')}`;
@@ -340,13 +360,13 @@ formatTime(hour: number, minute: number): string
       sessions: sessionsFormatted,
       flag: 'I'
       //OldPayload:this.OldPayload || null
-     };
-    debugger
-     console.log('Final Payload for Delete:', JSON.stringify(payload));
+    };
 
-  
-  
-  try {
+    console.log('Final Payload for Delete:', JSON.stringify(payload));
+
+
+
+    try {
       // Send formData to the backend API
       const response = this.doctorservice.DeleteDoctorSessions(payload ).subscribe({
         next: (response: any) => {
@@ -364,7 +384,7 @@ formatTime(hour: number, minute: number): string
         },
         error: (error: any) => {
           console.error('Error:', error);
-         }
+        }
 
 
       });
@@ -372,15 +392,9 @@ formatTime(hour: number, minute: number): string
 
     } catch (error: any) {
       console.error('Error:', error);
-     }
+    }
 
-}
-
-
-
-
-
-
+  }
 
   showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
     switch (type) {
@@ -407,89 +421,120 @@ getAvailableStartHours(i: number): number[]
    
   if (i === 0) return this.hours;
 
-  const prev = this.sessions.at(i - 1);
-  const prevEndHour = +prev.get('endHour')?.value;
-  const prevEndMinute = +prev.get('endMinute')?.value;
+    const prev = this.sessions.at(i - 1);
+    const prevEndHour = +prev.get('endHour')?.value;
+    const prevEndMinute = +prev.get('endMinute')?.value;
 
-   return this.hours.filter(h => h > prevEndHour || (h === prevEndHour));
-}
+    this.syncNextSessions();
+    return this.hours.filter(h => h > prevEndHour || (h === prevEndHour));
+  }
 
 
 getAvailableStartMinutes(i: number): number[]
  {
-  if (i === 0) return this.minutes;
+    if (i === 0) return this.minutes;
 
-  const prev = this.sessions.at(i - 1);
-  const prevEndHour = +prev.get('endHour')?.value;
-  const prevEndMinute = +prev.get('endMinute')?.value;
+    const prev = this.sessions.at(i - 1);
+    const prevEndHour = +prev.get('endHour')?.value;
+    const prevEndMinute = +prev.get('endMinute')?.value;
 
-  const current = this.sessions.at(i);
-  const selectedHour = +current.get('startHour')?.value;
+    const current = this.sessions.at(i);
+    const selectedHour = +current.get('startHour')?.value;
 
-  if (selectedHour > prevEndHour) return this.minutes;
-  return this.minutes.filter(m => m >= prevEndMinute);
-}
+    if (selectedHour > prevEndHour) return this.minutes;
+    return this.minutes.filter(m => m >= prevEndMinute);
+  }
 
 getAvailableEndHours(i: number): number[]
  {
-  const session = this.sessions.at(i);
-  const startHour = +session.get('startHour')?.value;
-  const startMinute = +session.get('startMinute')?.value;
-
-  if (isNaN(startHour) || isNaN(startMinute)) return [];
-
-  return this.hours.filter(h => h > startHour || (h === startHour));
-}
-getAvailableEndMinutes(i: number): number[] 
-{
-  const session = this.sessions.at(i);
-  const startHour = +session.get('startHour')?.value;
-  const startMinute = +session.get('startMinute')?.value;
-  const endHour = +session.get('endHour')?.value;
-
-  if (isNaN(startHour) || isNaN(startMinute) || isNaN(endHour)) return [];
-
-  if (endHour === startHour) {
-    return this.minutes.filter(m => m > startMinute);
-  }
-  return this.minutes;
-}
-
-
-
-
-
-updateSessionTimings(i: number = 0): void {
-  const slot = +this.sessionForm.get('slotDuration')?.value || 30;
-
-  for (let j = i; j < this.sessions.length; j++) {
-    const session = this.sessions.at(j);
-    let sh = 0;
-    let sm = 0;
-
-    if (j === 0) {
-      sh = +session.get('startHour')?.value || 0;
-      sm = +session.get('startMinute')?.value || 0;
-    } else {
-      const prev = this.sessions.at(j - 1);
-      sh = +prev.get('endHour')?.value;
-      sm = +prev.get('endMinute')?.value;
-
-      session.patchValue({
-        startHour: sh,
-        startMinute: sm
-      }, { emitEvent: false });
+    const session = this.sessions.at(i);
+    const startHour = +session.get('startHour')?.value;
+    const startMinute = +session.get('startMinute')?.value;
+  if (isNaN(startHour) || isNaN(startMinute))
+    {
+      return [];
     }
 
-    const st = new Date(0, 0, 0, sh, sm);
-    const et = new Date(st.getTime() + slot * 60000);
-
-    session.patchValue({
-      endHour: et.getHours(),
-      endMinute: et.getMinutes()
-    }, { emitEvent: false });
+    return this.hours.filter(h => h > startHour || (h === startHour));
   }
-}
+
+getAvailableEndMinutes(i: number): number[] 
+{
+    const session = this.sessions.at(i);
+    const startHour = +session.get('startHour')?.value;
+    const startMinute = +session.get('startMinute')?.value;
+    const endHour = +session.get('endHour')?.value;
+
+    if (isNaN(startHour) || isNaN(startMinute) || isNaN(endHour)) return [];
+
+    if (endHour === startHour) {
+      return this.minutes.filter(m => m > startMinute);
+    }
+    return this.minutes;
+  }
+
+
+ErrorMesage:any ;
+ErrorSessionNumber:any;
+ValidSesion()
+{
+
+    const formValue = this.sessionForm.value;
+    const sessionsFormatted = formValue.sessions.map((s: any, index: number) => 
+      {
+
+      const startHour = `${s.startHour.toString().padStart(2, '0')}:${s.startMinute.toString().padStart(2, '0')}`;
+      const endHour = `${s.endHour.toString().padStart(2, '0')}:${s.endMinute.toString().padStart(2, '0')}`;
+
+
+
+        if( s.endHour < s.startHour)
+        {
+            this.ErrorMesage = ` Invalid Session at session${index + 1 } End hour is greater an start hour `
+        this.ErrorSessionNumber = +index;
+        return;
+      }
+
+
+    });
+
+
+  }
+
+
+
+updateSessionTimings(i: number = 0): void 
+{
+    const slot = +this.sessionForm.get('slotDuration')?.value || 30;
+
+    for (let j = i; j < this.sessions.length; j++) {
+      const session = this.sessions.at(j);
+      let sh = 0;
+      let sm = 0;
+
+      if (j === 0) {
+        sh = +session.get('startHour')?.value || 0;
+        sm = +session.get('startMinute')?.value || 0;
+      } else {
+        const prev = this.sessions.at(j - 1);
+        sh = +prev.get('endHour')?.value;
+        sm = +prev.get('endMinute')?.value;
+
+        session.patchValue({
+          startHour: sh,
+          startMinute: sm
+        }, { emitEvent: false });
+      }
+
+      const st = new Date(0, 0, 0, sh, sm);
+      const et = new Date(st.getTime() + slot * 60000);
+
+      session.patchValue({
+        endHour: et.getHours(),
+        endMinute: et.getMinutes()
+      }, { emitEvent: false });
+    }
+  }
 
 
 
@@ -512,6 +557,8 @@ updateSessionTimings(i: number = 0): void {
             return this.doctors;
           })
         );
+
+
       }
       if (response.status == 401) {
         this.router.navigate(['/login']);
@@ -564,44 +611,42 @@ IsEditing:boolean = false;
   EditSession(item: any) 
   {
     this.showToast('warning', 'Editing session', '');
-     this.IsEditing = true;
+    this.IsEditing = true;
     this.OldPayload =  (item) ;
 
     this.sessionForm.patchValue({
     slotDuration:Number(item.timeSlot),
     doctorId:item.doctorId
     });
-     
-    
+
+
     this.selectedDays = item.dayId;
-     this.selectedDays = (typeof item.dayId === 'string')
-  ? item.dayId.split(',').map(Number)
-  : Array.isArray(item.dayId)
-    ? item.dayId
-    : [];
+
+    this.selectedDays = (typeof item.dayId === 'string') ? item.dayId.split(',').map(Number) : Array.isArray(item.dayId) ? item.dayId   : [];
 
 
-      this.sessions.clear(); 
-  if (item.startTime && item.endTime) {
-    const [startHour, startMinute] = item.startTime.split(':').map(Number);
-    const [endHour, endMinute] = item.endTime.split(':').map(Number);
+    this.sessions.clear();
+  if (item.startTime && item.endTime)
+     {
+      const [startHour, startMinute] = item.startTime.split(':').map(Number);
+      const [endHour, endMinute] = item.endTime.split(':').map(Number);
 
-    this.sessions.push(this.fb.group({
-      startHour: [startHour, Validators.required],
-      startMinute: [startMinute, Validators.required],
-      endHour: [endHour, Validators.required],
-      endMinute: [endMinute, Validators.required]
-    }));
-  } else {
-    // fallback: add a blank session if data is missing
-    this.addSession();
+      this.sessions.push(this.fb.group({
+        startHour: [startHour, Validators.required],
+        startMinute: [startMinute, Validators.required],
+        endHour: [endHour, Validators.required],
+        endMinute: [endMinute, Validators.required]
+      }));
+    } else {
+      // fallback: add a blank session if data is missing
+      this.addSession();
+    }
+
+
+    this.openAddEditSession();
+
+
+
   }
-    
-  
-    this.openAddEditSession();  
-
-
-
-}
 
 }
