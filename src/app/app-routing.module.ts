@@ -10,6 +10,7 @@ import { AppointmentsComponent } from './appointments/appointments.component';
 import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.component';
 import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
+import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.component';
 
 const routes: Routes = [
 {path:'login',component:LoginComponent},
@@ -21,6 +22,7 @@ const routes: Routes = [
 {path: 'course', component: CourseSuggestionComponent},
 {path:'appointments', component: AppointmentsComponent},
 {path:'doctorSessions', component: DoctorSessionsComponent},
+{path:'doctorHolidays', component: DoctorHolidaysComponent},
 
 
 
