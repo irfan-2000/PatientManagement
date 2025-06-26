@@ -205,7 +205,7 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
 } 
 
  
- DeleteDoctorSessions(payload: any )
+DeleteDoctorSessions(payload: any )
   {
       let params = new HttpParams()
     .set('doctorId', payload.doctorId)
@@ -224,9 +224,7 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
   withCredentials: true,
   params: params
 });
-
-  
-} 
+  }
 
 
 GetDoctorSessions()

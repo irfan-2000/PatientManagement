@@ -605,6 +605,23 @@ updateSessionTimings(i: number = 0): void
 
   }
 
+  to24Hour(time12h: string): string {
+    const [time, modifier] = time12h.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+  
+    if (modifier === 'PM' && hours < 12) {
+      hours += 12;
+    }
+    if (modifier === 'AM' && hours === 12) {
+      hours = 0;
+    }
+  
+    // Pad with leading zeros if needed
+    const hoursStr = hours.toString().padStart(2, '0');
+    const minutesStr = minutes.toString().padStart(2, '0');
+    return `${hoursStr}:${minutesStr}`;
+  }
+
 
   OldPayload: any = {}
 IsEditing:boolean = false;
@@ -623,14 +640,14 @@ IsEditing:boolean = false;
     this.selectedDays = item.dayId;
 
     this.selectedDays = (typeof item.dayId === 'string') ? item.dayId.split(',').map(Number) : Array.isArray(item.dayId) ? item.dayId   : [];
-
-
+  
     this.sessions.clear();
+
+
   if (item.startTime && item.endTime)
      {
-      const [startHour, startMinute] = item.startTime.split(':').map(Number);
-      const [endHour, endMinute] = item.endTime.split(':').map(Number);
-
+      const [startHour, startMinute] = this.to24Hour(item.startTime).split(":")
+      const [endHour, endMinute] = this.to24Hour(item.endTime).split(":");
       this.sessions.push(this.fb.group({
         startHour: [startHour, Validators.required],
         startMinute: [startMinute, Validators.required],
