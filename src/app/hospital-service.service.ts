@@ -58,7 +58,7 @@ constructor(private http:HttpClient  )
  AddUpdateServices( payload:any) 
  {
     
-
+debugger
   return this.http.post<any>(`${this.baseurl}api/AddUpdateServices`, payload  , {
        headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
