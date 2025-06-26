@@ -217,9 +217,8 @@ DeleteDoctorSessions(payload: any )
     'Content-Type': 'application/json'
   });
  
-  
-   
- return this.http.post<any>(`${this.baseurl}api/DeleteDoctorSession`, {}, {
+    
+  return this.http.post<any>(`${this.baseurl}api/DeleteDoctorSession`, {}, {
   headers: headers,
   withCredentials: true,
   params: params
