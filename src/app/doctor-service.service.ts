@@ -217,12 +217,8 @@ return this.http.get<any>(`${this.baseurl}api/CheckRememberMe`,
     'Content-Type': 'application/json'
   });
  
+  
    
-  return this.http.post<any>(`${this.baseurl}api/DeleteDoctorSession`, formData, {
-    headers: headers,
-    withCredentials: true
-  });
-  debugger
  return this.http.post<any>(`${this.baseurl}api/DeleteDoctorSession`, {}, {
   headers: headers,
   withCredentials: true,

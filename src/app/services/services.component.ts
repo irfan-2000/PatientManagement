@@ -715,6 +715,7 @@ if (Status === null || Status === undefined || Status === '') {
   }
   
 
+          this.ErrorMsg = '';
 
   try {
     this.hospservice. AddUpdateMainServiceCategory(Categoryname,Description,Status,this.Mainserviceid,flag).subscribe({
