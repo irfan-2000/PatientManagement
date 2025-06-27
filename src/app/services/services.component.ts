@@ -45,7 +45,14 @@ export class ServicesComponent
   isFormVisible: boolean = true;
   MainServiceflag: string = 'G'; // Default to 'G' for Get operation
   Mainserviceid:any ;
+  
+ 
+ services:any =  {};
+hours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
 
+minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
+
+doctors :any = {}
   constructor(private fb:FormBuilder,private  router:Router,private doctorservice:DoctorServiceService,private hospservice:HospitalServiceService,private toastr: ToastrService)
   {      
      this.Specializationform = new FormGroup(
@@ -96,7 +103,7 @@ CallTabsMethod(tab:any)
 if(this.activeTab == 'services')
 {
 this.GetServices();
-
+this.GetServiceCategories();
 }
 
 }
@@ -105,7 +112,7 @@ this.GetServices();
 //Main Servcie Categories
 openCategoryForm(Operation: string, item: any = "")
 {
-
+this.ErrorMsg = '';
    this.MainServiceCategoriesForm.reset();
   
   this.showCategoryForm = true;
@@ -306,10 +313,57 @@ CancelServiceForm()
     this.ErrorMsg = 'Unexpected error occurred.';
   }
   }
+ 
+AddUpdateServices(Operation: string, item: any = "") 
+{
+   
+  this.ErrorMsg = "";
+  this.ShowServicePopup = true;
+   
+  this.isAddingService = false;
+  
+
+  if (Operation === 'Add')
+  {
+    this.isAddingService =true
+    // Reset form with empty values
+    this.serviceForm.reset({
+      Name: '',
+      Doctor: '',
+      hours: '00',
+      minutes: '00',
+      Charges: '',
+      Category: '',
+      Status: '1'
+    });
+  }
+ 
+  if (Operation === 'Update') 
+    {
+      this.isAddingService = false;
+    this.IsEditingService = true;
+    this.serviceId = item.serviceId;  
+         
+
+    const [hours, minutes] = item.duration.split(':');
+    console.log('doctorIds:', item.doctorIds);
+    // Patch values with existing data
+    this.serviceForm.patchValue({
+      Name: item.name,
+      Doctor: item.doctorId,
+     DoctorIds: item.doctorIds
+    ? item.doctorIds.split(',').map((id: string) => id.trim())  : [],
+          hours: hours,
+      minutes: minutes,
+      Charges: item.charges,
+      Category: item.category,
+      Status: item.status,
+
+     });
 
 
-
-
+  }
+}
 
 
 
@@ -366,12 +420,7 @@ CancelServiceForm()
     }
   ]
   
-hours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
 
-minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
-
-doctors :any = {}
- 
     cancelForm() {
       this.Specializationform.reset();
       this.ShowSpecialization = false;
@@ -508,15 +557,7 @@ AddUpdateSpecialization(Operation: string, item: any = "")
 }
 
 
-errorMessages: { [key: string]: string } = {}; // Variable to store error messages
-
-displayErrorMessages(errorMessages: { [key: string]: string }) 
-{
-  this.errorMessages = errorMessages; // Update the errorMessages variable
-}
  
-// Sample data array with 6 items
-services:any =  {};
 
 get duration(): string {
   return `${this.serviceForm.value.hours}:${this.serviceForm.value.minutes}`;
@@ -524,54 +565,7 @@ get duration(): string {
 
 
 
-AddUpdateServices(Operation: string, item: any = "") 
-{
-   
-  this.ErrorMsg = "";
-  this.ShowServicePopup = true;
-   
-  this.isAddingService = false;
-  
 
-  if (Operation === 'Add')
-  {
-    this.isAddingService =true
-    // Reset form with empty values
-    this.serviceForm.reset({
-      Name: '',
-      Doctor: '',
-      hours: '00',
-      minutes: '00',
-      Charges: '',
-      Category: '',
-      Status: '1'
-    });
-  }
-
-  if (Operation === 'Update') 
-    {
-      
-    this.IsEditingService = true;
-    this.serviceId = item.serviceId;  
-         
-
-    const [hours, minutes] = item.duration.split(':');
-    // Patch values with existing data
-    this.serviceForm.patchValue({
-      Name: item.serviceCategoryId,
-      Doctor: item.doctorId,
-      DoctorIds: item.doctorId ? item.doctorId.split(',') : [], // Assuming doctorIds is a comma-separated string
-      hours: hours,
-      minutes: minutes,
-      Charges: item.charges,
-      Category: item.category,
-      Status: item.status,
-
-     });
-
-
-  }
-}
 
 
 onSubmitServiceForm(ServiceId: any = '') 
@@ -637,13 +631,14 @@ onSubmitServiceForm(ServiceId: any = '')
     Duration: formattedDuration || null ,
     Category: category.trim() || null,
     Status:  status || null,
-     Flag: this.serviceId ? 'U' : 'I',
+     Flag: !this.isAddingService ? 'U' : 'I',
      CommaSeparatedDoctorIds:this.serviceForm.get('DoctorIds')?.value ? this.serviceForm.get('DoctorIds')?.value.join(',') : '',
  
     };
  
    
-   debugger
+    debugger
+
 
   try {
     this.hospservice.AddUpdateServices(payload).subscribe({
@@ -686,7 +681,8 @@ onSubmitServiceForm(ServiceId: any = '')
 
 doctorSearchText: string = '';
  
-  filterDoctors(searchTerm: string) {
+  filterDoctors(searchTerm: string) 
+  {
     if (!searchTerm) {
       this.filteredDoctors = [...this.doctors];
       return;
@@ -762,6 +758,7 @@ convertTimeStringToReadable(duration: string): string {
           
           this.ErrorMsg = '';
            this.ServicesCategories = response.data; 
+           debugger
         }
       },
       error: (error: any) => {
@@ -818,103 +815,6 @@ editmaincategory(item:any)
 }
 
 
-AddUpdateMainServiceCategory()
-{
 
-
-const Categoryname = this.MainServiceCategoriesForm.get('Name')?.value;
-const Description = this.MainServiceCategoriesForm.get('Description')?.value;
-const Status = this.MainServiceCategoriesForm.get('Status')?.value;
-let flag = 'I'
-
-if (!Categoryname || Categoryname.trim() === '')
-  {
-    this.ErrorMsg = 'Please enter the category name'; 
-    return
-  }
-
-  if(Description === null || Description === undefined || Description.trim() === '')
-  {
-    this.ErrorMsg = 'Please enter the description'; 
-    return;
-  }
-
-if (Status === null || Status === undefined || Status === '') {
-    this.ErrorMsg = 'Please select the status';
-    return;
-  }
-
-  if(this.MainServiceflag === 'U' && !this.Mainserviceid) 
-    {
-    this.ErrorMsg = 'Service ID is required for update';
-  
-    return;     
-  }
-   
-
-  if(this.Mainserviceid)
-  {
-    flag = 'U'; // Set to 'U' for Update operation
-  }
-  
-
-          this.ErrorMsg = '';
-
-  try {
-    this.hospservice. AddUpdateMainServiceCategory(Categoryname,Description,Status,this.Mainserviceid,flag).subscribe({
-      next: (response: any) => {
-         
-        if (response.status == 200) {
-          
-          this.ErrorMsg = '';
-          // this.MainserviceCategories = response.data;
-            this.GetMainServiceCategories(); // Refresh the list after saving
-        }
-      },
-      error: (error: any) => {
-        if (error.status === 401) {
-          this.router.navigate(['/login']);
-        } else {
-          console.error('Error saving service:', error);
-          this.ErrorMsg = 'Something went wrong while saving the service.';
-        }
-      }
-    });
-  } catch (error: any) {
-    console.error('Exception:', error);
-    this.ErrorMsg = 'Unexpected error occurred.';
-  }
-
-}
-
-
-deleteCategory(item:any)
-{
-  try {
-    this.hospservice. DeleteMainServiceCategory(item).subscribe({
-      next: (response: any) => {
-         
-        if (response.status == 200) {
-          
-          this.ErrorMsg = '';
-          // this.MainserviceCategories = response.data;
-            this.GetMainServiceCategories(); // Refresh the list after saving
-        }
-      },
-      error: (error: any) => {
-        if (error.status === 401) {
-          this.router.navigate(['/login']);
-        } else {
-          console.error('Error saving service:', error);
-          this.ErrorMsg = 'Something went wrong while saving the service.';
-        }
-      }
-    });
-  } catch (error: any) {
-    console.error('Exception:', error);
-    this.ErrorMsg = 'Unexpected error occurred.';
-  }
-
-}
 
 }

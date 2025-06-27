@@ -213,6 +213,7 @@
                       <!-- Selected doctors chips -->
                       <mat-select-trigger>
                         <div class="flex flex-wrap gap-2">
+                         
                           <ng-container *ngFor="let selectedId of serviceForm.get('DoctorIds')?.value">
                             <span *ngFor="let doc of doctors">
                               <span *ngIf="doc.doctorId === selectedId"
