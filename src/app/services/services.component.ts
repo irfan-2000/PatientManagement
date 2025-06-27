@@ -19,8 +19,9 @@ export class ServicesComponent
 
   tabs = [
     { id: 'specializations', label: 'Specializations' },
-    { id: 'services', label: 'Services' },
-    { id: 'categories', label: 'Categories' }
+    { id: 'categories', label: 'Categories' },
+    { id: 'services', label: 'Services' }
+    
   ];
   activeTab = 'specializations';
   ShowSpecialization:boolean = false;
@@ -106,6 +107,12 @@ this.GetServices();
 this.GetServiceCategories();
 }
 
+if(this.activeTab == 'specializations')
+{
+  this.GetSpecialization();
+}
+
+
 }
 
 
@@ -118,11 +125,11 @@ this.ErrorMsg = '';
   this.showCategoryForm = true;
   debugger
   console.log("Reh oper", Operation, item)
-  if(Operation === 'Add')
+  if(Operation =='Add')
     {
      this.isAddingServiceCategory = true; 
   }
-  if(Operation === 'Update')
+  if(Operation == 'Update')
     {
     // Update service category
     this.isAddingServiceCategory = false;
@@ -149,7 +156,7 @@ this.ErrorMsg = '';
         }
       },
       error: (error: any) => {
-        if (error.status === 401) {
+        if (error.status == 401) {
           this.router.navigate(['/login']);
         } else {
           console.error('Error saving service:', error);
@@ -163,36 +170,40 @@ this.ErrorMsg = '';
   }
   }
  
-
+IsloadingCategory:boolean =false;
 AddUpdateMainServiceCategory()
 { 
 
 const Categoryname = this.MainServiceCategoriesForm.get('Name')?.value;
 const Description = this.MainServiceCategoriesForm.get('Description')?.value;
 const Status = this.MainServiceCategoriesForm.get('Status')?.value;
- 
+ this.IsloadingCategory =true;
 
-if (!Categoryname || Categoryname.trim() === '')
+if (!Categoryname || Categoryname.trim() == '')
   {
     this.ErrorMsg = 'Please enter the category name'; 
+    this.IsloadingCategory = false;
     return
   }
 
   if(Description == null || Description == undefined || Description.trim() == '')
   {
     this.ErrorMsg = 'Please enter the description'; 
+    this.IsloadingCategory = false;
     return;
   }
 
 if (Status == null || Status == "null" || Status == undefined || Status == '')
    {
     this.ErrorMsg = 'Please select the status';
+    this.IsloadingCategory = false;
     return;
   }
 
   if(this.MainServiceflag == 'U' && !this.Mainserviceid) 
     {
     this.ErrorMsg = 'Service ID is required for update';
+    this.IsloadingCategory = false;
   
     return;     
   }
@@ -207,11 +218,12 @@ if (Status == null || Status == "null" || Status == undefined || Status == '')
     flag = 'U';
   }
 
- 
+ debugger
   try {
     this.hospservice. AddUpdateMainServiceCategory(Categoryname,Description,Status,this.Mainserviceid,flag).subscribe({
-      next: (response: any) => {
-         
+      next: (response: any) => 
+        {
+         this.IsloadingCategory = false;
         if (response.status == 200)
            {
           
@@ -229,7 +241,8 @@ if (Status == null || Status == "null" || Status == undefined || Status == '')
       },
       error: (error: any) => 
         {
-        if (error.status === 401) 
+          this.IsloadingCategory = false;
+        if (error.status == 401) 
           {
           this.router.navigate(['/login']);
         } else {
@@ -239,6 +252,7 @@ if (Status == null || Status == "null" || Status == undefined || Status == '')
       }
     });
   } catch (error: any) {
+    this.IsloadingCategory = false;
     console.error('Exception:', error);
     this.ErrorMsg = 'Unexpected error occurred.';
   }
@@ -258,7 +272,7 @@ deleteCategory(item:any)
         }
       },
       error: (error: any) => {
-        if (error.status === 401) {
+        if (error.status == 401) {
           this.router.navigate(['/login']);
         } else {
           console.error('Error saving service:', error);
@@ -300,7 +314,7 @@ CancelServiceForm()
           
       },
       error: (error: any) => {
-        if (error.status === 401) {
+        if (error.status ==401) {
           this.router.navigate(['/login']);
         } else {
           console.error('Error saving service:', error);
@@ -323,7 +337,7 @@ AddUpdateServices(Operation: string, item: any = "")
   this.isAddingService = false;
   
 
-  if (Operation === 'Add')
+  if (Operation == 'Add')
   {
     this.isAddingService =true
     // Reset form with empty values
@@ -338,7 +352,7 @@ AddUpdateServices(Operation: string, item: any = "")
     });
   }
  
-  if (Operation === 'Update') 
+  if (Operation == 'Update') 
     {
       this.isAddingService = false;
     this.IsEditingService = true;
@@ -375,7 +389,7 @@ AddUpdateServices(Operation: string, item: any = "")
     const response = await this.doctorservice.GetSpecialization();
      
     console.log(response)
-    if (response.status === 200) 
+    if (response.status == 200) 
       {
         console.log("soecialization",response);
         this.specializations = response.specializationData;
@@ -427,7 +441,7 @@ AddUpdateServices(Operation: string, item: any = "")
     }
 
 
-
+IsLoadingSpecialization:boolean = false;
 async submitForm()
 {
   this.ErrorMsg = "";
@@ -451,25 +465,48 @@ async submitForm()
       formData.append('HospitalId',hospitalId.toString())
     }
 
-    try {
-      console.log(JSON.stringify(formData))
-     const response = await this.hospservice.AddUpdateSpecialization(formData);
 
-      if (response.status == 200) 
-      {
-        this.closeModal();
-        this.GetSpecialization();
-        this.showToast('success','Specialization added successfully.','');
+
+
+  try {
+    this.IsLoadingSpecialization = true;
+    this.hospservice. AddUpdateSpecialization( formData).subscribe({
+      next: (response: any) => 
+        { 
+          this.IsLoadingSpecialization = false;
+
+         if (response.status == 200) 
+          {
+          
+          this.ErrorMsg = '';
+            this.showToast('success','Specialization has been saved!!','') 
+            this.GetSpecialization();
+         } 
+          if (response.status == 403) 
+          {
+          
+             this.ErrorMsg = '';
+            this.showToast('error','Specialization already Exist!!','') 
+            this.GetServices();
+
+         } 
+      },
+      error: (error: any) => 
+        {
+            this.IsLoadingSpecialization = false;
+
+        if (error.status == 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
       }
-      if (response.status == 401) {
-        return;
-      }
-    } catch (error: any) {
-      console.error('Error:', error);
-      this.ErrorMsg = "An error occurred while submitting the form.";
-    }
-
-
+    });
+  } catch (error: any) { this.IsLoadingSpecialization = false;
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  } 
   }
   else
   {
@@ -494,7 +531,7 @@ async DeleteSpecialization(specializationId:any)
     console.log(JSON.stringify(specializationId))
    const response = await this.hospservice.DeleteSpecialization(specializationId);
 
-    if (response.status === 200) 
+    if (response.status == 200) 
     {
       this.showToast('success','Delete Success!!','Deleted');
       this.GetSpecialization(); // Refresh the list after deletion
@@ -535,9 +572,10 @@ AddUpdateSpecialization(Operation: string, item: any = "")
   this.ErrorMsg = "";
   this.ShowSpecialization = true;
   this.isAdding = true;
-  console.log(item);
+ 
+ 
 
-  if (Operation === 'Add')
+  if (Operation == 'Add')
     
     {
     this.Specializationform.setValue({
@@ -546,18 +584,51 @@ AddUpdateSpecialization(Operation: string, item: any = "")
     });
   }
 
-  if (Operation === 'Update')
+  if (Operation == 'Update')
      {
+    this.isAdding = false;
       this.specializationId = item.specializationId;
     this.Specializationform.patchValue({
       Name: item.name,
-      Status: item.status == 'Active'?1:0 
+      Status: item.status 
     });
   }
 }
 
 
- 
+ DelteServices(item:any)
+ {
+
+  try {
+    this.hospservice.DelteServices(item.serviceId).subscribe({
+      next: (response: any) => 
+        { 
+         if (response.status == 200) 
+          {
+          
+          this.ErrorMsg = '';
+            this.showToast('success','Services has been Deleted!!','') 
+          this.GetServices();
+         } 
+      },
+      error: (error: any) => 
+        {
+            
+
+        if (error.status == 401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+          this.ErrorMsg = 'Something went wrong while saving the service.';
+        }
+      }
+    });
+  } catch (error: any) { 
+    console.error('Exception:', error);
+    this.ErrorMsg = 'Unexpected error occurred.';
+  }
+
+ }
 
 get duration(): string {
   return `${this.serviceForm.value.hours}:${this.serviceForm.value.minutes}`;
@@ -566,16 +637,19 @@ get duration(): string {
 
 
 
-
+IsloadingService:boolean =false;
 
 onSubmitServiceForm(ServiceId: any = '') 
 {
   this.ErrorMsg = '';
 
+  this.IsloadingService = true;
   const docIds = this.serviceForm.get('DoctorIds')?.value || [];
-  if(docIds.length === 0)
+  if(docIds.length == 0)
      {
     this.ErrorMsg = 'Please select at least one doctor.'; 
+    
+  this.IsloadingService = false;
     return;
  
   }
@@ -589,33 +663,42 @@ onSubmitServiceForm(ServiceId: any = '')
   const category = this.serviceForm.get('Category')?.value;
   const status = this.serviceForm.get('Status')?.value;
 
-  if (!name || name.trim() === '') 
+  if (!name || name.trim() == '') 
     {
     this.ErrorMsg = 'Please enter the service name';
+      this.IsloadingService = false;
+
     return;
   }
-
  
-  if (charges === null || charges === undefined || charges === '' || isNaN(charges) || parseFloat(charges) <= 0) {
+  if (charges == null || charges == undefined || charges == '' || isNaN(charges) || parseFloat(charges) <= 0) {
     this.ErrorMsg = 'Please enter the charges';
+      this.IsloadingService = false;
+
     return;
   }
 
   if (
-    (hours === null || hours === undefined || hours === '' ) &&
-    (minutes === null || minutes === undefined || minutes === '') || (hours === '00' && minutes === '00')
+    (hours == null || hours == undefined || hours == '' ) &&
+    (minutes == null || minutes == undefined || minutes == '') || (hours == '00' && minutes == '00')
   ) {
     this.ErrorMsg = 'Please enter the duration (hours or minutes)';
+      this.IsloadingService = false;
+
     return;
   }
 
-  if (!category || category.trim() === '') {
+  if (!category || category.trim() == '') {
     this.ErrorMsg = 'Please select the category';
+      this.IsloadingService = false;
+
     return;
   }
 
-  if (status === null || status === undefined || status === '') {
+  if (status == null || status == undefined || status == '') {
     this.ErrorMsg = 'Please select the status';
+      this.IsloadingService = false;
+
     return;
   }
 
@@ -635,16 +718,14 @@ onSubmitServiceForm(ServiceId: any = '')
      CommaSeparatedDoctorIds:this.serviceForm.get('DoctorIds')?.value ? this.serviceForm.get('DoctorIds')?.value.join(',') : '',
  
     };
- 
-   
-    debugger
-
-
+  
   try {
     this.hospservice.AddUpdateServices(payload).subscribe({
       next: (response: any) => 
         {
-         if (response.status === 200) 
+            this.IsloadingService = false;
+
+         if (response.status == 200) 
           {
           
           this.ErrorMsg = '';
@@ -661,8 +742,11 @@ onSubmitServiceForm(ServiceId: any = '')
 
 
       },
-      error: (error: any) => {
-        if (error.status === 401) {
+      error: (error: any) => 
+        {
+            this.IsloadingService = false;
+
+        if (error.status == 401) {
           this.router.navigate(['/login']);
         } else {
           console.error('Error saving service:', error);
@@ -671,6 +755,8 @@ onSubmitServiceForm(ServiceId: any = '')
       }
     });
   } catch (error: any) {
+      this.IsloadingService = false;
+
     console.error('Exception:', error);
     this.ErrorMsg = 'Unexpected error occurred.';
   }
@@ -726,7 +812,7 @@ convertTimeStringToReadable(duration: string): string {
       const response = await this.doctorservice.GetAllDoctors();
       console.log(response);
 
-      if (response?.status === 200) 
+      if (response?.status == 200) 
         { 
 
         this.doctors = response.doctorsData;
@@ -743,10 +829,7 @@ convertTimeStringToReadable(duration: string): string {
     }
   }
 
-
-
-
-
+ 
 
   GetServiceCategories(CategoryId:any = '')
   {
@@ -754,7 +837,7 @@ convertTimeStringToReadable(duration: string): string {
   try {
     this.hospservice.GetServiceCategories( CategoryId ).subscribe({
       next: (response: any) => {
-        if (response.status === 200) {
+        if (response.status == 200) {
           
           this.ErrorMsg = '';
            this.ServicesCategories = response.data; 
@@ -762,7 +845,7 @@ convertTimeStringToReadable(duration: string): string {
         }
       },
       error: (error: any) => {
-        if (error.status === 401) {
+        if (error.status == 401) {
           this.router.navigate(['/login']);
         } else {
           console.error('Error saving service:', error);

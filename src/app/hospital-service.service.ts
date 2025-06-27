@@ -21,21 +21,17 @@ constructor(private http:HttpClient  )
  
 }
 
-  AddUpdateSpecialization(formData:any): Promise<any> 
-  { 
-    
-    
-  return this.http.post<any>(`${this.baseurl}api/AddUpdateSpecialization`, formData, 
-    {
-        withCredentials: true // Ensures cookies (JWT) are sent
-    })
-    .toPromise()
-    .then(response => response)
-    .catch(error => {
-        console.error("API Error", error);
-        return error;
-    });
+  AddUpdateSpecialization(formData:any) 
+  {  
+  return this.http.post<any>(`${this.baseurl}api/AddUpdateSpecialization`, formData  , {
+       headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    }),
+    withCredentials: true,
+  }); 
   }
+
+  
  
   DeleteSpecialization(specializationId: number): Promise<any> 
 { 
@@ -54,6 +50,14 @@ constructor(private http:HttpClient  )
       console.error("API Error", error);
       return error;
   });
+
+
+
+
+
+
+
+  
 } 
  AddUpdateServices( payload:any) 
  {
@@ -66,7 +70,22 @@ debugger
     withCredentials: true,
   });
 }
+DelteServices(ServiceId :any)
+{
+debugger
+let params = new HttpParams();
+params = params.append("ServiceId",ServiceId.toString());
 
+  return this.http.post<any>(`${this.baseurl}api/DeleteServices`  ,null, {
+      params: params,     
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}` 
+
+    }),
+    withCredentials: true,
+  });
+
+}
 
 
  GetServices(  ) 
