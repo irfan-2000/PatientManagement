@@ -115,6 +115,14 @@ if(this.activeTab == 'specializations')
 
 }
 
+// Modal
+showServicesDeleteModal:any = false;
+serviceToDelete: any = null;
+showCategoriesDeleteModal: any = false;
+categoryToDelete: any = null;
+showSpecializationDeleteModal: any = false;
+specializationToDelete: any = null;
+
 
 //Main Servcie Categories
 openCategoryForm(Operation: string, item: any = "")
@@ -123,7 +131,7 @@ this.ErrorMsg = '';
    this.MainServiceCategoriesForm.reset();
   
   this.showCategoryForm = true;
-  debugger
+   
   console.log("Reh oper", Operation, item)
   if(Operation =='Add')
     {
@@ -218,7 +226,7 @@ if (Status == null || Status == "null" || Status == undefined || Status == '')
     flag = 'U';
   }
 
- debugger
+  
   try {
     this.hospservice. AddUpdateMainServiceCategory(Categoryname,Description,Status,this.Mainserviceid,flag).subscribe({
       next: (response: any) => 
@@ -268,6 +276,8 @@ deleteCategory(item:any)
         if (response.status == 200) {
           
           this.ErrorMsg = '';
+          this.showCategoriesDeleteModal = false;
+          this.showToast('success', 'Category deleted.','')
              this.GetMainServiceCategories(); // Refresh the list after saving
         }
       },
@@ -608,6 +618,7 @@ AddUpdateSpecialization(Operation: string, item: any = "")
           
           this.ErrorMsg = '';
             this.showToast('success','Services has been Deleted!!','') 
+            this.showServicesDeleteModal = false;
           this.GetServices();
          } 
       },
@@ -841,7 +852,7 @@ convertTimeStringToReadable(duration: string): string {
           
           this.ErrorMsg = '';
            this.ServicesCategories = response.data; 
-           debugger
+            
         }
       },
       error: (error: any) => {
@@ -897,7 +908,19 @@ editmaincategory(item:any)
 
 }
 
+showDeleteServiceModal(service: any) {
+  this.serviceToDelete = service;
+  this.showServicesDeleteModal = true;
+}
 
+showDeleteCategoryModal(category: any) {
+  this.categoryToDelete = category;
+  this.showCategoriesDeleteModal = true;
+}
 
+showDeleteSpecializationModal(spec: any) {
+  this.specializationToDelete = spec;
+  this.showSpecializationDeleteModal = true;
+}
 
 }

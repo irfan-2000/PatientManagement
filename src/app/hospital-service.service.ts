@@ -62,7 +62,7 @@ constructor(private http:HttpClient  )
  AddUpdateServices( payload:any) 
  {
     
-debugger
+ 
   return this.http.post<any>(`${this.baseurl}api/AddUpdateServices`, payload  , {
        headers: new HttpHeaders({
       Authorization: `Bearer ${this.token}`
@@ -72,7 +72,7 @@ debugger
 }
 DelteServices(ServiceId :any)
 {
-debugger
+ 
 let params = new HttpParams();
 params = params.append("ServiceId",ServiceId.toString());
 
