@@ -54,7 +54,10 @@ hours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
 minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
 
 doctors :any = {}
-  constructor(private fb:FormBuilder,private  router:Router,private doctorservice:DoctorServiceService,private hospservice:HospitalServiceService,private toastr: ToastrService)
+  constructor(private fb:FormBuilder,private  router:
+    Router,private doctorservice:DoctorServiceService,
+    private hospservice:HospitalServiceService,
+    private toastr: ToastrService)
   {      
      this.Specializationform = new FormGroup(
       { 

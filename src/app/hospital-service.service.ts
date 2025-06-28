@@ -167,4 +167,46 @@ DeleteMainServiceCategory(id:any)
 }
 
 
+GetAvailableSlots(DoctorId:any,ServiceId:any,Date:any)
+{
+  let params = new HttpParams();
+  params= params.append('Date', Date);  
+  params= params.append('DoctorId',DoctorId )
+  params = params.append('Service',ServiceId); // Assuming you want to delete all categories, otherwise pass the specific ID
+
+   
+  return this.http.post<any>(`${this.baseurl}api/GetAvailableSlots`, null,  {
+    params: params,   
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    }),
+    withCredentials: true,
+  });
+}
+
+SubmitAppointment(doctor:any,service:any,appointmentDate:any,patient:any,status:any,slot:any,flag:any,appointmentid:any)
+{
+  const Payload = {
+      doctor:doctor,
+      service:service,
+      appointmentDate:appointmentDate,
+      patient:patient,
+      status:status,
+      slot:slot,
+      flag:flag,
+      appointmentId :appointmentid
+  }
+
+
+     
+  return this.http.post<any>(`${this.baseurl}api/SubmitAppointment`, Payload,  {    
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    }),
+    withCredentials: true,
+  });
+
+}
+
+
 }
