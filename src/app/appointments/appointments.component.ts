@@ -38,7 +38,24 @@ export class AppointmentsComponent {
     'Check-in',
     'Pending'
   ]
- 
+
+  selectServicesArray = [
+    {
+      id: 1,
+      name: 'Service One',
+    },
+    {
+      id: 2,
+      name: 'Blood test',
+    },
+    {
+      id: 3,
+      name: 'New service',
+    }
+  ]
+  onserviceChanged(services:any){
+    console.log("Selected Services", services)
+  }
 
 timeSlots = [
   { startTime: '14:00:00', endTime: '14:30:00', label: '11:00 AM - 11:30 AM' },
