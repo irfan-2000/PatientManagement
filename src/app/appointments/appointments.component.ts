@@ -347,16 +347,16 @@ SubmitAppointment()
 
 let service = '50,51'
 
-let appointmentDate = this.Appointmentform.get('AppointmentDate')?.value;
+
+debugger
+  if(this.validateAppointmentForm() == 0)
+  {
+     let appointmentDate = this.Appointmentform.get('AppointmentDate')?.value;
 let patient = this.Appointmentform.get('patient')?.value;
 let status = this.Appointmentform.get('status')?.value;
 let slot = this.selectedSlot.startTime +'-'+this.selectedSlot.endTime;
 let flag = 'I';
 let appointmentId 
-debugger
-  if(this.validateAppointmentForm() == 0)
-  {
-     
     try {
     this.hospservice.SubmitAppointment(doctor,service.toString(),appointmentDate,patient,status,slot,flag,appointmentId).subscribe({
       next: (response: any) => {
