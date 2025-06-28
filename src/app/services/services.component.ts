@@ -274,11 +274,15 @@ deleteCategory(item:any)
       next: (response: any) => {
          
         if (response.status == 200) {
-          
-          this.ErrorMsg = '';
-          this.showCategoriesDeleteModal = false;
-          this.showToast('success', 'Category deleted.','')
-             this.GetMainServiceCategories(); // Refresh the list after saving
+          if(response.data){
+            this.ErrorMsg = '';
+            this.showCategoriesDeleteModal = false;
+            this.showToast('success', 'Category deleted.','')
+            this.GetMainServiceCategories(); // Refresh the list after saving
+          }else{
+            this.showToast("error", "Error MEssage", '')
+          }
+         
         }
       },
       error: (error: any) => {
@@ -543,8 +547,13 @@ async DeleteSpecialization(specializationId:any)
 
     if (response.status == 200) 
     {
-      this.showToast('success','Delete Success!!','Deleted');
-      this.GetSpecialization(); // Refresh the list after deletion
+      if(response.data){
+        this.showToast('success','Delete Success!!','Deleted');
+        this.GetSpecialization(); // Refresh the list after deletion
+      }else{
+        this.showToast('error','Error Message','')
+      }
+      
     }
     if (response.status == 401) 
       {
@@ -615,11 +624,15 @@ AddUpdateSpecialization(Operation: string, item: any = "")
         { 
          if (response.status == 200) 
           {
-          
-          this.ErrorMsg = '';
-            this.showToast('success','Services has been Deleted!!','') 
-            this.showServicesDeleteModal = false;
-          this.GetServices();
+            if(response.data){
+              this.ErrorMsg = '';
+              this.showToast('success','Services has been Deleted!!','') 
+              this.showServicesDeleteModal = false;
+              this.GetServices();
+            }else{
+              this.showToast('error','Error Message Here','')  
+            }
+         
          } 
       },
       error: (error: any) => 
