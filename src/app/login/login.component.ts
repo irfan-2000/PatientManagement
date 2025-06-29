@@ -69,7 +69,9 @@ export class LoginComponent {
       // localStorage.setItem('Token',response.token); 
        localStorage.setItem('HospitalId',response.hospitalId);
        localStorage.setItem('token',response.token);
-       this.router.navigate(['doctors']);
+       setTimeout(()=>{
+         this.router.navigate(['doctors']);
+       },100)
       }
       if(response.status == 401)
         {
