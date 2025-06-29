@@ -154,7 +154,7 @@ AddUpdatePatient()
       formData.append('Description', this.patientForm.get('description')?.value || '');
       formData.append('BloodGroup', this.patientForm.get('bloodGroup')?.value || '');
 
-      debugger
+       
     try {
         this.PatientService.AddUpdatePatient (formData ).subscribe({
           next: (response: any) => {

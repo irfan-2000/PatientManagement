@@ -1,26 +1,26 @@
 <div class="multi-select-dropdown">
     <div class="input-container">
-      @for (itemName of selectedItems; track itemName) 
+      @for (itemName of selectedItems; track $index) 
       {
         <div class="selected-item">
-          {{ itemName }}
+          {{ getDisplayName(itemName) }}
           <button class="text-danger" (click)="removeItem(itemName, $event)">&times;</button>
         </div>
       }
       <input type="text"
              (focus)="showDropDown()"
              (input)="filterItems($event)"
-             [placeholder]="isDropdownVisible || selectedItems?.length ? '' : placeholder">
+             [placeholder]="isDropdownVisible || selectedItems.length ? '' : placeholder">
     </div>
   
     @if (isDropdownVisible)
      {
       <div class="dropdown-list">
-        @for (item of filteredItems; track item.id)
+        @for (item of filteredItems; track trackByFn($index, item))
          {
           <div class="dropdown-item" (click)="toggleItem(item)">
             <span class="checkbox">
-              @if (selectedItems.includes(item.name)) 
+              @if (emitType === 'name' ? selectedItems.includes(item.name) : selectedItems.includes(this.itemId ? item[this.itemId] : item.id)) 
               {
                 <span class="checkmark">✓</span>
               }

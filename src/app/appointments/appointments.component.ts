@@ -105,7 +105,7 @@ this.Appointmentform = new FormGroup({
 
   setSelectedSlot(slot:any){
     console.log("Selected Slot: ", slot);
-    debugger
+     
     this.Appointmentform.get('slot')?.setValue(slot); // Manually set value
       this.selectedSlot = slot
      console.log("Selected Slot: ",  this.Appointmentform.get('slot')?.value);
@@ -356,7 +356,7 @@ this.Appointmentform = new FormGroup({
         if (response.status == 200) 
           {
           this.timeSlots = response.result;
-        debugger
+         
          
         }
           
@@ -383,7 +383,7 @@ SubmitAppointment()
 let service = '50,51'
 
 
-debugger
+ 
   if(this.validateAppointmentForm() == 0)
   {
      let appointmentDate = this.Appointmentform.get('AppointmentDate')?.value;

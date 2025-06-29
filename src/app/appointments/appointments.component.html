@@ -1,6 +1,6 @@
 <div class="flex">
     <app-sidebar></app-sidebar>
-    <div class="px-2 py-6 space-y-3 h-dvh overflow-y-auto">
+    <div class="px-2 py-6 space-y-3 h-dvh overflow-y-auto w-full">
         <div class="px-3 mb-5 flex gap-2 justify-end">
             <button (click)="addAppointment()"
                 class="bg-blue-500 text-white px-2 py-2 text-sm rounded-lg hover:bg-blue-700 md:text-base md:px-3">Add
@@ -189,7 +189,7 @@
                     <div class="flex flex-col gap-2">
                         <p class="text-[#777]">Select Service</p>
                         <app-multiselect [items]="selectServicesArray" [placeholder]="'Select Services'"
-                        (selectionChange)="onserviceChanged($event)"></app-multiselect>
+                        (selectionChange)="onserviceChanged($event)" [emitType]="'id'" [itemId]="'serviceId'" ></app-multiselect>
                         <span *ngIf="ErrorMsg['service']" class="text-red-500  ">{{ ErrorMsg['service'] }}</span>
 
                     </div>
@@ -222,17 +222,17 @@
                 <div class="flex flex-col gap-3 h-full">
                     <div class="flex flex-col flex-1 gap-2">
                         <p class="text-[#777]">Available Slot</p>
-                        <div class="border border-gray-300 rounded-lg p-4 h-full text-center" *ngIf="timeSlots.length>0">
+                        <div class="border border-gray-300 rounded-lg p-4 h-full text-center max-h-[300px] overflow-y-auto" *ngIf="timeSlots.length>0">
                            <!-- Just remove formControlName from the button -->
-                       <button *ngFor="let slot of timeSlots" 
+                            <button *ngFor="let slot of timeSlots" 
                                 (click)="setSelectedSlot(slot)"
                                 class="border border-blue-500 text-blue-500 px-1 rounded-md m-1 hover:bg-blue-500 hover:text-white"
                                 [ngClass]="{'bg-blue-500 text-white': slot === selectedSlot}">
-                        {{ convertTo12HourFormat(slot.startTime)}} - {{ convertTo12HourFormat(slot.endTime) }}
+                                {{ convertTo12HourFormat(slot.startTime)}} - {{ convertTo12HourFormat(slot.endTime) }}
 
                         
                             <!-- convertTo12HourFormat(response.result[0].startTime); -->
-                        </button>
+                             </button>
 
 
                                 <span *ngIf="ErrorMsg['slot']" class="text-red-500">{{ ErrorMsg['slot'] }}</span>
