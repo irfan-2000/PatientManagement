@@ -90,10 +90,10 @@
                 <div *ngIf="SuccessMsg" class="text-green-500 text-sm">{{ SuccessMsg }}</div>
 
                 <div class="flex justify-end space-x-3 pt-4">
-                  <button type="button" (click)="closeModal()"
+                  <!-- <button type="button" (click)="closeModal()"
                     class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium">
                     Cancel
-                  </button>
+                  </button> -->
                   <button type="submit" (click)="submitForm()" [disabled]="IsLoadingSpecialization"
                     class="px-4 py-2 bg-[#004687] hover:bg-[#336b9f] text-white rounded-lg text-sm font-medium">
                     Save Changes
@@ -112,18 +112,18 @@
         (click)="AddUpdateServices('Add')">
         <i class="fas fa-plus md:mr-1"></i> <span class="hidden md:inline">Add Service</span>
       </button>
-        <div class="card-body border-gray-300 border-end-0 border-start-0 border-bottom-0 max-h-[82vh] overflow-auto">
-          <div class="overflow-x-auto shadow-lg rounded-lg">
+        <div class="card-body border-gray-300 border-end-0 border-start-0 border-bottom-0">
+          <div class="overflow-auto shadow-lg rounded-lg h-[74vh]">
             <table class="min-w-full border-collapse">
-              <thead class="sticky top-0">
+              <thead class="sticky top-0 z-20">
                 <tr class="bg-[#004687] text-white">
-                   <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">Service Category</th>
-                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">Name</th>
-                  <th class="p-3 border-b border-gray-200 text-left">Doctor</th>
-                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">Charges</th>
-                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell">Duration</th>
-                  <th class="p-3 border-b border-gray-200 text-left">Status</th>
-                  <th class="p-3 border-b border-gray-200 text-left">Action</th>
+                   <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell bg-[#004687]">Service Category</th>
+                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell bg-[#004687]">Name</th>
+                  <th class="p-3 border-b border-gray-200 text-left bg-[#004687]">Doctor</th>
+                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell bg-[#004687]">Charges</th>
+                  <th class="p-3 border-b border-gray-200 text-left hidden lg:table-cell bg-[#004687]">Duration</th>
+                  <th class="p-3 border-b border-gray-200 text-left bg-[#004687]">Status</th>
+                  <th class="p-3 border-b border-gray-200 text-left bg-[#004687]">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -131,7 +131,7 @@
                   class="hover:bg-gray-50 transition-colors border-b border-gray-200">
                    <td class="p-3 text-gray-700 hidden lg:table-cell text-left">{{service.categoryName}}</td>
                   <td class="p-3 text-gray-700 font-medium hidden lg:table-cell text-left">{{service.name }}</td>
-                  <td class="p-3 text-gray-700 text-left">{{service.doctorName}}</td>
+                  <td class="p-3 text-gray-700 text-left max-w-[200px] truncate">{{service.doctorName}}</td>
                   <td class="p-3 text-gray-700 hidden lg:table-cell text-left">₹{{service.charges}}</td>
                   <td class="p-3 text-gray-700 hidden lg:table-cell text-left">{{ convertTimeStringToReadable(service.duration) }}
                   </td>
@@ -287,10 +287,10 @@
 
                 <!-- Buttons -->
                 <div class="flex justify-end space-x-3 pt-4">
-                  <button type="button" (click)="CancelServiceForm()"
+                  <!-- <button type="button" (click)="CancelServiceForm()"
                     class="px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium">
                     Cancel
-                  </button>
+                  </button> -->
                   <button type="submit" (click)="onSubmitServiceForm()"  [disabled]="IsloadingService"
                     class="px-4 py-2 bg-[#004687] hover:bg-[#336b9f] text-white rounded-lg text-sm font-medium">
                     {{ isAdding ? 'Add Service' : 'Save Changes' }}

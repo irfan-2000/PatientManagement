@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientService } from '../patient.service';
 import { from } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-edit-patient',
@@ -18,7 +19,7 @@ export class AddEditPatientComponent {
 
 IsEditing: boolean = false;
 errorMessages:any = {}
-  constructor(private route: ActivatedRoute, private fb: FormBuilder, private PatientService: PatientService, private router: Router) {
+  constructor(private route: ActivatedRoute, private fb: FormBuilder, private PatientService: PatientService, private router: Router, private toastr: ToastrService) {
     this.patientForm = this.fb.group({
       patientId: [''],
       fullName: ['', Validators.required],
@@ -124,7 +125,7 @@ errorMessages:any = {}
 AddUpdatePatient()
 { 
     const formData = new FormData();
-    
+    const successMessage = this.IsEditing?'Patient details updated successfully!':'Patient added successfully!'
 
     if(this.ValidateFormFields() == 0)
     {
@@ -160,11 +161,13 @@ AddUpdatePatient()
           next: (response: any) => {
             if (response.status === 200) 
            {
-                            
+            // Probably add the patient Id in this toast
+            this.showToast('success', `Patient Id: ${response.result}`  , successMessage);
+            this.router.navigate(['patients'])
             }
           },
           error: (error: any) => {
-
+            this.showToast('error', 'Something went wrong' , '');
             console.log(error);
             if (error.status === 401) {
             } else if (error.status === 500 && error.error) {
@@ -176,6 +179,7 @@ AddUpdatePatient()
         });
       } catch (error: any) {
         console.error('API error:', error);
+        this.showToast('error', 'API error' , '');
       }
     }
 
@@ -223,6 +227,25 @@ if(this.patientForm.get('phone')?.value == '' || this.patientForm.get('phone')?.
 
  PatientDetails:any ={}
 
+ showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
+  switch (type) {
+    case 'success':
+      this.toastr.success(message, title);
+      break;
+    case 'error':
+      this.toastr.error(message, title);
+      break;
+    case 'warning':
+      this.toastr.warning(message, title);
+      break;
+    case 'info':
+      this.toastr.info(message, title);
+      break;
+    default:
+      console.error('Invalid toast type');
+  }
+}
+
 GetPatientDetails(flag:any = 'GetPatientById',Tab = 'Details')
 {
   
@@ -234,7 +257,7 @@ GetPatientDetails(flag:any = 'GetPatientById',Tab = 'Details')
               {
                  
                 this.PatientDetails = response.result[0];
-                //this.showToast('success', 'Doctor details updated successfully!', 'Success');
+                // this.showToast('success', 'Patient details updated successfully!', 'Success');
              // window.location.reload();
 
                 if(this.IsEditing)
