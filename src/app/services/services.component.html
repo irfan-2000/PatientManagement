@@ -131,7 +131,7 @@
                   class="hover:bg-gray-50 transition-colors border-b border-gray-200">
                    <td class="p-3 text-gray-700 hidden lg:table-cell text-left">{{service.categoryName}}</td>
                   <td class="p-3 text-gray-700 font-medium hidden lg:table-cell text-left">{{service.name }}</td>
-                  <td class="p-3 text-gray-700 text-left">{{service.doctorName}}</td>
+                  <td class="p-3 text-gray-700 text-left max-w-[200px] truncate">{{service.doctorName}}</td>
                   <td class="p-3 text-gray-700 hidden lg:table-cell text-left">₹{{service.charges}}</td>
                   <td class="p-3 text-gray-700 hidden lg:table-cell text-left">{{ convertTimeStringToReadable(service.duration) }}
                   </td>
