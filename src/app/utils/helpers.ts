@@ -12,7 +12,7 @@ export function formatDate(dateString: any) {
 
 export function formatTime(dateString:any)
  {
-  debugger
+   
   if (!dateString) return '';
   const date = new Date(dateString);
   return date.toLocaleTimeString(undefined, {

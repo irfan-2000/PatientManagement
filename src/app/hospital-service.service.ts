@@ -174,7 +174,7 @@ GetAvailableSlots(DoctorId:any,ServiceId:any,Date:any)
   params= params.append('DoctorId',DoctorId )
   params = params.append('Service',ServiceId); // Assuming you want to delete all categories, otherwise pass the specific ID
 
-   debugger
+    
 
 
   return this.http.get<any>(`${this.baseurl}api/GetAvailableSlots`,  {
