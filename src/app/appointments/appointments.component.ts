@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { formatDate, formatTime } from './../utils/helpers'; // Adjust path accordingly
+import { convertTo12HourFormat, formatDate, formatTime } from './../utils/helpers'; // Adjust path accordingly
 import { DoctorServiceService } from '../doctor-service.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -31,7 +31,7 @@ export class AppointmentsComponent {
     'New Patient'
   ]
   statusFilters = [
-    'All',
+    'Booked',
     'Upcoming',
     'Completed (Check out)',
     'Cancelled',
@@ -39,33 +39,18 @@ export class AppointmentsComponent {
     'Pending'
   ]
 
-  selectServicesArray = [
-    {
-      id: 1,
-      name: 'Service One',
-    },
-    {
-      id: 2,
-      name: 'Blood test',
-    },
-    {
-      id: 3,
-      name: 'New service',
-    }
-  ]
-  onserviceChanged(services:any){
-    console.log("Selected Services", services)
+  selectServicesArray:any[]= [ ]
+  SelectedServiceId :any [] = [50,51,52];
+
+  onserviceChanged(services:any)
+  {
+    console.log("Selected Services", services);
+//    this.SelectedServiceId.push(services.serviceId);
+
+     this.GetAvailableSlots();
   }
 
-timeSlots = [
-  { startTime: '14:00:00', endTime: '14:30:00', label: '11:00 AM - 11:30 AM' },
-  { startTime: '23:30:00', endTime: '00:00:00', label: '11:30 PM - 12:00 AM' },
-  { startTime: '00:30:00', endTime: '01:00:00', label: '12:30 AM - 1:00 AM' },
-  { startTime: '01:00:00', endTime: '01:30:00', label: '1:00 AM - 1:30 AM' },
-  { startTime: '01:30:00', endTime: '02:00:00', label: '1:30 AM - 2:00 AM' },
-  { startTime: '02:00:00', endTime: '02:30:00', label: '2:00 AM - 2:30 AM' }
-];
-
+timeSlots  :any[] = []
   selectedSlot:any;
   serviceDetail = [
     {
@@ -191,7 +176,8 @@ this.Appointmentform = new FormGroup({
       console.log(response);
 
       if (response?.status === 200) {
-        this.doctors = response.doctorsData;
+
+        this.doctors = response.doctorsData.filter((item:any)=>item.status == "1");
          console.log("After assinging", this.doctors);
 
       }
@@ -224,7 +210,8 @@ this.Appointmentform = new FormGroup({
           {
           
          
-            this.services = response.result;
+            this.selectServicesArray = response.result.filter((item:any)=>item.status == "1");
+
                
         }
           
@@ -286,7 +273,12 @@ this.Appointmentform = new FormGroup({
     errorcode = 1;
   }
 
-  if (this.Appointmentform.get('service')?.value == '' || this.Appointmentform.get('service')?.value == undefined || this.Appointmentform.get('service')?.value == null) {
+  // if (this.Appointmentform.get('service')?.value == '' || this.Appointmentform.get('service')?.value == undefined || this.Appointmentform.get('service')?.value == null) {
+  //   this.ErrorMsg["service"] = 'Service is required!';
+  //   errorcode = 1;
+  // }
+
+ if (this.selectServicesArray.length == 0 || this.selectServicesArray.length<0) {
     this.ErrorMsg["service"] = 'Service is required!';
     errorcode = 1;
   }
@@ -328,18 +320,44 @@ this.Appointmentform = new FormGroup({
 
  GetAvailableSlots()
   {
+    this.ErrorMsg= {}
+    const selectedDate = new Date(this.Appointmentform.get('AppointmentDate')?.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate < today) 
+      {
+      this.ErrorMsg['AppointmentDate'] = 'Please select today or a future date.';
+        
+    }
+
+     
     const date = this.Appointmentform.get('AppointmentDate')?.value;
     const DoctorId = this.Appointmentform.get('doctor')?.value;
     const ServiceId =    this.Appointmentform.get('service')?.value
 
+      if(date  == "" || date == null ||date == 'undefined')
+      {
+        return;
+      }
+      if(DoctorId == "" || DoctorId == null || DoctorId == "undefined")
+      {
+        return;
+      }
 
+      if(this.SelectedServiceId.length <=0)
+      {
+        return;
+      }
+
+ 
   try {
-    this.hospservice.GetAvailableSlots ( DoctorId ,ServiceId,date ).subscribe({
+    this.hospservice.GetAvailableSlots ( DoctorId ,this.SelectedServiceId,date ).subscribe({
       next: (response: any) => {
         if (response.status == 200) 
           {
-          
-          
+          this.timeSlots = response.result;
+        debugger
+         
         }
           
       },
@@ -400,6 +418,18 @@ let appointmentId
 
 
 
+
+  convertTo12HourFormat(time24: string): string {
+  const [hourStr, minuteStr] = time24.split(':');
+  let hour = parseInt(hourStr, 10);
+  const minute = minuteStr;
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+
+  hour = hour % 12;
+  hour = hour === 0 ? 12 : hour;
+
+  return `${hour}:${minute} ${ampm}`;
+}
 
 
 

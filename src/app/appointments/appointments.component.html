@@ -102,6 +102,7 @@
                                     Dr. {{ appt.doctor }} &middot; {{ appt.clinic }}
                                 </div>
                                 <div class="text-xs text-gray-500">
+
                                     {{ formatDate(appt.slotDateAndTime || appt.slot) }} &bull;
                                     {{ formatTime(appt.slotDateAndTime || appt.slot) }}
                                 </div>
@@ -178,7 +179,7 @@
                      
                     <div class="flex flex-col gap-2">
                         <p class="text-[#777]">Select Doctor</p>
-                        <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white" formControlName="doctor">
+                        <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white" formControlName="doctor" (change)="GetAvailableSlots()">
                             <option value="" disabled selected>Select Doctor</option>
                             <option *ngFor="let doc of doctors" [value]="doc.doctorId">{{doc.firstName}}{{doc.lName}}</option>
                         </select>
@@ -194,7 +195,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
                         <p class="text-[#777]">Select Date</p>
-                        <input type="date" placeholder="Date" formControlName="AppointmentDate" 
+                        <input type="date" placeholder="Date" formControlName="AppointmentDate" (change)="GetAvailableSlots()" 
                             class="w-full p-1 border rounded text-sm md:text-base md:p-[5px]" />
                             <span *ngIf="ErrorMsg['AppointmentDate']" class="text-red-500  ">{{ ErrorMsg['AppointmentDate'] }}</span>
 
@@ -221,13 +222,16 @@
                 <div class="flex flex-col gap-3 h-full">
                     <div class="flex flex-col flex-1 gap-2">
                         <p class="text-[#777]">Available Slot</p>
-                        <div class="border border-gray-300 rounded-lg p-4 h-full text-center">
+                        <div class="border border-gray-300 rounded-lg p-4 h-full text-center" *ngIf="timeSlots.length>0">
                            <!-- Just remove formControlName from the button -->
-                       <button *ngFor="let slot of timeSlots"
+                       <button *ngFor="let slot of timeSlots" 
                                 (click)="setSelectedSlot(slot)"
                                 class="border border-blue-500 text-blue-500 px-1 rounded-md m-1 hover:bg-blue-500 hover:text-white"
                                 [ngClass]="{'bg-blue-500 text-white': slot === selectedSlot}">
-                        {{ slot.label }}
+                        {{ convertTo12HourFormat(slot.startTime)}} - {{ convertTo12HourFormat(slot.endTime) }}
+
+                        
+                            <!-- convertTo12HourFormat(response.result[0].startTime); -->
                         </button>
 
 

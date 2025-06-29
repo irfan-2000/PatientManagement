@@ -154,7 +154,7 @@ AddUpdatePatient()
       formData.append('Description', this.patientForm.get('description')?.value || '');
       formData.append('BloodGroup', this.patientForm.get('bloodGroup')?.value || '');
 
-      
+      debugger
     try {
         this.PatientService.AddUpdatePatient (formData ).subscribe({
           next: (response: any) => {
@@ -187,7 +187,7 @@ AddUpdatePatient()
 ValidateFormFields()
 {
   let errorcode = 0;
-
+this.errorMessages = {};
   if (this.patientForm.get('fullName')?.value == '' || this.patientForm.get('fullName')?.value == undefined || this.patientForm.get('fullName')?.value == null) {
       this.errorMessages["fullName"] = '  Name is required!';
       errorcode = 1;
@@ -237,7 +237,10 @@ GetPatientDetails(flag:any = 'GetPatientById',Tab = 'Details')
                 //this.showToast('success', 'Doctor details updated successfully!', 'Success');
              // window.location.reload();
 
-                this.patientForm.patchValue({
+                if(this.IsEditing)
+                {
+            
+                  this.patientForm.patchValue({
                 fullName :this.PatientDetails.patientName,
                 dob:this.PatientDetails.dob,
                 gender:this.PatientDetails.gender,
@@ -247,12 +250,11 @@ GetPatientDetails(flag:any = 'GetPatientById',Tab = 'Details')
                 address:this.PatientDetails.address,
                 height:this.PatientDetails.height,
                 weight:this.PatientDetails.weight,
-                description:this.PatientDetails.description
-
-
-
-
+                description:this.PatientDetails.description 
                 });
+
+                }
+            
 
             }
           },
