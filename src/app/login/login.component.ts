@@ -71,7 +71,7 @@ export class LoginComponent {
        localStorage.setItem('token',response.token);
        setTimeout(()=>{
          this.router.navigate(['doctors']);
-       },100)
+       },1000)
       }
       if(response.status == 401)
         {
