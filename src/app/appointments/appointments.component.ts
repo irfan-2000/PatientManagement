@@ -418,18 +418,21 @@ let appointmentId
 
 
 
-
-  convertTo12HourFormat(time24: string): string {
+convertTo12HourFormat(time24: string): string {
   const [hourStr, minuteStr] = time24.split(':');
   let hour = parseInt(hourStr, 10);
-  const minute = minuteStr;
+  let minute = parseInt(minuteStr, 10);
   const ampm = hour >= 12 ? 'PM' : 'AM';
 
   hour = hour % 12;
   hour = hour === 0 ? 12 : hour;
 
-  return `${hour}:${minute} ${ampm}`;
+  const paddedHour = hour < 10 ? '0' + hour : hour.toString();
+  const paddedMinute = minute < 10 ? '0' + minute : minute.toString();
+
+  return `${paddedHour}:${paddedMinute} ${ampm}`;
 }
+
 
 
 
