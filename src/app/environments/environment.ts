@@ -1,7 +1,7 @@
 export const environment = 
 {
   production: false,
-  // baseUrl: 'https://localhost:7203/'
+  //  baseUrl: 'https://localhost:7203/'
 
 
  // baseUrl: ' https://b478-2405-201-d026-20f5-8843-81b8-dc57-97ad.ngrok-free.app/'
