@@ -70,21 +70,23 @@ export class LoginComponent {
        localStorage.setItem('HospitalId',response.hospitalId);
        localStorage.setItem('token',response.token);
        setTimeout(()=>{
+         this.loading = false;
          this.router.navigate(['doctors']);
        },1000)
       }
       if(response.status == 401)
         {
           this.ValidationErrorMsg = 'Invalid credentials';
+          this.loading = false;
           return;
         } 
     }
     catch(error:any)
     {  
-      this.ValidationErrorMsg = error.error.message;  
-    }
+      this.ValidationErrorMsg = error.error.message; 
+      this.loading = false;
 
-    this.loading = false;
+    }
   }
 
 
