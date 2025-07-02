@@ -90,8 +90,8 @@ GetDoctorDetails(doctorId: number): Promise<any>
 GetAllDoctors(): Promise<any> 
 {  
 
-if(!this.HospitalId)
-  alert("Unkown Error Occured Please Login again");
+// if(!this.HospitalId)
+  // alert("Unkown Error Occured Please Login again");
 
 const token = localStorage.getItem('token'); // Or wherever you store your token
 
