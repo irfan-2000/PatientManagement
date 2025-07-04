@@ -23,7 +23,7 @@ export class CourseSuggestionComponent {
     {
       id: 4,
       name: 'Material',
-    },{
+    }, {
       id: 5,
       name: 'Router',
     },
@@ -37,7 +37,17 @@ export class CourseSuggestionComponent {
     }
   ];
 
-  onCourseChange(param:any){
+  diagnosisItems: any = [];
+
+  addDiagnosis(event: any) {
+    console.log("reh diag", event.target.value)
+    const value = event.target?.value;
+    if (!value) return;
+    this.diagnosisItems.push(value)
+    event.target.value = ''
+  }
+
+  onCourseChange(param: any) {
     console.log('reh para', param)
   }
 }

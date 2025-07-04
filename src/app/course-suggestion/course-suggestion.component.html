@@ -1,18 +1,30 @@
 <div class="flex">
     <app-sidebar></app-sidebar>
-    <div class="grid grid-cols-2 w-full">
-        <!-- Left col -->
-        <div class="grid grid-rows-2 bg-red-500">
-            <div class="bg-red-500"></div>
-            <div class="bg-blue-500"></div>
-        </div>
+    <div class="w-full h-[100vh]">
+        <div class="bg-green-500 col-span-2 w-full h-[80px]"></div>
+        <div class="grid grid-cols-2 w-full h-[82vh]">
+            <!-- Left col -->
+            <div class="grid grid-rows-2 bg-red-500">
+                <div class="bg-red-500 p-3">
+                    <div class=" flex flex-col">
+                        <h1 class="font-medium text-xl mb-2">Diagnosis</h1>
+                        <ul class="list-disc pl-[2vw] flex-1 overflow-auto">
+                            <li *ngFor="let item of diagnosisItems">{{ item }}</li>
+                        </ul>
+                    </div>
+                    <input type="text" class="w-full px-3 py-2 rounded-md mt-2"
+                        placeholder="Type the diagnosis and press enter" (keydown.enter)="addDiagnosis($event)">
+                </div>
+                <div class="bg-blue-500"></div>
+            </div>
 
-        <!-- Right Col -->
-        <div class="px-6 py-4">
-            <label class="block text-gray-600 font-medium text-sm md:text-base">Course</label>
-            <app-multiselect [items]="courseSuggestions" [placeholder]="'Select Courses'"
-                (selectionChange)="onCourseChange($event)"></app-multiselect>
+            <!-- Right Col -->
+            <div class="px-6 py-4">
+                <label class="block text-gray-600 font-medium text-sm md:text-base">Course</label>
+                <app-multiselect [items]="courseSuggestions" [placeholder]="'Select Courses'"
+                    (selectionChange)="onCourseChange($event)"></app-multiselect>
+            </div>
         </div>
-
+        <div class="bg-green-500 col-span-2 w-full h-[80px]"></div>
     </div>
 </div>
