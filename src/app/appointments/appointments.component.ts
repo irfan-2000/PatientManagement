@@ -38,6 +38,11 @@ export class AppointmentsComponent {
     'Check-in',
     'Pending'
   ]
+  availablePaymentModes = [
+    "UPI",
+    "Cash",
+    "Manual"
+  ]
 
   selectServicesArray:any[]= [ ]
   SelectedServiceId :any [] = [50,51,52];
@@ -87,6 +92,7 @@ private fb: FormBuilder, private toastr: ToastrService,private router: Router,pr
 this.GetAllDoctors();
  this.GetServices();
  this.GetPatientDetails();
+ this.GetAppointments();
 this.Appointmentform = new FormGroup({
   doctor: new FormControl('', Validators.required),
   service: new FormControl('', Validators.required), // <-- fixed
@@ -94,6 +100,7 @@ this.Appointmentform = new FormGroup({
   patient: new FormControl('', Validators.required),
   status: new FormControl('', Validators.required),
   slot: new FormControl('', Validators.required),
+  paymentMode: new FormControl('', Validators.required)
  }); 
 }
 
@@ -111,35 +118,594 @@ this.Appointmentform = new FormGroup({
      console.log("Selected Slot: ",  this.Appointmentform.get('slot')?.value);
   }
 
-  appointments = [
+  appointments:any = [
     {
-      id: 1,
-      patientName: 'Test',
-      services: [
-        'Body checkup',
-        'Dental checkup',
-        'test',
-        'new test checkup data',
-      ],
-      charges: '200',
-      paymentMode: 'Manual',
-      status: 'Booked',
-      doctor: 'Doc One',
-      clinic: 'Some clinic',
-      slotDateAndTime: '2025-06-03T05:57:11Z',
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
     },
     {
-      id: 2,
-      patientName: 'Reh test Two',
-      services: ['Eye checkup', 'Telmed'],
-      charges: '460',
-      paymentMode: 'Manual',
-      status: 'Pending',
-      doctor: 'Doc One',
-      clinic: 'Some clinic',
-      slot: '2025-06-03T05:58:34Z',
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
     },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    },
+    {
+      appointmentId: 1,
+      patientName: "Riya Shah",
+      firstName: "Ankit",
+      lName: "Patel",
+      appointmentDate: "2025-07-01 10:00",
+      startTime: "10:00 AM",
+      endTime: "10:30 AM",
+      services: ["Consultation", "ECG"],
+      charges: 800,
+      paymentMode: "UPI",
+      status: "Booked"
+    },
+    {
+      appointmentId: 2,
+      patientName: "Mohit Verma",
+      firstName: "Neha",
+      lName: "Kapoor",
+      appointmentDate: "2025-07-01 11:00",
+      startTime: "11:00 AM",
+      endTime: "11:45 AM",
+      services: ["Dental Cleaning"],
+      charges: 1200,
+      paymentMode: "Cash",
+      status: "In Progress"
+    },
+    {
+      appointmentId: 3,
+      patientName: "Sara Khan",
+      firstName: "Irfan",
+      lName: "Shaikh",
+      appointmentDate: "2025-07-01 12:00",
+      startTime: "12:00 PM",
+      endTime: "12:30 PM",
+      services: ["Eye Checkup"],
+      charges: 500,
+      paymentMode: "Card",
+      status: "Cancelled"
+    },
+    {
+      appointmentId: 4,
+      patientName: "Kunal Desai",
+      firstName: "Ritika",
+      lName: "Joshi",
+      appointmentDate: "2025-07-01 01:00",
+      startTime: "01:00 PM",
+      endTime: "01:30 PM",
+      services: ["Blood Test", "X-Ray"],
+      charges: 1000,
+      paymentMode: "Net Banking",
+      status: "Booked"
+    },
+    {
+      appointmentId: 5,
+      patientName: "Anjali Mehta",
+      firstName: "Suresh",
+      lName: "Mehta",
+      appointmentDate: "2025-07-01 02:00",
+      startTime: "02:00 PM",
+      endTime: "02:30 PM",
+      services: ["Consultation"],
+      charges: 700,
+      paymentMode: "Cash",
+      status: "Completed"
+    }
   ];
+  
 
   addAppointment() {
     console.log('Add appointment');
@@ -311,6 +877,10 @@ this.Appointmentform = new FormGroup({
     errorcode = 1;
   }
  
+  if (this.Appointmentform.get('paymentMode')?.value == '' || this.Appointmentform.get('paymentMode')?.value == undefined || this.Appointmentform.get('paymentMode')?.value == null) {
+    this.ErrorMsg["paymentMode"] = 'Payment Mode is required!';
+    errorcode = 1;
+  }
 
   return errorcode ;
 }
@@ -374,6 +944,29 @@ this.Appointmentform = new FormGroup({
    }
   }
 
+GetAppointments(){
+  try {
+    this.hospservice.GetAppointments( ).subscribe({
+      next: (response: any) => {
+        if (response.status == 200) 
+          {
+            console.log("Reh resp", response.data)
+            this.appointments = response.data
+          }
+          
+      },
+      error: (error: any) => {
+        if (error.status ==401) {
+          this.router.navigate(['/login']);
+        } else {
+          console.error('Error saving service:', error);
+         }
+      }
+    });
+  } catch (error: any) {
+    console.error('Exception:', error);
+   }
+}
 
 SubmitAppointment()
 { 
@@ -390,10 +983,11 @@ let service = '50,51'
 let patient = this.Appointmentform.get('patient')?.value;
 let status = this.Appointmentform.get('status')?.value;
 let slot = this.selectedSlot.startTime +'-'+this.selectedSlot.endTime;
+let paymentMode = this.Appointmentform.get('paymentMode')?.value
 let flag = 'I';
 let appointmentId 
     try {
-    this.hospservice.SubmitAppointment(doctor,service.toString(),appointmentDate,patient,status,slot,flag,appointmentId).subscribe({
+    this.hospservice.SubmitAppointment(doctor,service.toString(),appointmentDate,patient,status,slot,flag,appointmentId, paymentMode).subscribe({
       next: (response: any) => {
         if (response.status == 200) 
           {         

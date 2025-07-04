@@ -9,7 +9,7 @@
     flex-wrap: wrap;
     align-items: center;
     padding: 5px;
-    border: 2px solid #4a90e2;
+    border: 2px solid #004687;
     border-radius: 4px;
     background-color: #ffffff;
   }
@@ -45,7 +45,7 @@
     border: none;
     cursor: pointer;
     font-size: 16px;
-    color: #4a90e2;
+    color: #004687;
     margin-left: 5px;
   }
   
@@ -57,7 +57,7 @@
     max-height: 200px;
     overflow-y: auto;
     background-color: #ffffff;
-    border: 1px solid #4a90e2;
+    border: 1px solid #004687;
     border-top: none;
     border-radius: 0 0 4px 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -104,8 +104,8 @@
   }
   
   .dropdown-item .checkbox.checked {
-    background-color: #4a90e2;
-    border-color: #4a90e2;
+    background-color: #004687;
+    border-color: #004687;
   }
   
   .dropdown-item .checkmark {

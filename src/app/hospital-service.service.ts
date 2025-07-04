@@ -186,7 +186,7 @@ GetAvailableSlots(DoctorId:any,ServiceId:any,Date:any)
   });
 }
 
-SubmitAppointment(doctor:any,service:any,appointmentDate:any,patient:any,status:any,slot:any,flag:any,appointmentid:any)
+SubmitAppointment(doctor:any,service:any,appointmentDate:any,patient:any,status:any,slot:any,flag:any,appointmentid:any, paymentMode:any)
 {
   const Payload = {
       doctor:doctor,
@@ -196,7 +196,8 @@ SubmitAppointment(doctor:any,service:any,appointmentDate:any,patient:any,status:
       status:status,
       slot:slot,
       flag:flag,
-      appointmentId :appointmentid
+      appointmentId :appointmentid,
+      paymentMode: paymentMode
   }
 
 
@@ -210,5 +211,15 @@ SubmitAppointment(doctor:any,service:any,appointmentDate:any,patient:any,status:
 
 }
 
+GetAppointments()
+{
+     
+  return this.http.get<any>(`${this.baseurl}api/GetAppointments`,  {    
+    headers: new HttpHeaders({
+      Authorization: `Bearer ${this.token}`
+    }),
+    withCredentials: true,
+  });
 
+}
 }
