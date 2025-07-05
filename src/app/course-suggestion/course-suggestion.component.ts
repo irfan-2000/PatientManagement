@@ -38,13 +38,54 @@ export class CourseSuggestionComponent {
   ];
 
   diagnosisItems: any = [];
+  treatmentItems:any = [];
+  tabletItems:any = [];
 
   addDiagnosis(event: any) {
-    console.log("reh diag", event.target.value)
     const value = event.target?.value;
     if (!value) return;
     this.diagnosisItems.push(value)
     event.target.value = ''
+  }
+  addTreatment(event: any) {
+    const value = event.target?.value;
+    if (!value) return;
+    this.treatmentItems.push(value)
+    event.target.value = ''
+  }
+  addTablets(event:any){
+    const value = event.target?.value;
+    if (!value) return;
+    this.treatmentItems.push(value)
+    event.target.value = '' 
+  }
+
+  updateTabletInstruction(index: number, event: any) {
+    const value = event.target.value;
+    this.tabletItems[index].instruction = value;
+  }
+
+  deleteDiagnosis(index:number){
+    this.diagnosisItems.splice(index, 1);
+  }
+
+  deleteTreatment(index:number){
+    this.treatmentItems.splice(index, 1);
+  }
+
+  deleteTablet(index: number) {
+    this.tabletItems.splice(index, 1);
+  }
+
+  addTablet(event:any) {
+    const value = event.target?.value;
+    if (!value) return;
+    this.tabletItems.push({
+      id: Date.now(),
+      tablet: value,
+      instruction: ""
+    })
+    event.target.value = '' 
   }
 
   onCourseChange(param: any) {
