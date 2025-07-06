@@ -242,6 +242,40 @@ GetDoctorSessions()
   }); 
 }
 
+// GeneratePDF(content:any) 
+// {
+//  const token = localStorage.getItem('token');  
+//  const headers = new HttpHeaders({
+//    'Authorization': `Bearer ${token}`,
+//    'Content-Type': 'application/json'
+//  });
+
+
+//  return this.http.post<any>(`${this.baseurl}api/generate-pdf`, {
+//   HtmlContent: content
+//  }, {
+//    headers: headers,
+//    withCredentials: true
+//  });
+// } 
+
+GeneratePDF(content: any) {
+  const token = localStorage.getItem('token');  
+
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  return this.http.post<Blob>(`${this.baseurl}api/generate-pdf`, 
+    { HtmlContent: content }, 
+    {
+      headers: headers,
+      withCredentials: true,
+      responseType: 'blob' as 'json' // 👈 this is necessary for file response
+    }
+  );
+}
+
 
 
 //   async logout() {
