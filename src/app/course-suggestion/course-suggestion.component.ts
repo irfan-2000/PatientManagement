@@ -64,7 +64,6 @@ export class CourseSuggestionComponent {
   }
 
   generatePDF(){
-    debugger
     const content:any = document.getElementById("courseSuggestionDiv");
     const element = content.cloneNode(true) as HTMLElement;
     
