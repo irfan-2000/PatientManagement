@@ -24,5 +24,7 @@ export const environment =
   // baseUrl: 'https://ef1b-152-58-195-160.ngrok-free.app/'  //  baseUrl:"https://7883-2405-201-d026-20f5-b88f-2896-cf70-df22.ngrok-free.app/"
        
 //  baseUrl: "https://9c94-2405-201-d026-20f5-2921-a716-c562-2cc7.ngrok-free.app/"
-  baseUrl: 'https://pm.api.race-elearn.com:5005/'
+
+  baseUrl: 'https://7b3b81937b4c.ngrok-free.app/'
+  // baseUrl: 'https://pm.api.race-elearn.com:5005/'
 };

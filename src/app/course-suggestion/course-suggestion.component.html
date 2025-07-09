@@ -2,9 +2,9 @@
     <app-sidebar></app-sidebar>
     <div class="w-full space-y-4 relative">
         <app-top-strip></app-top-strip>
-        <div class="w-full h-[100vh]" id="courseSuggestionDiv">
+        <div class="w-[793px] overflow-hidden relative bg-white mx-auto" id="courseSuggestionDiv">
             <div class="hidden col-span-2 w-full h-[189px]" id="header">
-                <img src="prescription/header.jpeg" alt="header" class="h-[189px] w-[793px]">
+                <img src="prescription/blue.png" alt="header" class="h-[189px] w-[793px]">
             </div>
             <div class="border-2 rounded-lg p-3 mx-4 my-2 flex items-start justify-between">
                 <div>
@@ -22,8 +22,8 @@
                 <div class="grid grid-rows-2 gap-2">
                     <div class="p-3 relative border-2 rounded-lg">
                         <div class=" flex flex-col">
-                            <h1 class="font-medium text-xl mb-2">Diagnosis</h1>
-                            <ul *ngIf="diagnosisItems.length" class="list-disc pl-[3vw] h-[30vh] overflow-auto">
+                            <h1 class="font-medium text-xl mb-2">Examination/ Diagnosis</h1>
+                            <ul *ngIf="diagnosisItems.length" class=" overflow-auto">
                                 <li *ngFor="let item of diagnosisItems; let i = index"
                                     class="py-2 px-3 hover:bg-gray-200 rounded-lg cursor-pointer">
                                     <div class="grid grid-cols-[1fr_auto] items-center">
@@ -43,7 +43,7 @@
                     <div class="p-3 relative border-2 rounded-lg">
                         <div class=" flex flex-col">
                             <h1 class="font-medium text-xl mb-2">Treatment Plan</h1>
-                            <ul *ngIf="treatmentItems.length" class="list-disc pl-[3vw] h-[30vh] overflow-auto">
+                            <ul *ngIf="treatmentItems.length" class="">
                                 <li *ngFor="let item of treatmentItems; let i = index"
                                     class="py-2 px-3 hover:bg-gray-200 rounded-lg cursor-pointer">
                                     <div class="grid grid-cols-[1fr_auto] items-center">
@@ -68,7 +68,7 @@
                     (selectionChange)="onCourseChange($event)"></app-multiselect> -->
                     <div class=" flex flex-col">
                         <h1 class="font-medium text-xl mb-2 sticky top-0">Medications</h1>
-                        <ul *ngIf="tabletItems.length" class="list-disc pl-[3vw] pr-3 h-[70vh] overflow-auto">
+                        <ul *ngIf="tabletItems.length" class="pr-3 overflow-auto">
                             <li *ngFor="let tablet of tabletItems; let i = index" class="mb-4">
                                 <div class="flex items-center gap-2">
                                     <p class="flex-1">{{tablet.tablet}}</p>
@@ -79,7 +79,7 @@
                                 </div>
                                 <input [value]="tablet.instruction" type="text" id="tabletInstructionInput"
                                     placeholder="Tablet instruction goes here"
-                                    class="w-1/2 px-2 py-1 mt-1 rounded sm:w-full"
+                                    class="w-1/2 px-2 py-1 mt-1 rounded sm:w-full text-gray-500"
                                     [ngClass]="{'no-print': !tablet.instruction}"
                                     (input)="updateTabletInstruction(i, $event)">
                             </li>
@@ -87,7 +87,7 @@
                         <p *ngIf="!tabletItems.length" class="font-medium text-gray-500 text-center mt-4">No items</p>
                     </div>
                     <input type="text" placeholder="Type the tablet name and press enter to add"
-                        class="no-print w-[94%] px-3 py-2 rounded-md mt-2 border-2 absolute bottom-4"
+                        class="no-print w-[90%] px-3 py-2 rounded-md mt-2 border-2 absolute bottom-4"
                         (keydown.enter)="addTablet($event)">
                 </div>
             </div>
@@ -96,8 +96,8 @@
             </div>
         </div>
         <!-- <button (click)="generatePDF()">Generate here</button> -->
-        <div class="flex absolute bottom-[10%] right-8 ">
-            <button (click)="generatePDF()" class="bg-[#004867] text-white px-2 py-1 rounded-md">Test Submit</button>
+        <div class="flex absolute top-[9%] right-[20%]">
+            <button (click)="generatePDF()" class="bg-[#004867] hover:bg-[#336b9f] text-white px-2 py-1 rounded-md"> <i class="fa-solid fa-download mr-3"></i> Download PDF</button>
         </div>
     </div>
 </div>
