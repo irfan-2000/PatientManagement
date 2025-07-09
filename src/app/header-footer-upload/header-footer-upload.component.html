@@ -1,0 +1,87 @@
+<div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="bg-gray-add overflow-y-auto h-dvh w-dvw">
+        <app-top-strip></app-top-strip>
+        <div class="flex flex-1 mt-5 flex-col items-center md:flex-row md:items-stretch">
+            <!-- Left: Upload Section -->
+            <div class="md:w-1/2 p-8 flex flex-col gap-6 w-full">
+                <h2 class="text-xl mb-6 font-bold">Upload Prescription Header & Footer</h2>
+                <form (ngSubmit)="onSubmit()">
+                    <div class="mb-4">
+                        <label class="block mb-2 font-semibold">Header Image</label>
+                        <label
+                          [ngClass]="{
+                            'border-blue-400 text-blue-600 hover:bg-blue-50': !headerFileName,
+                            'border-green-500 bg-green-50 text-green-700': headerFileName
+                          }"
+                          class="flex flex-col items-center justify-center cursor-pointer border-2 border-dashed px-4 py-8 rounded-lg transition-colors"
+                        >
+                          <ng-container *ngIf="!headerFileName">
+                            <span class="mb-2">Click to upload header image</span>
+                            <span class="text-xs text-gray-400">(Only image files allowed)</span>
+                          </ng-container>
+                          <ng-container *ngIf="headerFileName">
+                            <span class="mb-2 flex items-center gap-2">
+                              <svg class="w-5 h-5 text-green-500 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              {{ headerFileName }}
+                            </span>
+                            <span class="text-xs text-green-600">Image uploaded</span>
+                          </ng-container>
+                          <input type="file" accept="image/*" (change)="onHeaderChange($event)" class="hidden">
+                        </label>
+                        <div *ngIf="headerError" class="mt-2 text-sm text-red-600">
+                          {{ headerError }}
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block mb-2 font-semibold">Footer Image</label>
+                        <label
+                          [ngClass]="{
+                            'border-blue-400 text-blue-600 hover:bg-blue-50': !footerFileName,
+                            'border-green-500 bg-green-50 text-green-700': footerFileName
+                          }"
+                          class="flex flex-col items-center justify-center cursor-pointer border-2 border-dashed px-4 py-8 rounded-lg transition-colors"
+                        >
+                          <ng-container *ngIf="!footerFileName">
+                            <span class="mb-2">Click to upload footer image</span>
+                            <span class="text-xs text-gray-400">(Only image files allowed)</span>
+                          </ng-container>
+                          <ng-container *ngIf="footerFileName">
+                            <span class="mb-2 flex items-center gap-2">
+                              <svg class="w-5 h-5 text-green-500 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                              </svg>
+                              {{ footerFileName }}
+                            </span>
+                            <span class="text-xs text-green-600">Image uploaded</span>
+                          </ng-container>
+                          <input type="file" accept="image/*" (change)="onFooterChange($event)" class="hidden">
+                        </label>
+                        <div *ngIf="footerError" class="mt-2 text-sm text-red-600">
+                          {{ footerError }}
+                        </div>
+                    </div>
+                </form>
+                <div class="flex gap-4 mt-6 ml-auto">
+                    <button type="button" (click)="onCancel()" class="px-6 py-2 rounded bg-gray-200 hover:bg-gray-300 transition-colors">Cancel</button>
+                    <button type="button" (click)="onSubmit()" class="px-6 py-2 rounded bg-[#004867] text-white hover:bg-[#336b9f] transition-colors">Submit</button>
+                </div>
+            </div>
+            <!-- Right: Preview Section -->
+            <div class="w-1/2 p-8 flex flex-col items-center justify-center">
+                <div class="mb-4 text-center">
+                    <h2 class="text-xl font-bold">Preview</h2>
+                    <p class="text-gray-500 text-sm">This is how the headers and footers look like on an A4 size prescription print</p>
+                </div>
+                <div class="relative bg-white shadow-lg border" style="width: 350px; aspect-ratio: 210/297;">
+                    <img *ngIf="headerPreview" [src]="headerPreview" alt="Header Preview"
+                         class="absolute top-0 left-0" style="width: 350px; height: 80px;">
+                    <img *ngIf="footerPreview" [src]="footerPreview" alt="Footer Preview"
+                         class="absolute bottom-0 left-0" style="width: 350px; height: 40px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -33,6 +33,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { TopStripComponent } from './top-strip/top-strip.component';
 import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.component';
+import { HeaderFooterUploadComponent } from './header-footer-upload/header-footer-upload.component';
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.compo
     AdminLoginComponent,
     TopStripComponent,
     DoctorHolidaysComponent,
+    HeaderFooterUploadComponent,
   ],
   imports: [
     BrowserModule,

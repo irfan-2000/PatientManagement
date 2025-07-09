@@ -11,6 +11,7 @@ import { AddEditPatientComponent } from './add-edit-patient/add-edit-patient.com
 import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.component';
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.component';
+import { HeaderFooterUploadComponent } from './header-footer-upload/header-footer-upload.component';
 
 const routes: Routes = [
 {path:'login',component:LoginComponent},
@@ -23,6 +24,8 @@ const routes: Routes = [
 {path:'appointments', component: AppointmentsComponent},
 {path:'doctorSessions', component: DoctorSessionsComponent},
 {path:'doctorHolidays', component: DoctorHolidaysComponent},
+{path:'headerfooterupload', component: HeaderFooterUploadComponent},
+
 
 
 
