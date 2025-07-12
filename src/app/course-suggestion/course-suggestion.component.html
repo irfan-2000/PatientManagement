@@ -96,8 +96,14 @@
             </div>
         </div>
         <!-- <button (click)="generatePDF()">Generate here</button> -->
-        <div class="flex absolute top-[9%] right-[20%]">
-            <button (click)="generatePDF()" class="bg-[#004867] hover:bg-[#336b9f] text-white px-2 py-1 rounded-md"> <i class="fa-solid fa-download mr-3"></i> Download PDF</button>
-        </div>
+   <div class="flex absolute top-[9%] right-[20%]">
+    <button 
+        (click)="generatePDF()" 
+        class="bg-[#004867] hover:bg-[#336b9f] text-white rounded-full p-3 aspect-square flex items-center justify-center shadow-md hover:shadow-lg transition-all"
+        title="Download PDF"
+    >
+        <i class="fa-solid fa-download text-lg"></i>
+    </button>
+    </div>
     </div>
 </div>
