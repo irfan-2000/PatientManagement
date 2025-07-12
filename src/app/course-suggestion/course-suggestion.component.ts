@@ -116,8 +116,32 @@ export class CourseSuggestionComponent {
       input.replaceWith(span);
     });
 
+    // Replace description textarea with p element
+    const descriptionInput = element.querySelector('#descriptionInput');
+    if (descriptionInput) {
+      const p = document.createElement('p');
+      p.textContent = this.descriptionText;
+      p.className = 'description-text';
+      descriptionInput.replaceWith(p);
+    }
+
+    const descriptionBlock = document.createElement('div');
+    descriptionBlock.className = 'description-text-container p-4 border-t mt-4';
+    descriptionBlock.innerHTML = `
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Description</h3>
+      <p class="text-sm text-gray-700 whitespace-pre-line">${this.descriptionText}</p>
+    `;
+
+    // Append before footer or at end
+    const footer = element.querySelector('#footer');
+    if (footer?.parentElement) {
+      footer.parentElement.insertBefore(descriptionBlock, footer);
+    } else {
+      element.appendChild(descriptionBlock);
+    }
+
     const toBeSent = element.innerHTML;
-    // navigator.clipboard.writeText(content.innerHTML)
+    // navigator.clipboard.writeText(toBeSent)
     try {
       this.doctorservice.GeneratePDF(toBeSent).subscribe({
         next: (blob: Blob) => {
@@ -181,5 +205,19 @@ export class CourseSuggestionComponent {
 
   onCourseChange(param: any) {
     console.log('reh para', param)
+  }
+
+  // Modal functionality
+  showDescriptionModal = false;
+  descriptionText = '';
+
+  openDescriptionModal() {
+    this.showDescriptionModal = true;
+  }
+
+  closeDescriptionModal() {
+    this.showDescriptionModal = false;
+    // console.log("reg desc text", this.descriptionText)
+    // Content is preserved in descriptionText variable
   }
 }
