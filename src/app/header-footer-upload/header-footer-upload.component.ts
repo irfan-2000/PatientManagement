@@ -58,4 +58,42 @@ export class HeaderFooterUploadComponent {
   onCancel() {
     this.router.navigate(['/course']);
   }
+
+
+
+  GetHeaderFooter() 
+  {
+      try {
+      // Send formData to the backend API
+      const response = this.doctorservice.DeleteDoctorSessions(payload ).subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200) 
+            {
+            this.showToast('success', 'Your session has been deleted!', '');
+                this,this.GetDoctorSessions();
+              
+       
+          } else if (response.status == 500)
+             {
+            this.showToast('error', 'Internal server error', '');
+            }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+        }
+
+
+      });
+
+
+    } catch (error: any) {
+      console.error('Error:', error);
+    }
+
+  }
+
+
+
+
 }
