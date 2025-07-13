@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { DoctorServiceService } from '../doctor-service.service';
 
 @Component({
   selector: 'app-header-footer-upload',
@@ -15,7 +17,9 @@ export class HeaderFooterUploadComponent {
   headerError: string | null = null;
   footerError: string | null = null;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private toastr: ToastrService, private doctorservice: DoctorServiceService) { 
+    this.GetHeaderFooter();
+  }
 
   onHeaderChange(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
@@ -59,8 +63,64 @@ export class HeaderFooterUploadComponent {
     this.router.navigate(['/course']);
   }
 
+  showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
+    switch (type) {
+      case 'success':
+        this.toastr.success(message, title);
+        break;
+      case 'error':
+        this.toastr.error(message, title);
+        break;
+      case 'warning':
+        this.toastr.warning(message, title);
+        break;
+      case 'info':
+        this.toastr.info(message, title);
+        break;
+      default:
+        console.error('Invalid toast type');
+    }
+  }
 
- 
+
+
+  GetHeaderFooter() 
+  {
+      try {
+      // Send formData to the backend API
+      const response = this.doctorservice.GetHeaderFooter().subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200) 
+            {
+            // this.showToast('success', 'Your session has been deleted!', '');
+                // this,this.GetDoctorSessions();
+                console.log("reh get Header footer", response)
+              
+       
+          } else if (response.status == 500)
+             {
+            this.showToast('error', 'Internal server error', '');
+            }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+          if(error.status == 401){
+            // this.router.navigate(['/login'])
+          }
+        }
+
+
+      });
+
+
+    } catch (error: any) {
+      console.error('Error:', error);
+    }
+
+  }
+
+
 
 
 }
