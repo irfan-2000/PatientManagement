@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DoctorServiceService } from '../doctor-service.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-header-footer-upload',
@@ -14,11 +15,23 @@ export class HeaderFooterUploadComponent {
   footerPreview: string | ArrayBuffer | null = null;
   headerFileName: string | null = null;
   footerFileName: string | null = null;
+  existingheaderFileName: string | null = null;
+  existingfooterFileName: string | null = null;
   headerError: string | null = null;
   footerError: string | null = null;
+  headerFooterForm: FormGroup;
+  headerFile:any;
+  footerFile:any
 
-  constructor(private router: Router, private toastr: ToastrService, private doctorservice: DoctorServiceService) { 
+  constructor(private router: Router, private toastr: ToastrService, private doctorservice: DoctorServiceService) {
     this.GetHeaderFooter();
+
+    this.headerFooterForm = new FormGroup({
+      headerImage: new FormControl(null),
+      footerImage: new FormControl(null),
+    });
+
+
   }
 
   onHeaderChange(event: Event) {
@@ -31,6 +44,7 @@ export class HeaderFooterUploadComponent {
         this.headerPreview = null;
         return;
       }
+      this.headerFile = file;
       this.headerFileName = file.name;
       const reader = new FileReader();
       reader.onload = () => this.headerPreview = reader.result;
@@ -48,6 +62,7 @@ export class HeaderFooterUploadComponent {
         this.footerPreview = null;
         return;
       }
+      this.footerFile = file
       this.footerFileName = file.name;
       const reader = new FileReader();
       reader.onload = () => this.footerPreview = reader.result;
@@ -55,8 +70,59 @@ export class HeaderFooterUploadComponent {
     }
   }
 
-  onSubmit() {
+  onSubmit(flag:any) {
+
+    if(flag != 'I'){
+      const confirmation = confirm("Are you sure to delete the file?")
+      if(!confirmation) return;
+    }
     console.log('Reh submit header footer');
+
+    const formData = new FormData();
+    formData.append('existingheaderfilename', this.existingheaderFileName||'')
+    formData.append('existingfooterfilename', this.existingfooterFileName||'')
+
+    if (this.headerFile instanceof File) {
+      formData.append('header', this.headerFile);
+    }
+
+    if (this.footerFile instanceof File) {
+      formData.append('footer', this.footerFile);
+    }
+    formData.append('flag', flag);
+
+    try {
+      this.doctorservice.UploadHeaderFooter(formData).subscribe({
+        next: (response: any) => {
+          if (response.status == 200) {
+            console.log("reh sub", response)
+            this.showToast('success', 'Upload successful','')
+            setTimeout(()=>{
+              location.reload()
+            },1000)
+          }
+          if (response.status == 500) {
+            this.showToast('error', "Internal server error", "");
+          }
+
+
+        },
+        error: (error: any) => {
+
+          console.log(error);
+          if (error.status == 401) {
+          } else if (error.status == 500 && error.error) {
+
+          }
+          else {
+            console.error('Unhandled API error:', error);
+          }
+        },
+      });
+    } catch (error: any) {
+      console.error('API error:', error);
+    }
+
   }
 
   onCancel() {
@@ -84,29 +150,27 @@ export class HeaderFooterUploadComponent {
 
 
 
-  GetHeaderFooter() 
-  {
-      try {
+  GetHeaderFooter() {
+    try {
       // Send formData to the backend API
       const response = this.doctorservice.GetHeaderFooter().subscribe({
         next: (response: any) => {
           console.log(response);
-          if (response.status == 200) 
-            {
-            // this.showToast('success', 'Your session has been deleted!', '');
-                // this,this.GetDoctorSessions();
-                console.log("reh get Header footer", response)
-              
-       
-          } else if (response.status == 500)
-             {
+          if (response.status == 200) {
+            this.headerPreview = response.result[0]?.headerURL || null;
+            this.headerFileName = response.result[0]?.headerName;
+            this.existingheaderFileName = response.result[0]?.headerName;
+            this.footerPreview = response.result[0]?.footerURL || null;
+            this.footerFileName = response.result[0]?.footerName;
+            this.existingfooterFileName = response.result[0]?.footerName;
+          } else if (response.status == 500) {
             this.showToast('error', 'Internal server error', '');
-            }
+          }
         },
         error: (error: any) => {
           console.error('Error:', error);
-          if(error.status == 401){
-            // this.router.navigate(['/login'])
+          if (error.status == 401) {
+            this.router.navigate(['/login'])
           }
         }
 
