@@ -41,6 +41,16 @@ export class CourseSuggestionComponent {
     }
   ];
 
+  treatmentSuggestions = [
+    'Physical Therapy',
+    'Medication',
+    'Surgery',
+    'Rest and Hydration',
+    'Dietary Changes',
+    'Exercise',
+    'Counseling'
+  ];
+
   diagnosisItems: any = [];
   treatmentItems: any = [];
   tabletItems: any = [];
