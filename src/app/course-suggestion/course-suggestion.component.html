@@ -2,7 +2,23 @@
     <app-sidebar></app-sidebar>
     <div class="w-full space-y-4 relative">
         <app-top-strip></app-top-strip>
-        <div class="w-[793px] overflow-hidden relative bg-white mx-auto" id="courseSuggestionDiv">
+        <div class="w-[793px] overflow-visible relative bg-white mx-auto" id="courseSuggestionDiv">
+            <!-- Download button positioned relative to parent container -->
+            <div class="no-print absolute top-[9%] right-[-50px] z-10">
+                <button (click)="generatePDF()"
+                    class="bg-[#004867] hover:bg-[#336b9f] text-white rounded-full p-4 aspect-square flex items-center justify-center shadow-md hover:shadow-lg transition-all"
+                    title="Download PDF">
+                    <i class="fa-solid fa-download text-lg"></i>
+                </button>
+            </div>
+            <!-- Description button positioned below download button -->
+            <div class="no-print absolute top-[9%] right-[-50px] z-10 mt-16">
+                <button (click)="openDescriptionModal()"
+                    class="bg-[#28a745] hover:bg-[#218838] text-white rounded-full p-4 aspect-square flex items-center justify-center shadow-md hover:shadow-lg transition-all"
+                    title="Add Description">
+                    <i class="fa-solid fa-edit text-lg"></i>
+                </button>
+            </div>
             <div class="hidden col-span-2 w-full h-[189px]" id="header">
                 <img src="prescription/blue.png" alt="header" class="h-[189px] w-[793px]">
             </div>
@@ -88,22 +104,36 @@
                     </div>
                     <input type="text" placeholder="Type the tablet name and press enter to add"
                         class="no-print w-[90%] px-3 py-2 rounded-md mt-2 border-2 absolute bottom-4"
-                        (keydown.enter)="addTablet($event)">
+                        (keydown.enter)="addTablets($event)">
                 </div>
             </div>
             <div class="hidden col-span-2 w-full h-[57px]" id="footer">
                 <img src="prescription/footer.jpeg" alt="header" class="h-[57px] w-[793px]">
             </div>
+
+
+
+            <!-- Description Modal -->
+            <div *ngIf="showDescriptionModal"
+                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-lg p-6 w-[600px] max-w-[90vw] max-h-[90vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Description</h3>
+                    </div>
+
+                    <div class="mb-4">
+                        <textarea [ngClass]="{'no-print': !descriptionText}" id="descriptionInput" [(ngModel)]="descriptionText" placeholder="Enter description"
+                            class="w-full h-40 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"></textarea>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button (click)="closeDescriptionModal()"
+                            class="bg-[#004867] hover:bg-[#336b9f] text-white px-4 py-2 rounded-md transition-colors">
+                            Okay
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- <button (click)="generatePDF()">Generate here</button> -->
-   <div class="flex absolute top-[9%] right-[20%]">
-    <button 
-        (click)="generatePDF()" 
-        class="bg-[#004867] hover:bg-[#336b9f] text-white rounded-full p-3 aspect-square flex items-center justify-center shadow-md hover:shadow-lg transition-all"
-        title="Download PDF"
-    >
-        <i class="fa-solid fa-download text-lg"></i>
-    </button>
-    </div>
     </div>
 </div>
