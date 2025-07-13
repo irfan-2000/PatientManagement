@@ -294,4 +294,28 @@ GeneratePDF(content: any) {
 // }
   
 
+
+  UploadHeaderFooter(formData: any) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<any>(`${this.baseurl}api/UploadHeaderFooter`, formData, {
+      headers: headers,
+      withCredentials: true
+    });
+  }
+
+  GetHeaderFooter(){
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<any>(`${this.baseurl}api/GetHeaderFooter`, {
+      headers: headers,
+      withCredentials: true
+    });
+  }
 }
