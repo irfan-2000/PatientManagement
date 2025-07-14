@@ -105,8 +105,8 @@ export class CourseSuggestionComponent {
     event.target.value = ''
   }
 
-  generatePDF() {
-    const content: any = document.getElementById("courseSuggestionDiv");
+  generatePDF(){
+    const content:any = document.getElementById("courseSuggestionDiv");
     const element = content.cloneNode(true) as HTMLElement;
 
     // Replace all <input> elements with their values
