@@ -308,34 +308,22 @@
         <!-- </div> -->
 
         <!-- Specialization -->
-        <!-- <div>
+        <div>
           
           <label class="block text-gray-600 font-medium text-sm md:text-base">Specialization</label>
            <app-multiselect [items]="specializations"  [DoctorSpecializations]="Doctorspecialization"      [isEditing]="IsEdition" [placeholder]="'Select specialization'"
-            (selectionChange)="onSpecializationChange($event)"></app-multiselect>
+            (selectionChange)="onSpecializationChange($event)" [emitType]="'id'" itemId="specializationId"></app-multiselect>
          
          <span *ngIf="errorMessages['Specialization']" class="text-red-500">{{
             errorMessages["Specialization"]
             }}</span>
 
-        </div> -->
+        </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+        <!-- <div> -->
+          <!-- <label class="block text-sm font-medium text-gray-700 mb-1">Specialization</label> -->
+
           <!-- <mat-form-field class="w-full">
-            <mat-label>Specialization</mat-label>
-            <input #doctorSpecializationInput matInput formControlName="Specialization" [matAutocomplete]="auto" class="w-full" required>
-            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn"
-              (optionSelected)="OnspecilaizationSelected($event)">
-              <mat-option *ngFor="let specialization of filteredSpecialization | async" [value]="specialization.specializationId">
-                {{specialization.name}}
-              </mat-option>
-            </mat-autocomplete>
-            <mat-error *ngIf="doctorForm.get('Specialization')?.hasError('required')">
-              Please select a specialization from the list
-            </mat-error>
-          </mat-form-field> -->
-          <mat-form-field class="w-full">
             <mat-label>Specializations</mat-label>
             <mat-select formControlName="Specialization" multiple >
               <mat-option *ngFor="let specialization of specializations" [value]="specialization.specializationId">
@@ -346,9 +334,10 @@
             <mat-error *ngIf="doctorForm.get('Specialization')?.hasError('required')">
               Please select at least one specialization
             </mat-error>
-          </mat-form-field>
+          </mat-form-field> -->
+
           
-        </div>
+        <!-- </div> -->
 
         <!-- Qualifications (Dynamic Add) -->
         <div class="col-span-full">

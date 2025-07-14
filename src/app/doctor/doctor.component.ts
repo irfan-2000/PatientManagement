@@ -765,6 +765,11 @@ parseCustomDate(dateStr: string): Date | null
   }
 
   selectedSpecialization:any;
+
+  onSpecializationChange(event:any){
+    this.selectedSpecialization = event;
+  }
+
   OnspecilaizationSelected(event: any): void {
     console.log("Selection event:", event);
     const specializationId = event.option.value;

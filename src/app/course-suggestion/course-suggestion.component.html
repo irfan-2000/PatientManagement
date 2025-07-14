@@ -72,8 +72,15 @@
                             <p *ngIf="!treatmentItems.length" class="font-medium text-gray-500 text-center mt-4">No
                                 items</p>
                         </div>
-                        <input type="text" class="no-print w-[94%] px-3 py-2 rounded-md mt-2 border-2 absolute bottom-4"
-                            placeholder="Type the Plan and press enter" (keydown.enter)="addTreatment($event)">
+                        <input type="text"
+                           class="no-print w-[94%] px-3 py-2 rounded-md mt-2 border-2 absolute bottom-4"
+                           placeholder="Type the Plan and press enter"
+                           (keydown.enter)="addTreatment($event)"
+                           list="treatmentSuggestions">
+
+<datalist id="treatmentSuggestions">
+  <option *ngFor="let suggestion of treatmentSuggestions" [value]="suggestion"></option>
+</datalist>
                     </div>
                 </div>
 

@@ -6,7 +6,7 @@
             <!-- Left: Upload Section -->
             <div class="md:w-1/2 p-8 flex flex-col gap-6 w-full">
                 <h2 class="text-xl mb-6 font-bold">Upload Prescription Header & Footer</h2>
-                <form (ngSubmit)="onSubmit()">
+                <form [formGroup]="headerFooterForm">
                     <div class="mb-4">
                         <label class="block mb-2 font-semibold">Header Image</label>
                         <div class="flex">
@@ -26,13 +26,13 @@
                               <svg class="w-5 h-5 text-green-500 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                               </svg>
-                              {{ headerFileName }}
+                              {{ 'Header.'+headerFileName.split('.').pop() }}
                             </span>
                             <span class="text-xs text-green-600">Image uploaded</span>
                           </ng-container>
-                          <input type="file" accept="image/*" (change)="onHeaderChange($event)" class="hidden">
+                          <input formControlName="headerImage" type="file" accept="image/*" (change)="onHeaderChange($event)" class="hidden">
                         </label>
-                        <button  [disabled]="!headerFileName" title="Delete" class="bg-red-500 self-start text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3 disabled:bg-gray-500">
+                        <button (click)="onSubmit('DH')"  [disabled]="!headerFileName" title="Delete" class="bg-red-500 self-start text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3 disabled:bg-gray-500">
                           <i class="fas fa-trash"></i>
                         </button>
 
@@ -60,13 +60,13 @@
                               <svg class="w-5 h-5 text-green-500 inline" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
                               </svg>
-                              {{ footerFileName }}
+                              {{ 'Footer.'+footerFileName.split('.').pop() }}
                             </span>
                             <span class="text-xs text-green-600">Image uploaded</span>
                           </ng-container>
-                          <input type="file" accept="image/*" (change)="onFooterChange($event)" class="hidden">
+                          <input formControlName="footerImage" type="file" accept="image/*" (change)="onFooterChange($event)" class="hidden">
                         </label>
-                        <button [disabled]="!footerFileName" title="Delete" class="bg-red-500 self-start text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3 disabled:bg-gray-500">
+                        <button (click)="onSubmit('DF')"  [disabled]="!footerFileName" title="Delete" class="bg-red-500 self-start text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3 disabled:bg-gray-500">
                           <i class="fas fa-trash"></i>
                         </button>
                           
@@ -78,7 +78,7 @@
                 </form>
                 <div class="flex gap-4 mt-6 ml-auto">
                     <button type="button" (click)="onCancel()" class="px-6 py-2 rounded bg-gray-200 hover:bg-gray-300 transition-colors">Cancel</button>
-                    <button type="button" (click)="onSubmit()" class="px-6 py-2 rounded bg-[#004867] text-white hover:bg-[#336b9f] transition-colors">Submit</button>
+                    <button type="button" (click)="onSubmit('I')" class="px-6 py-2 rounded bg-[#004867] text-white hover:bg-[#336b9f] transition-colors">Submit</button>
                 </div>
             </div>
             <!-- Right: Preview Section -->

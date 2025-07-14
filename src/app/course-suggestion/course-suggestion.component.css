@@ -1,0 +1,4 @@
+/* Hide datalist arrow in Chrome/Edge */
+input[list]::-webkit-calendar-picker-indicator {
+    display: none !important;
+  }
