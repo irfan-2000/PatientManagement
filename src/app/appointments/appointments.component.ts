@@ -247,7 +247,8 @@ this.Appointmentform = new FormGroup({
   this.ErrorMsg = {};
   let errorcode = 0;
 
-  if (this.Appointmentform.get('doctor')?.value == '' || this.Appointmentform.get('doctor')?.value == undefined || this.Appointmentform.get('doctor')?.value == null) {
+  if (this.Appointmentform.get('doctor')?.value == '' || this.Appointmentform.get('doctor')?.value == undefined || this.Appointmentform.get('doctor')?.value == null) 
+    {
     this.ErrorMsg["doctor"] = 'Doctor is required!';
     errorcode = 1;
   }
@@ -459,11 +460,24 @@ convertTo12HourFormat(time24: string): string {
   return `${paddedHour}:${paddedMinute} ${ampm}`;
 }
 
+SearchFilter(keyword: string) 
+{
+  keyword = keyword?.toLowerCase().trim();
+
+  return this.appointments.filter((item: any) => {
+    return (
+      item.doctorId?.toLowerCase().includes(keyword) ||
+      item.doctorName?.toLowerCase().includes(keyword) ||
+      item.patientName?.toLowerCase().includes(keyword) ||
+      item.gender?.toLowerCase().includes(keyword) ||
+      item.status?.toLowerCase().includes(keyword)
+    );
+  });
+}
 
 
 
 }
-
 
 
 
