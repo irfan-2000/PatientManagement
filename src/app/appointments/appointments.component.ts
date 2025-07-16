@@ -51,10 +51,9 @@ export class AppointmentsComponent {
   {
     this.serviceDetail.length = 0; //emptying the current array
     services.map((serv:any)=>{
-      console.log("reh serv", serv, this.selectServicesArray)
       const servDetail = this.selectServicesArray.find(item=>item.serviceId == serv);
       if(!servDetail || !Object.keys(servDetail).length){
-        console.log("One or more of the services selected are not found")
+        console.error("One or more of the services selected are not found")
       }
       const formattedServ = {
         service: servDetail?.name,
@@ -144,6 +143,12 @@ this.Appointmentform = new FormGroup({
   }
   submitAddAppointmentForm(){
     console.log("Submit Add appointment")
+  }
+
+  onStatusChange(newStatus: any, appt: any) {
+    const nStatus = newStatus?.target?.value;
+    if(!nStatus) return;
+    console.log('reh status change', nStatus, appt);
   }
 
 
@@ -311,7 +316,7 @@ this.Appointmentform = new FormGroup({
     if (selectedDate < today) 
       {
       this.ErrorMsg['AppointmentDate'] = 'Please select today or a future date.';
-        
+        return;
     }
 
      
@@ -364,7 +369,6 @@ GetAppointments(){
       next: (response: any) => {
         if (response.status == 200) 
           {
-            console.log("Reh resp", response.data)
             this.appointments = response.data
           }
           
@@ -401,6 +405,8 @@ showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title
   }
 }
 
+disableSaveButton:boolean = false;
+
 SubmitAppointment()
 { 
  let doctor = this.Appointmentform.get('doctor')?.value;
@@ -419,16 +425,21 @@ let slot = this.selectedSlot.startTime +'-'+this.selectedSlot.endTime;
 let paymentMode = this.Appointmentform.get('paymentMode')?.value
 let flag = 'I';
 let appointmentId 
+this.disableSaveButton = true
     try {
     this.hospservice.SubmitAppointment(doctor,service.toString(),appointmentDate,patient,status,slot,flag,appointmentId, paymentMode).subscribe({
       next: (response: any) => {
         if (response.status == 200) 
           {         
-            this
+            this.showAddAppointmentForm = false;
+            this.Appointmentform.reset()
+            this.showToast('success','Appointment created','');
+            this.GetAppointments()
         }          
       },
       error: (error: any) => 
         {
+    this.disableSaveButton = false
         if (error.status ==401) {
           this.router.navigate(['/login']);
         } else {
@@ -438,6 +449,7 @@ let appointmentId
     });
   } catch (error: any) {
     console.error('Exception:', error);
+    this.disableSaveButton = false
    }
   }
 

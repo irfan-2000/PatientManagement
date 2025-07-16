@@ -84,6 +84,8 @@
                         <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden sm:table-cell">Services</th>
                         <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden md:table-cell">Price</th>
                         <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Payment</th>
+                        <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden xl:table-cell">Created By</th>
+                        <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden xl:table-cell">Created On</th>
                         <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden sm:table-cell">Status</th>
                         <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Actions</th>
                     </tr>
@@ -104,14 +106,14 @@
                                 <div class="text-xs text-gray-500">
 
                                     {{ appt.appointmentDate.split(' ')[0] }} &bull;
-                                    {{ appt.startTime + ' - ' +  appt.endTime }}
+                                    {{ convertTo12HourFormat(appt.startTime) + ' - ' +  convertTo12HourFormat(appt.endTime) }}
                                 </div>
                             </div>
                         </td>
 
                         <!-- Services -->
                         <td class="p-2 text-left text-sm md:text-base md:p-3 hidden sm:table-cell break-words whitespace-normal max-w-[150px]">
-                            {{ appt.services.join(', ') }}
+                            {{ appt.selectedservices}}
                         </td>
 
                         <!-- Charges -->
@@ -121,51 +123,52 @@
 
                         <!-- Payment Mode -->
                         <td class="p-2 text-left text-sm md:text-base md:p-3 hidden lg:table-cell">
-                            {{ appt.paymentMode }}
+                            <!-- {{ appt.paymentMode }} -->
+                              Manual
                         </td>
+
+                        <!-- Created By -->
+                        <td class="p-2 text-left text-sm md:text-base md:p-3 hidden xl:table-cell">
+                              {{appt.createdBy}}
+                        </td>
+
+                        <!-- created ON -->
+                        <td class="p-2 text-left text-sm md:text-base md:p-3 hidden xl:table-cell">
+                            {{appt.createdOn?.split(' ')[0] + ' | '+ convertTo12HourFormat(appt.createdOn?.split(' ')[1]) }}
+                        </td>
+
+                        
 
                         <!-- Status -->
                         <td class="p-2 text-left text-sm md:text-base md:p-3 hidden sm:table-cell">
-                            <span class="px-2 rounded-full text-white text-sm md:text-base" [ngClass]="{
-                            'bg-green-500': appt.status === 'Booked',
-                            'bg-red-500': appt.status === 'Cancelled',
-                            'bg-yellow-500': appt.status !== 'Booked' && appt.status !== 'Cancelled'
-                            }">{{ appt.status }}</span>
+                            <select
+                                class="w-3/5 px-2 py-1 rounded-full text-white text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#004687] bg-[#004687]"
+                                [ngClass]="{
+                                    'bg-green-500': appt.status === 'Booked',
+                                    'bg-red-500': appt.status === 'Cancelled',
+                                    'bg-yellow-500': appt.status !== 'Booked' && appt.status !== 'Cancelled'
+                                }"
+                                [value]="appt.status"
+                                (change)="onStatusChange($event, appt?.appointmentId)"
+                            >
+                                <option *ngFor="let stat of statusFilters" class="bg-[#336b9f]" [value]="stat" [selected]="stat === appt.status">{{ stat }}</option>
+                            </select>
                         </td>
 
                         <!-- Actions -->
                         <td class="p-2 text-left text-sm md:text-base md:p-3 flex flex-col gap-1">
-                            <div class="flex divide-x rounded overflow-hidden border border-[#004687]">
-                                <!-- View button -->
-                                <button (click)="viewAppointment(appt.appointmentId)" title="View"
-                                    class="flex-1 text-[#004687] hover:bg-[#ccdae7]">
-                                    <i class="fa-solid fa-eye"></i>
-                                </button>
-
-                                <!-- Edit button -->
-                                <button (click)="editAppointment(appt.appointmentId)" title="Edit"
-                                    class="flex-1 text-[#004687] hover:bg-[#ccdae7]">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-
+                            <div>
                                 <!-- Print button with green border override -->
                                 <button (click)="printAppointment(appt.appointmentId)" title="Print"
-                                    class="flex-1 text-green-500 border-l border-green-500 hover:bg-green-100">
+                                    class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3">
                                     <i class="fa-solid fa-print"></i>
                                 </button>
-                            </div>
-                            <div class="flex w-full rounded overflow-hidden">
-                                <!-- Check-in button (flex-grow) -->
-                                <button (click)="checkinAppointment(appt.appointmentId)" title="Check-In"
-                                    class="flex-1 px-2 py-1 text-xs text-white bg-[#004687] hover:bg-[#336b9f] flex items-center justify-center gap-1 border border-[#004687] rounded-l">
-                                    <i class="fa-solid fa-right-to-bracket"></i> Check-in
-                                </button>
 
-                                <!-- Delete button (auto-width, red border) -->
-                                <button (click)="deleteAppointment(appt.appointmentId)" title="Delete"
-                                    class="px-3 py-1 text-xs text-red-500 bg-white hover:bg-red-500 hover:text-white flex items-center justify-center gap-1 border border-red-500 border-l-0 rounded-r">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
+                                 <!-- Delete button (auto-width, red border) -->
+                                 <button (click)="deleteAppointment(appt.appointmentId)" title="Delete"
+                                 class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
+                                 <i class="fa-solid fa-trash"></i>
+                             </button>
                             </div>
                         </td>
                     </tr>
@@ -283,7 +286,7 @@
                 </div>
             </div>
             <div class="flex gap-2 justify-end mt-6">
-                <button class="border border-[#004687] bg-[#004687] px-3 py-2 text-white rounded-sm hover:bg-[#336b9f] hover:border-[#336b9f]" (click)="SubmitAppointment()">Save</button>
+                <button class="border border-[#004687] bg-[#004687] px-3 py-2 text-white rounded-sm hover:bg-[#336b9f] hover:border-[#336b9f] disabled:bg-gray-600" (click)="SubmitAppointment()" [disabled]="disableSaveButton">Save</button>
                 <button class="border border-red-500 text-red-500 px-3 py-2 rounded-sm hover:bg-red-500 hover:text-white" (click)="showAddAppointmentForm = false;">Cancel</button>
             </div>
         </form>
