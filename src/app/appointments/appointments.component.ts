@@ -1053,11 +1053,24 @@ convertTo12HourFormat(time24: string): string {
   return `${paddedHour}:${paddedMinute} ${ampm}`;
 }
 
+SearchFilter(keyword: string) 
+{
+  keyword = keyword?.toLowerCase().trim();
+
+  return this.appointments.filter((item: any) => {
+    return (
+      item.doctorId?.toLowerCase().includes(keyword) ||
+      item.doctorName?.toLowerCase().includes(keyword) ||
+      item.patientName?.toLowerCase().includes(keyword) ||
+      item.gender?.toLowerCase().includes(keyword) ||
+      item.status?.toLowerCase().includes(keyword)
+    );
+  });
+}
 
 
 
 }
-
 
 
 
