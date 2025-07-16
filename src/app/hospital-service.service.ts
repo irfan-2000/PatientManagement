@@ -222,4 +222,36 @@ GetAppointments()
   });
 
 }
+
+  DeleteAppointment(slotId: any, apptId: any, flag: any) {
+
+    let params = new HttpParams();
+    params = params.append('SlotId', slotId);
+    params = params.append('ApptId', apptId)
+    params = params.append('flag', flag);
+
+    return this.http.post<any>(`${this.baseurl}api/UpdateandDeleteAppointment`, null, {
+      params: params,
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.token}`
+      }),
+      withCredentials: true,
+    });
+  }
+
+  UpdateAppointmentStatus(status: any, apptId: any, flag: any) {
+
+    let params = new HttpParams();
+    params = params.append('Status', status);
+    params = params.append('ApptId', apptId)
+    params = params.append('flag', flag);
+
+    return this.http.post<any>(`${this.baseurl}api/UpdateandDeleteAppointment`,null, {
+      params: params,
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.token}`
+      }),
+      withCredentials: true,
+    });
+  }
 }

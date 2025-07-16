@@ -16,16 +16,11 @@ import { PatientService } from '../patient.service';
 export class AppointmentsComponent {
   filters = {
     date: '',
-    clinic: '',
     patient: '',
     status: '',
     doctorName: '',
   };
 
-  clinicFilters = [
-    'clinic one',
-    'New clinic'
-  ]
   patientFilters = [
     'patient one',
     'New Patient'
@@ -116,6 +111,7 @@ this.Appointmentform = new FormGroup({
      console.log("Selected Slot: ",  this.Appointmentform.get('slot')?.value);
   }
 
+  Allappointments:any = [];
   appointments:any = [];
   
 
@@ -138,20 +134,9 @@ this.Appointmentform = new FormGroup({
   checkinAppointment(id: any) {
     console.log('Check-In appointment', id);
   }
-  deleteAppointment(id: any) {
-    console.log('Delete appointment', id);
-  }
   submitAddAppointmentForm(){
     console.log("Submit Add appointment")
   }
-
-  onStatusChange(newStatus: any, appt: any) {
-    const nStatus = newStatus?.target?.value;
-    if(!nStatus) return;
-    console.log('reh status change', nStatus, appt);
-  }
-
-
      
   async GetAllDoctors() {
 
@@ -369,7 +354,7 @@ GetAppointments(){
       next: (response: any) => {
         if (response.status == 200) 
           {
-            this.appointments = response.data
+            this.Allappointments = response.data
           }
           
       },
@@ -476,7 +461,7 @@ SearchFilter(keyword: string)
 {
   keyword = keyword?.toLowerCase().trim();
 
-  return this.appointments.filter((item: any) => {
+  return this.Allappointments.filter((item: any) => {
     return (
       item.doctorId?.toLowerCase().includes(keyword) ||
       item.doctorName?.toLowerCase().includes(keyword) ||
@@ -488,8 +473,82 @@ SearchFilter(keyword: string)
 }
 
 
+  DeleteAppointment(slotId:any, apptId:any) {
+
+    const confirmDelete = confirm("Are you sure to delete the appointment.")
+    if(!confirmDelete) return;
+
+    try {
+      // Send formData to the backend API
+      const response = this.hospservice.DeleteAppointment(slotId, apptId, 'Delete').subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200 && response.data) {
+            this.showToast('success','Appointment Deleted','')
+            this.GetAppointments();
+           
+          } else if (response.status == 500) {
+            this.showToast('error', 'Internal server error', '');
+          }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+          if (error.status == 401) {
+            this.router.navigate(['/login'])
+          }
+        }
+
+
+      });
+
+
+    } catch (error: any) {
+      console.error('Error:', error);
+    }
+  }
+
+  UpdateAppointmentStatus(apptStatus:any, apptId:any) {
+    const status = apptStatus?.target?.value;
+    if(!status){
+      console.error("Appointment status not found")
+      return
+    }
+    
+    try {
+      // Send formData to the backend API
+      const response = this.hospservice.UpdateAppointmentStatus(status, apptId, 'UpdateStatus').subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200) {
+            this.showToast('success','Appointment Status Updated','')
+            this.GetAppointments()
+           
+          } else if (response.status == 500) {
+            this.showToast('error', 'Internal server error', '');
+          }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+          if (error.status == 401) {
+            this.router.navigate(['/login'])
+          }
+        }
+
+
+      });
+
+
+    } catch (error: any) {
+      console.error('Error:', error);
+    }
+  }
+
+
+
+  applyFilters(){
+    console.log("reh filters")    
+  }
 
 }
-
 
 

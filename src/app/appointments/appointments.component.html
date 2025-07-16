@@ -6,10 +6,10 @@
                 class="bg-[#004687] text-white px-2 py-2 text-sm rounded-lg hover:bg-[#336b9f] md:text-base md:px-3">Add
                 Appointment <i class="fa-solid fa-plus ml-3"></i>
             </button>
-            <button (click)="importData()"
+            <!-- <button (click)="importData()"
                 class="bg-[#004687] text-white px-2 py-2 text-sm rounded-lg hover:bg-[#336b9f] md:text-base md:px-3">
                 Import data <i class="fas fa-file-import ml-3"></i>
-            </button>
+            </button> -->
         </div>
         <div class="p-3 bg-gray-200">
             <!-- Filters -->
@@ -21,14 +21,14 @@
                         class="w-full p-1 border rounded text-sm md:text-base md:p-[5px]" />
                 </div>
                 <!-- clinic filter  -->
-                <div class="flex flex-col gap-2">
+                <!-- <div class="flex flex-col gap-2">
                     <p>Select Clinic</p>
                     <select [(ngModel)]="filters.clinic"
                         class="p-1 w-full self-end border rounded text-sm md:text-base md:p-2 bg-white">
                         <option value="" disabled selected>Select clinic</option>
                         <option *ngFor="let clinic of clinicFilters" value="clinic">{{clinic}}</option>
                     </select>
-                </div>
+                </div> -->
                 <!-- Patient FIlter -->
                 <div class="flex flex-col gap-2">
                     <p>Select Patient</p>
@@ -149,7 +149,7 @@
                                     'bg-yellow-500': appt.status !== 'Booked' && appt.status !== 'Cancelled'
                                 }"
                                 [value]="appt.status"
-                                (change)="onStatusChange($event, appt?.appointmentId)"
+                                (change)="UpdateAppointmentStatus($event, appt?.appointmentId)"
                             >
                                 <option *ngFor="let stat of statusFilters" class="bg-[#336b9f]" [value]="stat" [selected]="stat === appt.status">{{ stat }}</option>
                             </select>
@@ -165,7 +165,7 @@
                                 </button>
 
                                  <!-- Delete button (auto-width, red border) -->
-                                 <button (click)="deleteAppointment(appt.appointmentId)" title="Delete"
+                                 <button (click)="DeleteAppointment(appt.slotId, appt.appointmentId)" title="Delete"
                                  class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
                                  <i class="fa-solid fa-trash"></i>
                              </button>
@@ -183,6 +183,7 @@
                     <div class="flex flex-col gap-2">
                         <p class="text-[#777]">Select Doctor</p>
                         <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white" formControlName="doctor" (change)="GetAvailableSlots()">
+                            <input type="text">
                             <option value="" disabled selected>Select Doctor</option>
                             <option *ngFor="let doc of doctors" [value]="doc.doctorId">{{doc.firstName}}{{doc.lName}} - {{doc.doctorId}}</option>
                         </select>
