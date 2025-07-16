@@ -546,7 +546,7 @@ SearchFilter(keyword: string)
 
 
   applyFilters(){
-    console.log("reh filters")    
+    console.log("reh filters", this.filters)    
   }
 
 }

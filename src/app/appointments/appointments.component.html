@@ -18,7 +18,8 @@
                 <div class="flex flex-col gap-2">
                     <p>Select Date</p>
                     <input type="date" [(ngModel)]="filters.date" placeholder="Date"
-                        class="w-full p-1 border rounded text-sm md:text-base md:p-[5px]" />
+                        class="w-full p-1 border rounded text-sm md:text-base md:p-[5px]" 
+                        (ngModelChange)="applyFilters()"/>
                 </div>
                 <!-- clinic filter  -->
                 <!-- <div class="flex flex-col gap-2">
@@ -33,9 +34,10 @@
                 <div class="flex flex-col gap-2">
                     <p>Select Patient</p>
                     <select [(ngModel)]="filters.patient"
-                        class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white">
+                        class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"
+                        (ngModelChange)="applyFilters()">
                         <option value="" disabled selected>Select Patient</option>
-                        <option *ngFor="let pat of patientFilters" value="pat">{{pat}}</option>
+                        <option *ngFor="let pat of patientFilters" value="{{pat}}">{{pat}}</option>
                     </select>
                 </div>
 
@@ -44,9 +46,10 @@
                 <div class="flex flex-col gap-2">
                     <p>Select Status</p>
                     <select [(ngModel)]="filters.status"
-                        class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white">
+                        class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"
+                        (ngModelChange)="applyFilters()">
                         <option value="" disabled selected>Select Status</option>
-                        <option *ngFor="let stat of statusFilters" value="stat">{{stat}}</option>
+                        <option *ngFor="let stat of statusFilters" value="{{stat}}">{{stat}}</option>
                     </select>
                 </div>
 
@@ -54,9 +57,10 @@
                 <div class="flex flex-col gap-2">
                     <p>Select Doctor</p>
                     <select [(ngModel)]="filters.doctorName"
-                        class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white">
+                        class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"
+                        (ngModelChange)="applyFilters()">
                         <option value="" disabled selected>Select Doctor</option>
-                        <option *ngFor="let doc of doctors" value="doc">{{doc}}</option>
+                        <option *ngFor="let doc of doctors" value="{{doc}}">{{doc}}</option>
                     </select>
                 </div>
             </div>
