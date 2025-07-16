@@ -834,7 +834,8 @@ this.Appointmentform = new FormGroup({
   this.ErrorMsg = {};
   let errorcode = 0;
 
-  if (this.Appointmentform.get('doctor')?.value == '' || this.Appointmentform.get('doctor')?.value == undefined || this.Appointmentform.get('doctor')?.value == null) {
+  if (this.Appointmentform.get('doctor')?.value == '' || this.Appointmentform.get('doctor')?.value == undefined || this.Appointmentform.get('doctor')?.value == null) 
+    {
     this.ErrorMsg["doctor"] = 'Doctor is required!';
     errorcode = 1;
   }
