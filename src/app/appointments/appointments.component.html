@@ -181,7 +181,7 @@
                         <p class="text-[#777]">Select Doctor</p>
                         <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white" formControlName="doctor" (change)="GetAvailableSlots()">
                             <option value="" disabled selected>Select Doctor</option>
-                            <option *ngFor="let doc of doctors" [value]="doc.doctorId">{{doc.firstName}}{{doc.lName}}</option>
+                            <option *ngFor="let doc of doctors" [value]="doc.doctorId">{{doc.firstName}}{{doc.lName}} - {{doc.doctorId}}</option>
                         </select>
                         <span *ngIf="ErrorMsg['doctor']" class="text-red-500  ">{{ ErrorMsg['doctor'] }}</span>
 
@@ -204,7 +204,7 @@
                         <p class="text-[#777]">Select Patient</p>
                         <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"   formControlName="patient"     >
                             <option value='' disabled selected>Select Patient</option>
-                            <option *ngFor="let pat of patients" [value]="pat.patientId">{{pat.patientName}}</option>
+                            <option *ngFor="let pat of patients" [value]="pat.patientId">{{pat.patientName}} - {{pat.patientId}}</option>
                         </select>
                         <span *ngIf="ErrorMsg['patient']" class="text-red-500  ">{{ ErrorMsg['patient'] }}</span>
 
@@ -219,9 +219,9 @@
                     </div>
                     <div class="flex flex-col gap-2">
                         <p class="text-[#777]">Select Payment Mode</p>
-                        <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"   formControlName="patient"     >
-                            <option value='' disabled selected>Select Payment Mode</option>
-                            <option *ngFor="let mode of availablePaymentModes" [value]="mode">{{mode}}</option>
+                        <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"   formControlName="paymentMode"     >
+                            <option value='' disabled selected>Manual</option>
+                            <!-- <option *ngFor="let mode of availablePaymentModes" [value]="mode">{{mode}}</option> -->
                         </select>
                         <span *ngIf="ErrorMsg['paymentMode']" class="text-red-500  ">{{ ErrorMsg['paymentMode'] }}</span>
                     </div>
