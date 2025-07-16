@@ -45,19 +45,23 @@ export class AppointmentsComponent {
   ]
 
   selectServicesArray:any[]= [ ]
-  SelectedServiceId :any [] = [50,51,52];
+  SelectedServiceId :any [] = [50,51];
 
   onserviceChanged(services:any)
   {
-    console.log("Selected Services", services);
+    console.log("Selected Services", services, this.selectServicesArray);
 //    this.SelectedServiceId.push(services.serviceId);
+
+    // const detail = this.selectServicesArray.find((item:any)=>item.serviceId == services)
+    // console.log("reh test",services, detail, this.selectServicesArray)
+    // this.serviceDetail.push({service: detail?.name, charge: detail.charges?.split('.')[0] })
 
      this.GetAvailableSlots();
   }
 
 timeSlots  :any[] = []
   selectedSlot:any;
-  serviceDetail = [
+  serviceDetail:any = [
     {
       service: "Telmed",
       charge: "100",
@@ -102,6 +106,8 @@ this.Appointmentform = new FormGroup({
   slot: new FormControl('', Validators.required),
   paymentMode: new FormControl('', Validators.required)
  }); 
+
+ this.Appointmentform.get('paymentMode')?.disable()
 }
 
   changeChipFilter(filter: any) {
@@ -877,10 +883,10 @@ this.Appointmentform = new FormGroup({
     errorcode = 1;
   }
  
-  if (this.Appointmentform.get('paymentMode')?.value == '' || this.Appointmentform.get('paymentMode')?.value == undefined || this.Appointmentform.get('paymentMode')?.value == null) {
-    this.ErrorMsg["paymentMode"] = 'Payment Mode is required!';
-    errorcode = 1;
-  }
+  // if (this.Appointmentform.get('paymentMode')?.value == '' || this.Appointmentform.get('paymentMode')?.value == undefined || this.Appointmentform.get('paymentMode')?.value == null) {
+  //   this.ErrorMsg["paymentMode"] = 'Payment Mode is required!';
+  //   errorcode = 1;
+  // }
 
   return errorcode ;
 }
@@ -968,6 +974,25 @@ GetAppointments(){
    }
 }
 
+showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
+  switch (type) {
+    case 'success':
+      this.toastr.success(message, title);
+      break;
+    case 'error':
+      this.toastr.error(message, title);
+      break;
+    case 'warning':
+      this.toastr.warning(message, title);
+      break;
+    case 'info':
+      this.toastr.info(message, title);
+      break;
+    default:
+      console.error('Invalid toast type');
+  }
+}
+
 SubmitAppointment()
 { 
  let doctor = this.Appointmentform.get('doctor')?.value;
@@ -991,7 +1016,7 @@ let appointmentId
       next: (response: any) => {
         if (response.status == 200) 
           {         
-          
+            this
         }          
       },
       error: (error: any) => 
