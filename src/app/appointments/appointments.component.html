@@ -257,9 +257,9 @@
 
                     </div>
                    
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-col gap-2 max-h-[18vh]">
                         <p class="text-[#777]">Service Detail</p>
-                        <div class="border border-gray-300 rounded-lg p-4">
+                        <div class="border border-gray-300 rounded-lg p-4 overflow-auto">
                             <p *ngIf="!serviceDetail.length">No service detail found</p>
                             <ng-container *ngIf="serviceDetail.length"   >
                                 <p *ngFor="let detail of serviceDetail" class="text-center">
