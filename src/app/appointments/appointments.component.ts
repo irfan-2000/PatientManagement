@@ -354,7 +354,8 @@ GetAppointments(){
       next: (response: any) => {
         if (response.status == 200) 
           {
-            this.Allappointments = response.data
+            this.Allappointments = response.data;
+            this.appointments = response.data; // Initialize filtered array
           }
           
       },
@@ -543,10 +544,34 @@ SearchFilter(keyword: string)
     }
   }
 
-
+clearFilters(){
+  this.filters = {
+    date: '',
+    patient: '',
+    status: '',
+    doctorName: '',
+  };
+  this.applyFilters();
+}
 
   applyFilters(){
-    console.log("reh filters", this.filters)    
+    console.log("reh filters", this.filters)
+    function toDDMMYYYY(dateStr: string): string {
+      if (!dateStr) return '';
+      const [yyyy, mm, dd] = dateStr.split('-');
+      return `${dd}-${mm}-${yyyy}`;
+    }
+
+    this.appointments = this.Allappointments.filter((appt:any)=>{
+      const matchDate = !this.filters.date || (
+        appt.appointmentDate &&
+        toDDMMYYYY(this.filters.date) === appt.appointmentDate.split(' ')[0]
+      );
+      const matchPatient = !this.filters.patient || appt.patientName === this.filters.patient;
+      const matchStatus = !this.filters.status || appt.status === this.filters.status;
+      const matchDoctor = !this.filters.doctorName || (appt.firstName + ' ' + appt.lName) === this.filters.doctorName;
+      return matchDate && matchPatient && matchStatus && matchDoctor;
+    })
   }
 
 }

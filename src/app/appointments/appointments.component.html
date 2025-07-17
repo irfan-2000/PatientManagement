@@ -37,7 +37,7 @@
                         class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"
                         (ngModelChange)="applyFilters()">
                         <option value="" disabled selected>Select Patient</option>
-                        <option *ngFor="let pat of patientFilters" value="{{pat}}">{{pat}}</option>
+                        <option *ngFor="let pat of patients" value="{{pat.patientName}}">{{pat.patientName +' - '+pat.patientId}}</option>
                     </select>
                 </div>
 
@@ -60,8 +60,13 @@
                         class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"
                         (ngModelChange)="applyFilters()">
                         <option value="" disabled selected>Select Doctor</option>
-                        <option *ngFor="let doc of doctors" value="{{doc}}">{{doc}}</option>
+                        <option *ngFor="let doc of doctors" value="{{doc.firstName + ' ' + doc.lName}}">{{doc.firstName + ' ' + doc.lName+' - '+doc.doctorId}}</option>
                     </select>
+                </div>
+
+
+                <div class="flex justify-end">
+                    <button (click)="clearFilters()" class="text-[#004687] border border-[#004687] px-2 py-1 rounded-lg hover:bg-[#004687] hover:text-white">Clear Filters</button>
                 </div>
             </div>
         </div>
