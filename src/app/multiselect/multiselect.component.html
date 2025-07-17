@@ -1,11 +1,20 @@
 <div class="multi-select-dropdown">
     <div class="input-container">
-      @for (itemName of selectedItems; track $index) 
-      {
-        <div class="selected-item">
-          {{ getDisplayName(itemName) }}
-          <button class="text-danger" (click)="removeItem(itemName, $event)">&times;</button>
-        </div>
+      @if (multiple) {
+        @for (itemName of selectedItems; track $index) 
+        {
+          <div class="selected-item">
+            {{ getDisplayName(itemName) }}
+            <button class="text-danger" (click)="removeItem(itemName, $event)">&times;</button>
+          </div>
+        }
+      } @else {
+        @if (selectedItems.length > 0) {
+          <div class="selected-item">
+            {{ getDisplayName(selectedItems[0]) }}
+            <button class="text-danger" (click)="removeItem(selectedItems[0], $event)">&times;</button>
+          </div>
+        }
       }
       <input type="text"
              (focus)="showDropDown()"
@@ -18,14 +27,14 @@
       <div class="dropdown-list">
         @for (item of filteredItems; track trackByFn($index, item))
          {
-          <div class="dropdown-item" (click)="toggleItem(item)">
+          <div class="dropdown-item" (click)="onItemClick(item)">
             <span class="checkbox">
               @if (emitType === 'name' ? selectedItems.includes(item.name) : selectedItems.includes(this.itemId ? item[this.itemId] : item.id)) 
               {
                 <span class="checkmark">✓</span>
               }
             </span>
-            <span>{{ item.name }}</span>
+            <span>{{ item[displayName] }}</span>
           </div>
         }
       </div>

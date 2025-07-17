@@ -77,6 +77,27 @@ timeSlots  :any[] = []
   patients:any[] = [];
   Appointmentform:FormGroup;
 
+  // Helper getters for cleaner template
+  get selectedDoctorId(): string[] {
+    const val = this.Appointmentform.get('doctor')?.value;
+    return val ? [val] : [];
+  }
+
+  get selectedPatientId(): string[] {
+    const val = this.Appointmentform.get('patient')?.value;
+    return val ? [val] : [];
+  }
+
+  // Handlers for multiselect single selection
+  onDoctorSelectionChange(selected: string[]) {
+    this.Appointmentform.get('doctor')?.setValue(selected[0] || '');
+    this.GetAvailableSlots();
+  }
+
+  onPatientSelectionChange(selected: string[]) {
+    this.Appointmentform.get('patient')?.setValue(selected[0] || '');
+  }
+
   constructor(private doctorservice:DoctorServiceService, private hospservice:HospitalServiceService,
 private fb: FormBuilder, private toastr: ToastrService,private router: Router,private PatientService:PatientService)
 {

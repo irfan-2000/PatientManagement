@@ -26,6 +26,10 @@ export class MultiselectComponent
 
   @Input() itemId: string | null = null
 
+  @Input() multiple: boolean = true; // New prop, true by default
+
+  @Input() displayName: string = 'name'; // New input for display property
+
   private elementRef = inject(ElementRef);
   isDropdownVisible = false;
   filteredItems: any[] = [];
@@ -72,9 +76,9 @@ this.selectedItems = [...new Set(this.Selecteditems)]; // Initialize selected it
   filterItems(event: Event) 
   {
     
-    const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
+    const searchTerm = (event.target as HTMLInputElement).value?.toLowerCase();
     this.filteredItems = this.items.filter(item => 
-      item.name.toLowerCase().includes(searchTerm)
+      item[this.displayName]?.toLowerCase().includes(searchTerm)
     );
     const ids = this.filteredItems.map(item => item.id);
     console.log("Duplicate IDs:", ids.filter((id, index) => ids.indexOf(id) !== index));
@@ -92,23 +96,46 @@ this.selectedItems = [...new Set(this.Selecteditems)]; // Initialize selected it
     if (this.emitType === 'name') {
       const index = this.selectedItems.indexOf(itemName);
       if (index === -1) {
-        this.selectedItems.push(itemName);
+        if (!this.multiple) {
+          this.selectedItems = [itemName];
+        } else {
+          this.selectedItems.push(itemName);
+        }
       } else {
-        this.selectedItems.splice(index, 1);
+        if (this.multiple) {
+          this.selectedItems.splice(index, 1);
+        } else {
+          this.selectedItems = [];
+        }
       }
     }
     if (this.emitType === 'id') {
       const indexId = this.selectedItems.indexOf(itemId);
       if (indexId === -1) {
-        this.selectedItems.push(itemId);
+        if (!this.multiple) {
+          this.selectedItems = [itemId];
+        } else {
+          this.selectedItems.push(itemId);
+        }
       } else {
-        this.selectedItems.splice(indexId, 1);
+        if (this.multiple) {
+          this.selectedItems.splice(indexId, 1);
+        } else {
+          this.selectedItems = [];
+        }
       }
     }
     
     // Remove any duplicates that might have been created
     this.selectedItems = [...new Set(this.selectedItems)];
     this.selectionChange.emit([...this.selectedItems]);
+  }
+
+  onItemClick(item: any) {
+    this.toggleItem(item);
+    if (!this.multiple) {
+      this.isDropdownVisible = false;
+    }
   }
 
   trackByFn(index: number, item: any): any 
@@ -121,12 +148,12 @@ this.selectedItems = [...new Set(this.Selecteditems)]; // Initialize selected it
     if (this.emitType === 'name') {
       return selectedItem; // Already a name
     } else {
-      // Find the item by ID and return its name
+      // Find the item by ID and return its display name
       const item = this.items.find(item => {
         const itemId = this.itemId ? item[this.itemId] : item.id;
         return itemId === selectedItem;
       });
-      return item ? item.name : selectedItem; // Fallback to the ID if item not found
+      return item ? item[this.displayName] : selectedItem; // Fallback to the ID if item not found
     }
   }
 
