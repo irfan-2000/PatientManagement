@@ -311,8 +311,10 @@
         <div>
           
           <label class="block text-gray-600 font-medium text-sm md:text-base">Specialization</label>
-           <app-multiselect [items]="specializations"  [DoctorSpecializations]="Doctorspecialization"      [isEditing]="IsEdition" [placeholder]="'Select specialization'"
-            (selectionChange)="onSpecializationChange($event)" [emitType]="'id'" itemId="specializationId"></app-multiselect>
+           <app-multiselect [items]="specializations"  [DoctorSpecializations]="Doctorspecialization"  
+               [isEditing]="IsEdition" [placeholder]="'Select specialization'"
+            (selectionChange)="onSpecializationChange($event)" [emitType]="'id'" itemId="specializationId">
+          </app-multiselect>
          
          <span *ngIf="errorMessages['Specialization']" class="text-red-500">{{
             errorMessages["Specialization"]
@@ -395,14 +397,7 @@
           <button (click)="addQualification()" class="text-[#004687] mt-2 flex items-center text-sm md:text-base">
             Add Qualification <i class="fa-solid fa-plus ml-2"></i>
           </button>
-
-
         </div>
-
-
-
-
-
         <!-- Terms & Conditions -->
         <div class="col-span-full flex flex-col gap-1 items-start space-x-2">
           <div>

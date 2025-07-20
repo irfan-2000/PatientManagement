@@ -316,11 +316,7 @@ UpdateDoctorDetails(doctorform :any)
 
 
   async DeleteDoctor(Id: number) 
-  {
-
-
-
-
+  { 
       try {
         this.doctorservice.DeleteDoctor(Id).subscribe({
           next: (response: any) =>
@@ -764,18 +760,20 @@ parseCustomDate(dateStr: string): Date | null
     return '';
   }
 
-  selectedSpecialization:any;
+  selectedSpecialization:any[] = [];
 
-  onSpecializationChange(event:any){
-    this.selectedSpecialization = event;
+  onSpecializationChange(event:any)
+  {
+    this.selectedSpecialization.push(event[0]);
+   
   }
 
-  OnspecilaizationSelected(event: any): void {
-    console.log("Selection event:", event);
-    const specializationId = event.option.value;
-    this.selectedSpecialization = this.specializations.find(d => d.specializationId == specializationId);
-    this.doctorForm.get('Specialization')?.setValue(specializationId);
-  }
+  // OnspecilaizationSelected(event: any): void {
+  //   console.log("Selection event:", event);
+  //   const specializationId = event.option.value;
+  //   this.selectedSpecialization = this.specializations.find(d => d.specializationId == specializationId);
+  //   this.doctorForm.get('Specialization')?.setValue(specializationId);
+  // }
 
 }
 

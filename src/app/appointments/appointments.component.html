@@ -76,9 +76,11 @@
             <button class="border border-[#004687] rounded-full px-3" (click)="changeChipFilter('all')" [ngClass]="{
             'bg-[#004687] text-white': (selectedChipFilter === 'all'),
             }">All</button>
-            <button class="border border-[#004687] rounded-full px-3" (click)="changeChipFilter('upcoming')" [ngClass]="{
+
+            <!-- <button class="border border-[#004687] rounded-full px-3" (click)="changeChipFilter('upcoming')" [ngClass]="{
             'bg-[#004687] text-white': (selectedChipFilter === 'upcoming'),
-            }">Upcoming</button>
+            }">Upcoming</button> -->
+            
             <button class="border border-[#004687] rounded-full px-3" (click)="changeChipFilter('past')" [ngClass]="{
             'bg-[#004687] text-white': (selectedChipFilter === 'past'),
             }">Past</button>

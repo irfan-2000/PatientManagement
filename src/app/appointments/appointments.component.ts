@@ -40,14 +40,30 @@ export class AppointmentsComponent {
   ]
 
   selectServicesArray:any[]= [ ]
-  SelectedServiceId :any [] = [50,51];
+  SelectedServiceId :any [] = [ ];
 
   onserviceChanged(services:any)
   {
+    if(services)
+    {
+      if(this.SelectedServiceId.indexOf(services) == -1 )
+      {
+        this.SelectedServiceId.push(services);
+      }else
+      {
+        const index = this.SelectedServiceId.indexOf(services);
+        if (index > -1) {
+          this.SelectedServiceId.splice(index, 1); // Remove the service if it already exists
+        } 
+      }
+    }
+
+
     this.serviceDetail.length = 0; //emptying the current array
     services.map((serv:any)=>{
       const servDetail = this.selectServicesArray.find(item=>item.serviceId == serv);
-      if(!servDetail || !Object.keys(servDetail).length){
+      if(!servDetail || !Object.keys(servDetail).length)
+        {
         console.error("One or more of the services selected are not found")
       }
       const formattedServ = {
@@ -69,7 +85,7 @@ timeSlots  :any[] = []
   formatDate = formatDate;
   formatTime = formatTime;
 
-  selectedChipFilter: any = 'upcoming';
+  selectedChipFilter: any = 'all';
 
   ErrorMsg: any = {};
   services:any[] = [];
@@ -118,10 +134,24 @@ this.Appointmentform = new FormGroup({
  this.Appointmentform.get('paymentMode')?.disable()
 }
 
-  changeChipFilter(filter: any) {
-    console.log('Chip Filter set to: ', filter);
-    //make an api call or whatever
-    this.selectedChipFilter = filter;
+  changeChipFilter(filter: any) 
+  {
+    debugger
+     this.selectedChipFilter = filter;
+   if(filter === 'all') 
+    {
+      this.GetAppointments();
+      return; 
+   }
+
+   
+const today = new Date().toISOString().split('T')[0]; // "2025-07-20"
+
+this.appointments =  this.appointments .filter((item: any) => {
+ return  item.appointmentDate.split(' ')[0] < today
+});
+
+
   }
 
   setSelectedSlot(slot:any){
@@ -377,6 +407,8 @@ GetAppointments(){
           {
             this.Allappointments = response.data;
             this.appointments = response.data; // Initialize filtered array
+
+            debugger
           }
           
       },
