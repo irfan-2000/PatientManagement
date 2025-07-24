@@ -44,19 +44,20 @@ export class AppointmentsComponent {
 
   onserviceChanged(services:any)
   {
-    if(services)
-    {
-      if(this.SelectedServiceId.indexOf(services) == -1 )
-      {
-        this.SelectedServiceId.push(services);
-      }else
-      {
-        const index = this.SelectedServiceId.indexOf(services);
-        if (index > -1) {
-          this.SelectedServiceId.splice(index, 1); // Remove the service if it already exists
-        } 
-      }
-    }
+    // if(services)
+    // {
+    //   if(this.SelectedServiceId.indexOf(services) == -1 )
+    //   {
+    //     this.SelectedServiceId.push(services);
+    //   }else
+    //   {
+    //     const index = this.SelectedServiceId.indexOf(services);
+    //     if (index > -1) {
+    //       this.SelectedServiceId.splice(index, 1); // Remove the service if it already exists
+    //     } 
+    //   }
+    // }
+
 
 
     this.serviceDetail.length = 0; //emptying the current array
@@ -71,6 +72,7 @@ export class AppointmentsComponent {
         charge: servDetail?.charges?.split('.')[0]
       }
       this.serviceDetail.push(formattedServ)
+      this.services = [...services]
     })
 
      this.GetAvailableSlots();
@@ -136,7 +138,7 @@ this.Appointmentform = new FormGroup({
 
   changeChipFilter(filter: any) 
   {
-    debugger
+     
      this.selectedChipFilter = filter;
    if(filter === 'all') 
     {
@@ -359,7 +361,7 @@ this.appointments =  this.appointments .filter((item: any) => {
     const date = this.Appointmentform.get('AppointmentDate')?.value;
     const DoctorId = this.Appointmentform.get('doctor')?.value;
     const ServiceId =    this.Appointmentform.get('service')?.value
-
+     
       if(date  == "" || date == null ||date == 'undefined')
       {
         return;
@@ -369,14 +371,14 @@ this.appointments =  this.appointments .filter((item: any) => {
         return;
       }
 
-      if(this.SelectedServiceId.length <=0)
+      if(this.services.length <=0)
       {
         return;
       }
 
  
   try {
-    this.hospservice.GetAvailableSlots ( DoctorId ,this.SelectedServiceId,date ).subscribe({
+    this.hospservice.GetAvailableSlots ( DoctorId ,this.services,date ).subscribe({
       next: (response: any) => {
         if (response.status == 200) 
           {
@@ -408,7 +410,7 @@ GetAppointments(){
             this.Allappointments = response.data;
             this.appointments = response.data; // Initialize filtered array
 
-            debugger
+             
           }
           
       },
@@ -451,7 +453,7 @@ SubmitAppointment()
  let doctor = this.Appointmentform.get('doctor')?.value;
 //let service = this.Appointmentform.get('service')?.value;
 
-let service = '50,51'
+// let service = '50,51'
 
 
  
@@ -466,7 +468,7 @@ let flag = 'I';
 let appointmentId 
 this.disableSaveButton = true
     try {
-    this.hospservice.SubmitAppointment(doctor,service.toString(),appointmentDate,patient,status,slot,flag,appointmentId, paymentMode).subscribe({
+    this.hospservice.SubmitAppointment(doctor,this.services.toString(),appointmentDate,patient,status,slot,flag,appointmentId, paymentMode).subscribe({
       next: (response: any) => {
         if (response.status == 200) 
           {         
