@@ -311,9 +311,8 @@
         <div>
           
           <label class="block text-gray-600 font-medium text-sm md:text-base">Specialization</label>
-           <app-multiselect [items]="specializations"  [DoctorSpecializations]="Doctorspecialization"  
-               [isEditing]="IsEdition" [placeholder]="'Select specialization'"
-            (selectionChange)="onSpecializationChange($event)" [emitType]="'id'" itemId="specializationId">
+           <app-multiselect [items]="specializations" [isEditing]="IsEdition" [placeholder]="'Select specialization'"
+            (selectionChange)="onSpecializationChange($event)" [emitType]="'id'" itemId="specializationId" [preselectedItems]="Doctorspecialization" >
           </app-multiselect>
          
          <span *ngIf="errorMessages['Specialization']" class="text-red-500">{{

@@ -25,7 +25,7 @@ export class DoctorComponent {
   IsEdition: boolean = false;
 
   filters = { id: '', name: '', clinic: '', email: '', mobile: '', specialization: '', status: '' };
-  Doctorspecialization: any= {};
+  Doctorspecialization: any = [];
 
   doctors = [];
   errorMessages: any = {};
@@ -394,9 +394,9 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
       this.showToast('error', 'Please fill all the required fields correctly.', 'Form Validation Error');
       return;
     } else {
-
+      
       const formData = new FormData();
-
+      
       formData.append('Firstname', this.doctorForm.get('FirstName')?.value || '');
       formData.append('LastName', this.doctorForm.get('LastName')?.value || '');
       formData.append('Email', this.doctorForm.get('Email')?.value || '');
@@ -411,21 +411,23 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
       formData.append('PostalCode', this.doctorForm.get('PostalCode')?.value || '');
       formData.append('IsActive', this.doctorForm.get('IsActive')?.value ? 'true' : 'false');
       formData.append("Qualifications", JSON.stringify(this.qualificationsArray.value));
-
-       
+      
+      
       if (this.doctorId !== undefined && this.doctorId !== null) {
         formData.append("DoctorId", this.doctorId.toString())
       }
       const selectedSpecializationNames = this.doctorForm.get('Specialization')?.value || [];
- 
+      
       const specializationIds = selectedSpecializationNames
-        .map((name: string) => {
-          const specialization = this.specializations.find(spec => spec.name === name);
-          return specialization ? specialization.specializationId : null;
-        })
+      .map((name: string) => {
+        const specialization = this.specializations.find(spec => spec.name === name);
+        return specialization ? specialization.specializationId : null;
+      })
       // .filter((id: null) => id !== null); // Remove null values
-
-      formData.append("Specialization", JSON.stringify(selectedSpecializationNames));
+       
+      formData.append("Specialization", this.selectedSpecialization.toString()  )
+      // Commenting it out for now, uncomment if something breaks
+      // formData.append("Specialization", JSON.stringify(selectedSpecializationNames));
 
 
 
@@ -600,8 +602,13 @@ parseCustomDate(dateStr: string): Date | null
       errorcode = 1;
     }
 
-    if (this.doctorForm.get('Specialization')?.value.length == 0 || this.doctorForm.get('Specialization')?.value == undefined || this.doctorForm.get('Specialization')?.value == null) {
-      this.errorMessages['Specialization'] = 'Please select at least one specialization!';
+    // if (this.doctorForm.get('Specialization')?.value.length == 0 || this.doctorForm.get('Specialization')?.value == undefined || this.doctorForm.get('Specialization')?.value == null) {
+    //   this.errorMessages['Specialization'] = 'Please select at least one specialization!';
+    //   errorcode = 1;
+    // }
+
+    if(!this.selectedSpecialization || !this.selectedSpecialization.length){
+        this.errorMessages['Specialization'] = 'Please select at least one specialization!';
       errorcode = 1;
     }
 
@@ -669,12 +676,10 @@ parseCustomDate(dateStr: string): Date | null
     return 0; // All validations passed
   }
 
-
   async GetDoctorDetails(DoctorId: number) {
      
  
     try {
-      // Send formData to the backend API
       const response = await this.doctorservice.GetDoctorDetails(DoctorId);
       const doctordata = response.doctordata.doctordata[0];
       const specializations = response.doctordata.specializationsdata;
@@ -686,10 +691,9 @@ parseCustomDate(dateStr: string): Date | null
   
         this.doctorId = doctordata.doctorId;
 
-        this.Doctorspecialization = this.specializations.filter(
-          (specialization: any) => specializationIds.includes(specialization.specializationId)
+        this.Doctorspecialization = response.doctordata.specializationsdata.map(
+          (specialization: any) => specialization.specializationId
            );
-           
            this.IsEdition = true;
             this.showForm = true;
 
@@ -697,7 +701,7 @@ parseCustomDate(dateStr: string): Date | null
 
       //  this.specializations = specializationData;
           this.OldselectedFile = doctordata.oldImageName;
-           
+            
         this.doctorForm.patchValue({
           FirstName: doctordata.firstName,
           LastName: doctordata.lName,
@@ -764,7 +768,8 @@ parseCustomDate(dateStr: string): Date | null
 
   onSpecializationChange(event:any)
   {
-    this.selectedSpecialization.push(event[0]);
+    this.selectedSpecialization = [...event]
+     
    
   }
 

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, inject, Input, Output, EventEmitter, OnInit, input } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, Input, Output, EventEmitter, OnInit, input, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-multiselect',
@@ -30,6 +30,8 @@ export class MultiselectComponent
 
   @Input() displayName: string = 'name'; // New input for display property
 
+  @Input() preselectedItems: any[] = [];
+
   private elementRef = inject(ElementRef);
   isDropdownVisible = false;
   filteredItems: any[] = [];
@@ -37,17 +39,19 @@ export class MultiselectComponent
   
 constructor()
 {
-  
+
   
 } 
 
 
- 
+ngOnChanges(changes: SimpleChanges) {
+  console.log("reh preselected", this.preselectedItems)
+    this.selectedItems = [...this.preselectedItems]; 
+}
 
   ngOnInit() 
   { 
-     
-this.selectedItems = [...new Set(this.Selecteditems)]; // Initialize selected items from input and remove duplicates
+   
   this.filteredItems = [...this.items]; // Initialize filtered items from input
   this.isDropdownVisible = false; // Dropdown is initially hidden
  
