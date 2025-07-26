@@ -153,21 +153,17 @@
 
                             
 
-                            <!-- Status -->
-                            <td class="p-2 text-left text-sm md:text-base md:p-3 hidden sm:table-cell">
-                                <select
-                                    class="w-3/5 px-2 py-1 rounded-full text-white text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#004687] bg-[#004687]"
-                                    [ngClass]="{
-                                        'bg-green-500': appt.status === 'Booked',
-                                        'bg-red-500': appt.status === 'Cancelled',
-                                        'bg-yellow-500': appt.status !== 'Booked' && appt.status !== 'Cancelled'
-                                    }"
-                                    [value]="appt.status"
-                                    (change)="UpdateAppointmentStatus($event, appt?.appointmentId)"
-                                >
-                                    <option *ngFor="let stat of statusFilters" class="bg-[#336b9f]" [value]="stat" [selected]="stat === appt.status">{{ stat }}</option>
-                                </select>
-                            </td>
+                        <!-- Status -->
+                        <td class="p-2 text-left text-sm md:text-base md:p-3 hidden sm:table-cell">
+                            <select
+                                class="w-3/5 px-2 py-1 rounded-full text-white text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-[#004687]"
+                                [ngClass]="{'bg-green-500': appt.status === '1','bg-red-500': appt.status === '5','bg-yellow-500': appt.status !== '1' && appt.status !== '5' }" [value]="appt.status" (change)="UpdateAppointmentStatus($event, appt?.appointmentId)">
+                                <option *ngFor="let stat of statusFilters" class="bg-[#336b9f]" [value]="stat.value"
+                                    [selected]="stat.value === appt.status">
+                                    {{ stat.label }}
+                                </option>
+                            </select>
+                        </td>
 
                             <!-- Actions -->
                             <td class="p-2 text-left text-sm md:text-base md:p-3 flex flex-col gap-1">
@@ -214,12 +210,14 @@
                             (selectionChange)="onserviceChanged($event)" [emitType]="'id'" [itemId]="'serviceId'" ></app-multiselect>
                             <span *ngIf="ErrorMsg['service']" class="text-red-500  ">{{ ErrorMsg['service'] }}</span>
 
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <p class="text-[#777]">Select Date</p>
-                            <input type="date" placeholder="Date" formControlName="AppointmentDate" (change)="GetAvailableSlots()" 
-                                class="w-full p-1 border rounded text-sm md:text-base md:p-[5px]" />
-                                <span *ngIf="ErrorMsg['AppointmentDate']" class="text-red-500  ">{{ ErrorMsg['AppointmentDate'] }}</span>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="text-[#777]">Select Date</p>
+                        <input type="date" placeholder="Date" formControlName="AppointmentDate"
+                            (change)="GetAvailableSlots()"
+                            class="w-full p-1 border rounded text-sm md:text-base md:p-[5px]" />
+                        <span *ngIf="ErrorMsg['AppointmentDate']" class="text-red-500  ">{{ ErrorMsg['AppointmentDate']
+                            }}</span>
 
                         </div>
                         <div class="flex flex-col gap-2">
@@ -259,6 +257,32 @@
                         <div class="flex flex-col flex-1 gap-2">
                             <p class="text-[#777]">Available Slot</p>
                             <div class="border border-gray-300 rounded-lg p-4 h-full">
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="text-[#777]">Select Status</p>
+                        <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"
+                            formControlName="status">
+                            <option value="" disabled selected>Select Status</option>
+                        <option *ngFor="let stat of statusFilters" [value]="stat.value">
+                            {{ stat.label }}
+                        </option>                        </select>
+                        <span *ngIf="ErrorMsg['status']" class="text-red-500  ">{{ ErrorMsg['status'] }}</span>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <p class="text-[#777]">Select Payment Mode</p>
+                        <select class="p-1 w-full border rounded text-sm md:text-base md:p-2 bg-white"
+                            formControlName="paymentMode">
+                            <option value='' disabled selected>Manual</option>
+                            <!-- <option *ngFor="let mode of availablePaymentModes" [value]="mode">{{mode}}</option> -->
+                        </select>
+                        <span *ngIf="ErrorMsg['paymentMode']" class="text-red-500  ">{{ ErrorMsg['paymentMode']
+                            }}</span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-3 h-full">
+                    <div class="flex flex-col flex-1 gap-2">
+                        <p class="text-[#777]">Available Slot</p>
+                        <div class="border border-gray-300 rounded-lg p-4 h-full">
 
                                 <div class="text-center max-h-[300px] overflow-y-auto" *ngIf="timeSlots.length>0">
                                     <!-- Just remove formControlName from the button -->
@@ -313,8 +337,5 @@
                     <button class="border border-red-500 text-red-500 px-3 py-2 rounded-sm hover:bg-red-500 hover:text-white" (click)="showAddAppointmentForm = false;">Cancel</button>
                 </div>
             </form>
-
-        </div>
     </div>
-
 </div>
