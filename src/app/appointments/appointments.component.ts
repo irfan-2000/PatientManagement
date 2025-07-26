@@ -25,14 +25,17 @@ export class AppointmentsComponent {
     'patient one',
     'New Patient'
   ]
-  statusFilters = [
-    'Booked',
-    'Upcoming',
-    'Completed (Check out)',
-    'Cancelled',
-    'Check-in',
-    'Pending'
-  ]
+statusFilters = [
+  { label: 'Pending', value: '0' },
+  { label: 'Booked', value: '1' },
+  { label: 'Upcoming', value: '2' },
+  { label: 'Check-in', value: '3' },
+  { label: 'Completed (Check out)', value: '4' },
+  { label: 'Cancelled', value: '5' }
+];
+
+
+
   availablePaymentModes = [
     "UPI",
     "Cash",
