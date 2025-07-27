@@ -245,7 +245,7 @@ get reports(): FormArray
    Submitreports(item:any = '') 
    {
   
-    debugger
+     
     const Report = this.ReportForm.get('reports') as FormArray;
 
      if (!Report || Report.length === 0) 
@@ -325,7 +325,7 @@ get reports(): FormArray
      console.log(pair[0], pair[1]);
    }
 
-debugger
+ 
 
 
     try {
@@ -414,7 +414,6 @@ debugger
       }
       else{
       this.selectedPatient = patient;
-      console.log("reh pat", patient);
       this.patchFormValues(patient);
     }
   }
@@ -568,6 +567,15 @@ CloseHispotyPopup() {
   this.isHistoryPopupOpen = false;
 }
 
+gotoPrescription(patientId:any){
+  console.log("Navigating to prescription with ID=", patientId)
+  this.router.navigate(["Prescription"],{
+    queryParams:{
+      patientId: patientId
+    }
+  } )
+}
+
 viewDetails(visit: any) {
   alert(`Details for ${visit.date}:\nDoctor: ${visit.doctor}\nDiagnosis: ${visit.diagnosis}`);
 }
@@ -698,7 +706,6 @@ reportDate:   this.dateFormat(item.customDate.split(' ')[0],'yyyy-MM-dd') ,
 
 //  applyFilters()
 //  {
-//     console.log("reh filters", this.filters)
 //     function toDDMMYYYY(dateStr: string): string {
 //       if (!dateStr) return '';
 //       const [yyyy, mm, dd] = dateStr.split('-');
@@ -719,7 +726,7 @@ reportDate:   this.dateFormat(item.customDate.split(' ')[0],'yyyy-MM-dd') ,
 
 searchPatient(event: any)
    {
-    debugger
+     
     const searchTerm = event.target.value?.trim().toLowerCase();
     console.log("Searching patient: ",searchTerm);
 
@@ -728,9 +735,8 @@ searchPatient(event: any)
     }else
     {
       this.patients = this.AllPatients.filter((pat:any)=> (pat.patientName.toLowerCase().includes(searchTerm) || pat.patientId.includes(searchTerm)) )
-      console.log("reh patients", this.patients)
     }
-debugger
+ 
   }
 
 

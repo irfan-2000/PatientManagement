@@ -13,15 +13,20 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class HeaderFooterUploadComponent {
   headerPreview: string | ArrayBuffer | null = null;
   footerPreview: string | ArrayBuffer | null = null;
+  logoPreview: string | ArrayBuffer | null = null;
   headerFileName: string | null = null;
   footerFileName: string | null = null;
+  logoFileName: string | null = null;
   existingheaderFileName: string | null = null;
   existingfooterFileName: string | null = null;
+  existinglogoFileName: string | null = null;
   headerError: string | null = null;
   footerError: string | null = null;
+  logoError: string | null = null;
   headerFooterForm: FormGroup;
   headerFile:any;
   footerFile:any
+  logoFile:any
 
   constructor(private router: Router, private toastr: ToastrService, private doctorservice: DoctorServiceService) {
     this.GetHeaderFooter();
@@ -29,6 +34,7 @@ export class HeaderFooterUploadComponent {
     this.headerFooterForm = new FormGroup({
       headerImage: new FormControl(null),
       footerImage: new FormControl(null),
+      logoImage: new FormControl(null)
     });
 
 
@@ -70,17 +76,36 @@ export class HeaderFooterUploadComponent {
     }
   }
 
+  onLogoChange(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    this.logoError = null;
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        this.logoError = 'Only image files are supported.';
+        this.logoFileName = null;
+        this.logoPreview = null;
+        return;
+      }
+      this.logoFile = file
+      this.logoFileName = file.name;
+      const reader = new FileReader();
+      reader.onload = () => this.logoPreview = reader.result;
+      reader.readAsDataURL(file);
+    }
+  }
+
   onSubmit(flag:any) {
 
     if(flag != 'I'){
       const confirmation = confirm("Are you sure to delete the file?")
       if(!confirmation) return;
     }
-    console.log('Reh submit header footer');
+    console.log('Reh submit header footer', this);
 
     const formData = new FormData();
     formData.append('existingheaderfilename', this.existingheaderFileName||'')
     formData.append('existingfooterfilename', this.existingfooterFileName||'')
+    formData.append('existinglogofilename', this.existinglogoFileName||'')
 
     if (this.headerFile instanceof File) {
       formData.append('header', this.headerFile);
@@ -89,13 +114,16 @@ export class HeaderFooterUploadComponent {
     if (this.footerFile instanceof File) {
       formData.append('footer', this.footerFile);
     }
+
+    if (this.logoFile instanceof File) {
+      formData.append('logo', this.logoFile);
+    }
     formData.append('flag', flag);
 
     try {
       this.doctorservice.UploadHeaderFooter(formData).subscribe({
         next: (response: any) => {
           if (response.status == 200) {
-            console.log("reh sub", response)
             this.showToast('success', 'Upload successful','')
             setTimeout(()=>{
               location.reload()
@@ -163,6 +191,9 @@ export class HeaderFooterUploadComponent {
             this.footerPreview = response.result[0]?.footerURL || null;
             this.footerFileName = response.result[0]?.footerName;
             this.existingfooterFileName = response.result[0]?.footerName;
+            this.logoPreview = response.result[0]?.logoURL || null;
+            this.logoFileName = response.result[0]?.logoName;
+            this.existinglogoFileName = response.result[0]?.logoName;
           } else if (response.status == 500) {
             this.showToast('error', 'Internal server error', '');
           }

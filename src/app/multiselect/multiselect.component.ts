@@ -45,7 +45,6 @@ constructor()
 
 
 ngOnChanges(changes: SimpleChanges) {
-  console.log("reh preselected", this.preselectedItems)
     this.selectedItems = [...this.preselectedItems]; 
 }
 
@@ -95,7 +94,6 @@ ngOnChanges(changes: SimpleChanges) {
     const itemName = item.name;
     const itemId = this.itemId ? item[this.itemId] : item.id;
 
-    console.log("Reh id", item)
 
     if (this.emitType === 'name') {
       const index = this.selectedItems.indexOf(itemName);

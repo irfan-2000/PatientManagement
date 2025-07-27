@@ -112,7 +112,6 @@ timeSlots  :any[] = []
   // Handlers for multiselect single selection
   onDoctorSelectionChange(selected: string[]) {
     this.Appointmentform.get('doctor')?.setValue(selected[0] || '');
-    console.log("reh selected Doc", selected)
     this.GetAvailableSlots();
   }
 
@@ -615,7 +614,6 @@ clearFilters(){
 }
 
   applyFilters(){
-    console.log("reh filters", this.filters)
     function toDDMMYYYY(dateStr: string): string {
       if (!dateStr) return '';
       const [yyyy, mm, dd] = dateStr.split('-');

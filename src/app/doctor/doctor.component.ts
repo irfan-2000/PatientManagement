@@ -754,7 +754,6 @@ parseCustomDate(dateStr: string): Date | null
     console.log("DisplayFn called with:", specializationId, this.specializations);
     if (!specializationId || !this.doctors) return '';
     const spec = this.specializations.find(d => {
-      console.log("reh doc", d);
       return d.specializationId == specializationId
     });
     console.log("Found Specializa:", spec);

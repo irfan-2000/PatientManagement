@@ -102,7 +102,7 @@ DeleteReport(reportId: any) {
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
    });
-  debugger
+   
 
   return this.http.post<any>(`${this.baseurl}api/DeletePatientReport`,null, {
 

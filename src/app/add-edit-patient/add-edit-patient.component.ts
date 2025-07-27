@@ -142,7 +142,7 @@ AddUpdatePatient()
         formData.append('PatientId', '');
          formData.append('flag','InsertPatient');
       }
-debugger
+ 
 
       formData.append('PatientName', this.patientForm.get('fullName')?.value);
       formData.append('Dob', this.patientForm.get('dob')?.value); 

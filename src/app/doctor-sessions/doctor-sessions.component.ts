@@ -53,7 +53,6 @@ export class DoctorSessionsComponent implements OnInit {
   openModal(doctor:any) {
     this.showModal = true;
     this.currentDoctorToDelete = doctor;
-    console.log("reh doc", doctor)
   }
 
   closeModal(result: boolean) {
@@ -117,7 +116,6 @@ export class DoctorSessionsComponent implements OnInit {
     console.log("DisplayFn called with:", doctorId, this.doctors);
     if (!doctorId || !this.doctors) return '';
     const doctor = this.doctors.find(d => {
-      console.log("reh doc", d);
       return d.doctorId == doctorId
     });
     console.log("Found doctor:", doctor);
