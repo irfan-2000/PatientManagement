@@ -135,7 +135,6 @@ this.ErrorMsg = '';
   
   this.showCategoryForm = true;
    
-  console.log("Reh oper", Operation, item)
   if(Operation =='Add')
     {
      this.isAddingServiceCategory = true; 

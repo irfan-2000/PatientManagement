@@ -124,7 +124,6 @@ export class HeaderFooterUploadComponent {
       this.doctorservice.UploadHeaderFooter(formData).subscribe({
         next: (response: any) => {
           if (response.status == 200) {
-            console.log("reh sub", response)
             this.showToast('success', 'Upload successful','')
             setTimeout(()=>{
               location.reload()

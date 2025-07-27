@@ -414,7 +414,6 @@ debugger
       }
       else{
       this.selectedPatient = patient;
-      console.log("reh pat", patient);
       this.patchFormValues(patient);
     }
   }
@@ -704,7 +703,6 @@ reportDate:   this.dateFormat(item.customDate.split(' ')[0],'yyyy-MM-dd') ,
 
 //  applyFilters()
 //  {
-//     console.log("reh filters", this.filters)
 //     function toDDMMYYYY(dateStr: string): string {
 //       if (!dateStr) return '';
 //       const [yyyy, mm, dd] = dateStr.split('-');
@@ -734,7 +732,6 @@ searchPatient(event: any)
     }else
     {
       this.patients = this.AllPatients.filter((pat:any)=> (pat.patientName.toLowerCase().includes(searchTerm) || pat.patientId.includes(searchTerm)) )
-      console.log("reh patients", this.patients)
     }
 debugger
   }

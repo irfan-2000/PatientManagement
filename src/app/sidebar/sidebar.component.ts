@@ -39,7 +39,6 @@ export class SidebarComponent
 
   handleMenuClick(menu: string)   
   {
-    console.log("reh menu", menu)
     if (this.activeMenu === menu) 
     {
       this.activeMenu = null;

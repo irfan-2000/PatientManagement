@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DoctorServiceService } from '../doctor-service.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { PatientService } from '../patient.service';
 
 @Component({
   selector: 'app-course-suggestion',
@@ -10,20 +11,19 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './course-suggestion.component.css',
 })
 export class CourseSuggestionComponent implements OnInit {
-  constructor(private doctorservice: DoctorServiceService, private router: Router, private toastr: ToastrService, private route:ActivatedRoute) { }
-
+  constructor(private doctorservice: DoctorServiceService, private router: Router, private toastr: ToastrService, private route:ActivatedRoute, private PatientService:PatientService) { }
   patientDetails:any = {
-    id: 123654,
-    name: "RehaanMohd",
-    age: 55,
-    gender: "Male"
+    id: null,
+    name: null,
+    age: null,
+    gender: null
   }
 
   ngOnInit(){
     this.route.queryParamMap.subscribe(params => {
       const id = params.get('patientId');
-      console.log("Got Prescription patient ID: ", id)
       // Fetch patient details and put it in the patientDetails object
+      this.GetPatientDetails(id)
     });
   }
   
@@ -96,7 +96,6 @@ export class CourseSuggestionComponent implements OnInit {
       treatment: 4,
       tablets: 7
     }
-    console.log("reh limit", typeLimitMapper[additionType], typeLimitMapper[additionType] < arrLength)
     if (arrLength >= typeLimitMapper[additionType]) {
       this.showToast('error', `Maximum ${additionType} items limit reached.`, '')
       return true
@@ -130,6 +129,45 @@ export class CourseSuggestionComponent implements OnInit {
     })
     event.target.value = ''
   }
+
+  GetPatientDetails(patientId:any, flag:any = 'GetPatientById',Tab = 'Details')
+{
+  
+      try {
+        this.PatientService.GetPatientDetails(flag ,Tab, patientId).subscribe({
+          next: (response: any) => {
+            if (response.status == 200) 
+              {
+                const patient = response.result[0]
+                // Replace patientDetails obj here.
+                this.patientDetails = {
+                  id: patient.patientId,
+                  name: patient.patientName,
+                  age: patient.age,
+                  gender: patient.gender
+                }           
+
+            }
+          },
+          error: (error: any) => {
+
+            console.log(error);
+            if (error.status === 401) 
+              {
+            this.router.navigate(['/login']);
+              } else if (error.status === 500 && error.error) {
+
+            } else {
+              console.error('Unhandled API error:', error);
+            }
+          },
+        });
+      } catch (error: any) {
+        console.error('API error:', error);
+      }
+ 
+
+}
 
   generatePDF(){
     const content:any = document.getElementById("courseSuggestionDiv");
