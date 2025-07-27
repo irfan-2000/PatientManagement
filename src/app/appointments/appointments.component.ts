@@ -112,6 +112,7 @@ timeSlots  :any[] = []
   // Handlers for multiselect single selection
   onDoctorSelectionChange(selected: string[]) {
     this.Appointmentform.get('doctor')?.setValue(selected[0] || '');
+    console.log("reh selected Doc", selected)
     this.GetAvailableSlots();
   }
 
@@ -186,6 +187,7 @@ this.appointments =  this.appointments .filter((item: any) => {
   }
   printAppointment(id: any) {
     console.log('Printing appointment', id);
+    window.print();
   }
   checkinAppointment(id: any) {
     console.log('Check-In appointment', id);

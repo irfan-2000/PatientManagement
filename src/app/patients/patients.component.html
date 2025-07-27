@@ -35,26 +35,26 @@
             <!-- Table would go here -->
 
             <div class="overflow-x-auto shadow-lg rounded-lg">
-              <table class="min-w-full border-collapse">
+              <table class="w-full border-collapse">
                 <thead class="sticky top-0">
                   <tr class="bg-[#004687] text-white">
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Patient ID</th>
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Full Name</th>
-                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">DOB
+                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">DOB
                     </th>
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Age
                     </th>
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Gender
                     </th>
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Phone</th>
-                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Visit
+                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden xl:table-cell">Visit
                       Date & Time</th>
 
 
-                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Created
+                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden xl:table-cell">Created
                       By</th>
 
-                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">Created
+                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">Created
                       On</th>
 
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Actions</th>
@@ -65,19 +65,19 @@
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.patientId }}</td>
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.patientName }}
                     </td>
-                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.dob }}</td>
+                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">{{ patient.dob }}</td>
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{
                       patient.age }}</td>
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{
                       patient.gender }}</td>
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.phoneNumber }}
                     </td>
-                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{
+                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden xl:table-cell">{{
                       patient.lastVisitDate }}</td>
-                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{
+                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden xl:table-cell">{{
                       patient.createdBy }}</td>
 
-                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{
+                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">{{
                       patient.createdOn }}</td>
 
 
