@@ -2,13 +2,15 @@
 <div class="flex">
 
     <app-sidebar></app-sidebar>
-    <div class="container mx-auto px-4 py-4 h-dvh overflow-y-auto">
+    <div class="w-full">
+        <app-top-strip></app-top-strip>
+    <div class="container mx-auto px-4 py-4 h-[90vh] overflow-y-auto">
 
 
         <div class="">
-            <div class="bg-white w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-white w-full max-h-[85vh] overflow-hidden flex flex-col">
                 <div class="flex justify-between items-center p-4 border-b">
-                    <h1 class="text-2xl font-bold">{{title}}</h1>
+                    <h1 class="text-2xl font-bold sticky top-0">{{title}}</h1>
                 </div>
 
                 <div class="flex-1 overflow-y-auto p-4">
@@ -183,3 +185,4 @@
             </div>
         </div>
     </div>
+</div>
