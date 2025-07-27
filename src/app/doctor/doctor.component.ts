@@ -651,7 +651,8 @@ parseCustomDate(dateStr: string): Date | null
       return 1;
     }
 
-    for (let i = 0; i < qualifications.length; i++) {
+    for (let i = 0; i < qualifications.length; i++)
+      {
       const control = qualifications.at(i);
       const qualification = control.get('qualification')?.value;
       const institution = control.get('institution')?.value;

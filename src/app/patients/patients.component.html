@@ -25,7 +25,7 @@
               <div class="border rounded-lg pl-3">
                 <i class="fas fa-search text-gray-500"></i>
                 <input type="text" class="px-3 py-2 focus:outline-none" placeholder="Search by Id or Name"
-                  (keyup.enter)="searchPatient($event)">
+                  (input)="searchPatient($event)">
               </div>
               <!-- <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium">
                 <i class="fas fa-plus mr-2"></i> Dummy button 1
@@ -148,19 +148,36 @@
                         <label class="block text-sm text-gray-500 font-medium">Report name</label>
                         <input type="text" formControlName="reportName"
                           class="form-control border rounded-lg px-2 py-1" />
+                            <span *ngIf="ReportUploadError['reportName']" class="text-red-500">{{
+            ReportUploadError["reportName"]
+            }}</span>
                       </div>
+                  <div>
+                    <label class="block text-sm text-gray-500 font-medium">Report Type</label>
+                    <input type="text" formControlName="reportType" list="reportTypeList"
+                      placeholder="e.g. Prescription or Test Report"
+                      class="form-control border rounded-lg px-2 py-1" />
+                    
+                    <datalist id="reportTypeList">
+                      <option value="Prescription">
+                      <option value="Lab Test">
+                      <option value="X-Ray">
+                      <option value="Discharge Summary">
+                    </datalist>
 
-                      <div>
-                        <label class="block text-sm text-gray-500 font-medium">Report Type</label>
-                        <input type="text" formControlName="reportType"
-                          placeholder="ex:Presecription or Test reportname"
-                          class="form-control border rounded-lg px-2 py-1" />
-                      </div>
+                    <span *ngIf="ReportUploadError['reportType']" class="text-red-500">
+                      {{ ReportUploadError['reportType'] }}
+                    </span>
+                  </div>
+
 
                       <div>
                         <label class="block text-sm text-gray-500 font-medium"> Date</label>
                         <input type="date" formControlName="reportDate"
                           class="form-control border rounded-lg px-2 py-1" />
+
+                        <span *ngIf="ReportUploadError['reportDate']" class="text-red-500">{{ ReportUploadError["reportDate"] }}</span>
+
                       </div>
 
                       <div>
@@ -173,6 +190,7 @@
                         <label class="block text-sm text-gray-500 font-medium">Report File</label>
                         <input type="file" (change)="onFileChange($event, i)" formControlName="reportFile"
                           class="form-control border rounded-lg px-2 py-1" />
+                           <span *ngIf="ReportUploadError['reportFile']" class="text-red-500">{{ReportUploadError["reportFile"]}}</span>
                       </div>
 
                       <a [href]="reportPath" *ngIf="EnableFileUpdate" target="_blank"
@@ -271,11 +289,14 @@
                       <th class="px-4 py-3">Report Name</th>
                       <th class="px-4 py-3">Report Type</th>
                       <th class="px-4 py-3">Description</th>
-                      <th class="px-4 py-3">Reason for visit</th>
-                      <th class="px-4 py-3">Upload</th>
+                      
                       <th class="px-4 py-3">View</th>
                       <th class="px-4 py-3">Created By</th>
+                      <th class="px-4 py-3">Created On</th>
+                   
                       <th class="px-4 py-3">Updated By</th>
+                      <th class="px-4 py-3">Updated On</th>
+
                       <th class="px-4 py-3">Action</th>
                     </tr>
                   </thead>
@@ -283,7 +304,7 @@
                   <tbody *ngFor="let group of PatientReportDetails">
                     <!-- Group Header -->
                     <tr>
-                      <td colspan="7" class="bg-gray-50 font-semibold px-4 py-2 text-sm text-gray-800">
+                      <td colspan="10" class="bg-gray-50 font-semibold px-4 py-2 text-sm text-gray-800">
                         Date: {{ group.date.split(' ')[0] }}
                       </td>
                     </tr>
@@ -298,34 +319,25 @@
                         style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         {{report.description}}
                       </td>
-                      <td>
-                        <!-- Reason for visit -->
-                      </td>
-
-                      <td class="px-4 py-2">
-                        <label for="reportFileUpdate"
-                          class="cursor-pointer bg-blue-100 px-3 py-1 rounded-md text-blue-600 hover:text-blue-700 flex items-center justify-center flex-wrap gap-2">
-                          <i class="fas fa-file-upload"></i> Upload
-                        </label>
-                        <input type="file" [disabled]="!EnableFileUpdate" class="block w-full text-sm text-gray-600
-                     file:mr-3 file:py-1 file:px-3
-                     file:rounded-md file:border-0
-                     file:bg-blue-100 file:text-blue-700
-                     hover:file:bg-blue-200 hidden" id="reportFileUpdate" />
-                      </td>
+                       
+                       
                       <td class="px-4 py-2">
                         <a [href]="report.reportPath" target="_blank" class="text-blue-600 hover:underline">
                           View Report
                         </a>
                       </td>
                       <td class="px-4 py-2">{{ report.createdBy || '—' }}</td>
+                      <td class="px-4 py-2">{{ report.createdOn.split(' ')[0] || '_' }}</td>
                       <td class="px-4 py-2">{{ report.updatedBy || '—' }}</td>
+                      <td class="px-4 py-2">{{ report.updatedOn.split(' ')[0] || '—' }}</td>
                       <td class="px-4 py-2 space-x-2">
                         <button (click)="OnEditReport(report)"
                           class="text-white bg-yellow-500 hover:bg-yellow-600 text-xs px-3 py-1 rounded">
                           <i class="fas fa-pencil"></i>
-                        </button>
-                        <i class="fas fa-trash text-red-500 cursor-pointer hover:text-red-700 transition"></i>
+                          </button>
+                        <button (click)="DeleteReport(report)">
+                        <i class="fas fa-trash text-red-500 cursor-pointer hover:text-red-700 transition" ></i>
+                      </button>
                       </td>
                     </tr>
                   </tbody>

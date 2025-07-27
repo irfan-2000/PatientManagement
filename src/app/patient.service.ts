@@ -93,4 +93,25 @@ AddUpdatePatient(formData: any)
  
 
 
+DeleteReport(reportId: any) {
+{
+  let params = new HttpParams();
+  params = params.append('ReportId', reportId);
+
+  const token = localStorage.getItem('token');  
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+   });
+  debugger
+
+  return this.http.post<any>(`${this.baseurl}api/DeletePatientReport`,null, {
+
+    headers: headers,
+    withCredentials: true,
+    params:params
+   
+  });
+}
+}
+
 }

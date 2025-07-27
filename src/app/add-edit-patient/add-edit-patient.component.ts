@@ -142,7 +142,7 @@ AddUpdatePatient()
         formData.append('PatientId', '');
          formData.append('flag','InsertPatient');
       }
-
+debugger
 
       formData.append('PatientName', this.patientForm.get('fullName')?.value);
       formData.append('Dob', this.patientForm.get('dob')?.value); 
@@ -161,7 +161,13 @@ AddUpdatePatient()
           next: (response: any) => {
             if (response.status === 200) 
            {
-            // Probably add the patient Id in this toast
+ 
+            if(this.IsEditing) {
+              this.showToast('success', 'Patient details updated successfully!', 'Success');
+               this.router.navigate(['patients']);
+              return
+            }
+
             this.showToast('success', `Patient Id: ${response.result}`  , successMessage);
             this.router.navigate(['patients'])
             }
@@ -227,10 +233,14 @@ if(this.patientForm.get('phone')?.value == '' || this.patientForm.get('phone')?.
 
  PatientDetails:any ={}
 
- showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
+ showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) 
+ {
+
+    const toastOptions = { timeOut: 15000 }; // 15 seconds
+
   switch (type) {
     case 'success':
-      this.toastr.success(message, title);
+      this.toastr.success(message, title,toastOptions);
       break;
     case 'error':
       this.toastr.error(message, title);

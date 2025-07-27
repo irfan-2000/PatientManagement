@@ -5,6 +5,8 @@ import { report } from 'process';
 import { from } from 'rxjs';
 import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
+
 
 
 @Component({
@@ -29,17 +31,7 @@ export class PatientsComponent {
 PatientReportDetails:any = {}
    
 
-  searchPatient(event: any) {
-    const searchTerm = event.target.value?.trim().toLowerCase();
-    console.log("Searching patient: ",searchTerm);
-
-    if(!searchTerm){
-      this.patients = this.AllPatients
-    }else{
-      this.patients = this.AllPatients.filter((pat:any)=> (pat.patientName.toLowerCase().includes(searchTerm) || pat.patientId.includes(searchTerm)) )
-      console.log("reh patients", this.patients)
-    }
-  }
+  
   hideAddDiv() {
     this.showAddDiv = false;
     //clear all inputs
@@ -86,7 +78,12 @@ ShowPatient:Boolean= false
 
   selectedPatient: any = null;
 
-  constructor(private fb: FormBuilder,private PatientService:PatientService,private router:Router) 
+  constructor(
+    private fb: FormBuilder,
+    private PatientService: PatientService,
+    private router: Router,
+    private toastr: ToastrService // <-- Inject ToastrService here
+  ) 
   {
     
     this.patientForm = this.fb.group({
@@ -144,6 +141,8 @@ ShowPatient:Boolean= false
     });
   }
 
+
+
   createPrescriptionGroup(): FormGroup
   {
     console.log("createPrescriptionGroup");
@@ -158,10 +157,11 @@ ShowPatient:Boolean= false
 
   toggleAddDiv()
    {
+     this.EnableFileUpdate = false;
     if(this.showAddDiv)
       {
       // clear and reset forms here
-      this.IsShowReportForm = true;
+      this.IsShowReportForm = true; 
       this.IsShowPrescriptionForm = true;
     
       this.ReportForm.reset();
@@ -238,18 +238,62 @@ get reports(): FormArray
     }
   }
 
-  
+  ReportUploadError:any = {}
+
+
+
    Submitreports(item:any = '') 
    {
   
+    debugger
+    const Report = this.ReportForm.get('reports') as FormArray;
 
+     if (!Report || Report.length === 0) 
+      {
+     this.ReportUploadError['reportName'] = 'Report   is required';
+       return;
+     }
+
+ 
+
+    for (let i = 0; i < Report.length; i++)
+      {
+      const control = Report.at(i);
+      const reportName = control.get('reportName')?.value;
+      const reportType = control.get('reportType')?.value;
+      const reportDate = control.get('reportDate')?.value;
+      const reportFile = control.get('reportFile')?.value;
+
+      if (!reportName) 
+        {
+        this.ReportUploadError['reportName'] = 'Report Name  is required!';
+        return ;
+      }
+
+      if (!reportType) 
+        {
+        this.ReportUploadError['reportType'] = 'ReportType is required!';
+        return ;
+      }
+
+      if (!reportDate) 
+        {
+        this.ReportUploadError['reportDate'] = 'ReportDate is required!';
+        return ;
+      }
+      if (!reportFile && !this.EnableFileUpdate) 
+        {
+        this.ReportUploadError['reportFile'] = 'Report File is required!';
+        return ;
+      } 
+    }
+
+    
+     
     const formData = new FormData();
     
     
     formData.append('PatientId', this.currentPatientDetails?.patientId || '');
-
- 
- 
  
     if(this.reportid !=null && this.reportid != undefined  && this.reportid != '')
     {
@@ -264,23 +308,24 @@ get reports(): FormArray
      formData.append('flag','InsertReport');
     }
 
-    this.reports.controls.forEach((group, i) => {
+    this.reports.controls.forEach((group, i) => 
+      {
       formData.append(`reports[${i}].reportName`, group.get('reportName')?.value);
       formData.append(`reports[${i}].reportType`, group.get('reportType')?.value);
       formData.append(`reports[${i}].reportDescription`, group.get('reportDescription')?.value);
       formData.append(`reports[${i}].reportDate`, group.get('reportDate')?.value);
       formData.append(`reports[${i}].prescriptionDate`, group.get('prescriptionDate')?.value);
-      formData.append(`reports[${i}].reportFile`, group.get('reportFile')?.value);    
-      
-      
-     });
+      formData.append(`reports[${i}].reportFile`, group.get('reportFile')?.value);         
+       });
 
     // Call your service here with formData
     console.log('Submitting:', formData);
-    for (let pair of formData.entries()) {
-  console.log(pair[0], pair[1]);
-}
+    for (let pair of formData.entries()) 
+      {
+     console.log(pair[0], pair[1]);
+   }
 
+debugger
 
 
     try {
@@ -292,6 +337,8 @@ get reports(): FormArray
                  this.patients = response.result;
                  this.AllPatients = response.result
                  this.toggleAddDiv();
+                 this.showToast('success', 'Report(s) has been saved!', 'Success');
+                this.GetPatientreports();
             }
           },
           error: (error: any) => {
@@ -380,6 +427,7 @@ get reports(): FormArray
     this.patientForm.reset();
     this.selectedPatient = null;
   }
+
   editPatient(patient: any): void {
     // For demonstration, we'll just log the patient.
     console.log('Editing patient:', patient);
@@ -421,7 +469,7 @@ removeLabTestReport(index: number) {
 }
 
 // Complete patchFormValues implementation
-   patchFormValues(patient: any) 
+patchFormValues(patient: any) 
 {
   this.patientForm.patchValue({
     ...patient,
@@ -643,12 +691,98 @@ reportDate:   this.dateFormat(item.customDate.split(' ')[0],'yyyy-MM-dd') ,
 // }
 
 
- 
+ filters:any  ='';
+
+//  applyFilters()
+//  {
+//     console.log("reh filters", this.filters)
+//     function toDDMMYYYY(dateStr: string): string {
+//       if (!dateStr) return '';
+//       const [yyyy, mm, dd] = dateStr.split('-');
+//       return `${dd}-${mm}-${yyyy}`;
+//     }
+
+//     this.appointments = this.Allappointments.filter((appt:any)=>{
+//       const matchDate = !this.filters.date || (
+//         appt.appointmentDate &&
+//         toDDMMYYYY(this.filters.date) === appt.appointmentDate.split(' ')[0]
+//       );
+//       const matchPatient = !this.filters.patient || appt.patientName === this.filters.patient;
+//       const matchStatus = !this.filters.status || appt.status === this.filters.status;
+//       const matchDoctor = !this.filters.doctorName || (appt.firstName + ' ' + appt.lName) === this.filters.doctorName;
+//       return matchDate && matchPatient && matchStatus && matchDoctor;
+//     })
+//   }
+
+searchPatient(event: any)
+   {
+    debugger
+    const searchTerm = event.target.value?.trim().toLowerCase();
+    console.log("Searching patient: ",searchTerm);
+
+    if(!searchTerm){
+      this.patients = this.AllPatients
+    }else
+    {
+      this.patients = this.AllPatients.filter((pat:any)=> (pat.patientName.toLowerCase().includes(searchTerm) || pat.patientId.includes(searchTerm)) )
+      console.log("reh patients", this.patients)
+    }
+debugger
+  }
 
 
+  
+showToast(type: 'success' | 'error' | 'warning' | 'info', message: string, title: string) {
+    switch (type) {
+      case 'success':
+        this.toastr.success(message, title);
+        break;
+      case 'error':
+        this.toastr.error(message, title);
+        break;
+      case 'warning': 
+        this.toastr.warning(message, title);
+        break;
+      case 'info':
+        this.toastr.info(message, title);
+        break;
+      default:
+        console.error('Invalid toast type');
+    }
+  }
 
 
+DeleteReport(item:any)
+{
+  console.log("Deleting report: ",item);
+  if(confirm("Are you sure you want to delete this report?"))
+  {
+    this.PatientService.DeleteReport(item.reportId).subscribe({
+      next: (response: any) => {
+        if (response.status === 200 && response.result) 
+          {
+             this.patients = response.result;
+             this.AllPatients = response.result
+             this.showToast('success', 'Report deleted successfully!', 'Success');
+             this.GetPatientreports();
+          }
+      },
+      error: (error: any) => 
+        {
+          if (error.status === 401) 
+              {
+           // this.router.navigate(['/login']);
+              } else if (error.status === 500 && error.error) {
 
+            } else {
+              console.error('Unhandled API error:', error);
+            }
+        console.error('Error deleting report:', error);
+        this.showToast('error', 'Failed to delete report.', 'Error');
+      }
+    });
+  }
+}
 
 
 
