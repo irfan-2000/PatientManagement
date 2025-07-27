@@ -245,7 +245,7 @@ get reports(): FormArray
    Submitreports(item:any = '') 
    {
   
-    debugger
+     
     const Report = this.ReportForm.get('reports') as FormArray;
 
      if (!Report || Report.length === 0) 
@@ -325,7 +325,7 @@ get reports(): FormArray
      console.log(pair[0], pair[1]);
    }
 
-debugger
+ 
 
 
     try {
@@ -723,7 +723,7 @@ reportDate:   this.dateFormat(item.customDate.split(' ')[0],'yyyy-MM-dd') ,
 
 searchPatient(event: any)
    {
-    debugger
+     
     const searchTerm = event.target.value?.trim().toLowerCase();
     console.log("Searching patient: ",searchTerm);
 
@@ -733,7 +733,7 @@ searchPatient(event: any)
     {
       this.patients = this.AllPatients.filter((pat:any)=> (pat.patientName.toLowerCase().includes(searchTerm) || pat.patientId.includes(searchTerm)) )
     }
-debugger
+ 
   }
 
 

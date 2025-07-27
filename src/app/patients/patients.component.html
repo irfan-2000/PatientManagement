@@ -54,7 +54,8 @@
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden xl:table-cell">Created
                       By</th>
 
-                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">Created
+                    <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">
+                      Created
                       On</th>
 
                     <th class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">Actions</th>
@@ -65,7 +66,8 @@
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.patientId }}</td>
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3">{{ patient.patientName }}
                     </td>
-                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">{{ patient.dob }}</td>
+                    <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden 2xl:table-cell">{{
+                      patient.dob }}</td>
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{
                       patient.age }}</td>
                     <td class="p-2 text-left whitespace-nowrap text-sm md:text-base md:p-3 hidden lg:table-cell">{{
@@ -92,8 +94,8 @@
                         (click)="navigateToAddEditPatient(patient)">
                         <i class="fa-solid fa-pen"></i>
                       </button>
-                      <button class="text-white bg-green-600 hover:bg-green-700 text-xs px-3 py-1 rounded" title="Give Prescription"
-                        (click)="gotoPrescription(patient.patientId)">
+                      <button class="text-white bg-green-600 hover:bg-green-700 text-xs px-3 py-1 rounded"
+                        title="Give Prescription" (click)="gotoPrescription(patient.patientId)">
                         <i class="fas fa-notes-medical"></i>
                       </button>
                     </td>
@@ -149,39 +151,43 @@
                       class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 border p-3 rounded-lg shadow">
 
                       <div>
-                        <label class="block text-sm text-gray-500 font-medium">Report name</label>
-                        <input type="text" formControlName="reportName"
-                          class="form-control border rounded-lg px-2 py-1" />
-                            <span *ngIf="ReportUploadError['reportName']" class="text-red-500">{{
-            ReportUploadError["reportName"]
-            }}</span>
+
+                        <div>
+                          <label class="block text-sm text-gray-500 font-medium">Report name</label>
+                          <input type="text" formControlName="reportName"
+                            class="form-control border rounded-lg px-2 py-1" />
+                        </div>
+                        <span *ngIf="ReportUploadError['reportName']" class="text-red-500">{{
+                          ReportUploadError["reportName"]
+                          }}</span>
                       </div>
-                  <div>
-                    <label class="block text-sm text-gray-500 font-medium">Report Type</label>
-                    <input type="text" formControlName="reportType" list="reportTypeList"
-                      placeholder="e.g. Prescription or Test Report"
-                      class="form-control border rounded-lg px-2 py-1" />
-                    
-                    <datalist id="reportTypeList">
-                      <option value="Prescription">
-                      <option value="Lab Test">
-                      <option value="X-Ray">
-                      <option value="Discharge Summary">
-                    </datalist>
-
-                    <span *ngIf="ReportUploadError['reportType']" class="text-red-500">
-                      {{ ReportUploadError['reportType'] }}
-                    </span>
-                  </div>
-
-
                       <div>
-                        <label class="block text-sm text-gray-500 font-medium"> Date</label>
-                        <input type="date" formControlName="reportDate"
-                          class="form-control border rounded-lg px-2 py-1" />
+                        <div>
+                          <label class="block text-sm text-gray-500 font-medium">Report Type</label>
+                          <input type="text" formControlName="reportType" list="reportTypeList"
+                            placeholder="e.g. Prescription or Test Report"
+                            class="form-control border rounded-lg px-2 py-1" />
 
-                        <span *ngIf="ReportUploadError['reportDate']" class="text-red-500">{{ ReportUploadError["reportDate"] }}</span>
+                          <datalist id="reportTypeList">
+                            <option value="Prescription">
+                            <option value="Lab Test">
+                            <option value="X-Ray">
+                            <option value="Discharge Summary">
+                          </datalist>
 
+                        </div>
+                        <span *ngIf="ReportUploadError['reportType']" class="text-red-500">
+                          {{ ReportUploadError['reportType'] }}
+                        </span>
+                      </div>
+                      <div>
+                        <div>
+                          <label class="block text-sm text-gray-500 font-medium"> Date</label>
+                          <input type="date" formControlName="reportDate"
+                            class="form-control border rounded-lg px-2 py-1" />
+                        </div>
+                        <span *ngIf="ReportUploadError['reportDate']" class="text-red-500">{{
+                          ReportUploadError["reportDate"] }}</span>
                       </div>
 
                       <div>
@@ -194,7 +200,8 @@
                         <label class="block text-sm text-gray-500 font-medium">Report File</label>
                         <input type="file" (change)="onFileChange($event, i)" formControlName="reportFile"
                           class="form-control border rounded-lg px-2 py-1" />
-                           <span *ngIf="ReportUploadError['reportFile']" class="text-red-500">{{ReportUploadError["reportFile"]}}</span>
+                        <span *ngIf="ReportUploadError['reportFile']"
+                          class="text-red-500">{{ReportUploadError["reportFile"]}}</span>
                       </div>
 
                       <a [href]="reportPath" *ngIf="EnableFileUpdate" target="_blank"
@@ -293,11 +300,11 @@
                       <th class="px-4 py-3">Report Name</th>
                       <th class="px-4 py-3">Report Type</th>
                       <th class="px-4 py-3">Description</th>
-                      
+
                       <th class="px-4 py-3">View</th>
                       <th class="px-4 py-3">Created By</th>
                       <th class="px-4 py-3">Created On</th>
-                   
+
                       <th class="px-4 py-3">Updated By</th>
                       <th class="px-4 py-3">Updated On</th>
 
@@ -323,8 +330,8 @@
                         style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         {{report.description}}
                       </td>
-                       
-                       
+
+
                       <td class="px-4 py-2">
                         <a [href]="report.reportPath" target="_blank" class="text-blue-600 hover:underline">
                           View Report
@@ -338,9 +345,9 @@
                         <button (click)="OnEditReport(report)"
                           class="text-white bg-yellow-500 hover:bg-yellow-600 text-xs px-3 py-1 rounded">
                           <i class="fas fa-pencil"></i>
-                          </button>
+                        </button>
                         <button (click)="DeleteReport(report)">
-                        <i class="fas fa-trash text-red-500 cursor-pointer hover:text-red-700 transition" ></i>
+                          <i class="fas fa-trash text-red-500 cursor-pointer hover:text-red-700 transition"></i>
                         </button>
 
 
