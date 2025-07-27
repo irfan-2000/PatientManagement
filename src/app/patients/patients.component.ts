@@ -647,6 +647,9 @@ let id =this.currentPatientDetails.patientId.toString();
 }
 
 
+
+
+
  
 EnableFileUpdate:boolean = false;
 reportid:any = null;
