@@ -568,6 +568,15 @@ CloseHispotyPopup() {
   this.isHistoryPopupOpen = false;
 }
 
+gotoPrescription(patientId:any){
+  console.log("Navigating to prescription with ID=", patientId)
+  this.router.navigate(["Prescription"],{
+    queryParams:{
+      patientId: patientId
+    }
+  } )
+}
+
 viewDetails(visit: any) {
   alert(`Details for ${visit.date}:\nDoctor: ${visit.doctor}\nDiagnosis: ${visit.diagnosis}`);
 }

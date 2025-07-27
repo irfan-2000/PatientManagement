@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DoctorServiceService } from '../doctor-service.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -9,8 +9,24 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './course-suggestion.component.html',
   styleUrl: './course-suggestion.component.css',
 })
-export class CourseSuggestionComponent {
-  constructor(private doctorservice: DoctorServiceService, private router: Router, private toastr: ToastrService) { }
+export class CourseSuggestionComponent implements OnInit {
+  constructor(private doctorservice: DoctorServiceService, private router: Router, private toastr: ToastrService, private route:ActivatedRoute) { }
+
+  patientDetails:any = {
+    id: 123654,
+    name: "RehaanMohd",
+    age: 55,
+    gender: "Male"
+  }
+
+  ngOnInit(){
+    this.route.queryParamMap.subscribe(params => {
+      const id = params.get('patientId');
+      console.log("Got Prescription patient ID: ", id)
+      // Fetch patient details and put it in the patientDetails object
+    });
+  }
+  
   courseSuggestions = [
     {
       id: 1,
