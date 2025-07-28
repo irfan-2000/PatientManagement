@@ -12,12 +12,7 @@ import { PatientService } from '../patient.service';
 })
 export class CourseSuggestionComponent implements OnInit {
   constructor(private doctorservice: DoctorServiceService, private router: Router, private toastr: ToastrService, private route:ActivatedRoute, private PatientService:PatientService) { }
-  patientDetails:any = {
-    id: null,
-    name: null,
-    age: null,
-    gender: null
-  }
+  patientDetails:any =  []
 
   ngOnInit(){
     this.route.queryParamMap.subscribe(params => {
@@ -140,12 +135,7 @@ export class CourseSuggestionComponent implements OnInit {
               {
                 const patient = response.result[0]
                 // Replace patientDetails obj here.
-                this.patientDetails = {
-                  id: patient.patientId,
-                  name: patient.patientName,
-                  age: patient.age,
-                  gender: patient.gender
-                }           
+                this.patientDetails =  patient
 
             }
           },
@@ -284,4 +274,21 @@ export class CourseSuggestionComponent implements OnInit {
     // console.log("reg desc text", this.descriptionText)
     // Content is preserved in descriptionText variable
   }
+
+getFormattedDate(inputDate?: string, flag?: string): string {
+  let dateObj: Date;
+
+  if (flag === 'modify' && inputDate) {
+    dateObj = new Date(inputDate);
+  } else {
+    dateObj = new Date();
+  }
+
+  const dd = String(dateObj.getDate()).padStart(2, '0');
+  const mm = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const yy = String(dateObj.getFullYear()) // Last two digits of year
+
+  return `${dd}-${mm}-${yy}`;
+}
+
 }

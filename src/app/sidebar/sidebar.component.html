@@ -99,27 +99,28 @@
 
         <!-- Course suggestion -->      
 
-         <li>
+                <!-- <li>
           <a href="/Prescription" [ngClass]="getNavClasses('course')" (click)="handleMenuClick('Prescription')">
-            <i class="fa-solid fa-file-prescription mr-3"></i>
+            <i class="fa-solid fa-prescription-bottle-medical mr-3"></i>
             <span *ngIf="isSidebarOpen">Prescribe</span>
           </a>
-        </li>
+        </li> -->
 
 
         <li>
           <a href="/headerfooterupload" [ngClass]="getNavClasses('course')" (click)="handleMenuClick('Prescription')">
-            <i class="fa-solid fa-arrow-up-from-bracket mr-3"></i>
-            <span *ngIf="isSidebarOpen">Header Foooter Upload</span>
+            <i class="fa-solid fa-file-upload mr-3"></i>
+            <span *ngIf="isSidebarOpen">Header Footer Upload</span>
           </a>
         </li>
 
         <li>
           <a href="/Prescription" [ngClass]="getNavClasses('course')" (click)="handleMenuClick('Prescription')">
-            <i class="fa-solid fa-laptop-file mr-3"></i>
+            <i class="fa-solid fa-notes-medical mr-3"></i>
             <span *ngIf="isSidebarOpen">Enter Treatment Plans</span>
           </a>
         </li>
+
 
       </ul>
     </nav>
