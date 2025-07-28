@@ -59,10 +59,13 @@ export class LoginComponent {
     this.loading = true;
 
     localStorage.clear();
+
+
+    
     try
     {
       const response = await this.docservice.ValidateLogin(this.loginForm);
-
+ 
       if(response.status === 200)
       {
 
@@ -73,13 +76,17 @@ export class LoginComponent {
          this.loading = false;
          this.router.navigate(['doctors']);
        },1000)
-      }
+      } else
       if(response.status == 401)
         {
           this.ValidationErrorMsg = 'Invalid credentials';
           this.loading = false;
           return;
         } 
+      else{
+         this.ValidationErrorMsg = 'Internal Server Error';
+          this.loading = false;
+      }
     }
     catch(error:any)
     {  

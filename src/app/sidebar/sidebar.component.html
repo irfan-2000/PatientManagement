@@ -8,11 +8,11 @@
     <!-- Logo Section -->
     <div class="p-4 border-b flex items-center justify-between" [ngClass]="{'flex-col': !isSidebarOpen}">
       <!-- Short logo, to be shown when sidebar is collapsed -->
-      <img *ngIf="!isSidebarOpen" src="logo-short.png" alt="Hospital Logo"
+      <img *ngIf="!isSidebarOpen" [src]='LogoFile' alt="Hospital Logo"
         class="h-10 w-10 rounded-full object-contain mb-3" />
 
        <!-- Long logo, to be shown when sidebar is expanded -->
-      <img *ngIf="isSidebarOpen" src="logo-full.png" alt="Hospital Logo" class="h-14 w-auto rounded-full" />
+      <img *ngIf="isSidebarOpen"  [src]='LogoFile' alt="Hospital Logo" class="h-14 w-auto rounded-full" />
 
       <!-- Sidebar Toggle Button -->
       <button (click)="toggleSidebar()" class="text-gray-600 focus:outline-none self-center">

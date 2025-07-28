@@ -266,12 +266,11 @@ GeneratePDF(content: any) {
     'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json'
   });
-  return this.http.post<Blob>(`${this.baseurl}api/generate-pdf`, 
-    { HtmlContent: content }, 
+  return this.http.post<Blob>(`${this.baseurl}api/generate-pdf`, content , 
     {
       headers: headers,
       withCredentials: true,
-      responseType: 'blob' as 'json' // 👈 this is necessary for file response
+      responseType: 'blob' as 'json' 
     }
   );
 }
@@ -307,15 +306,5 @@ GeneratePDF(content: any) {
     });
   }
 
-  GetHeaderFooter(){
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
 
-    return this.http.get<any>(`${this.baseurl}api/GetHeaderFooter`, {
-      headers: headers,
-      withCredentials: true
-    });
-  }
 }

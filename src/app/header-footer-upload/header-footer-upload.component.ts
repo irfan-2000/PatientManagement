@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DoctorServiceService } from '../doctor-service.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { HospitalServiceService } from '../hospital-service.service';
 
 @Component({
   selector: 'app-header-footer-upload',
@@ -28,7 +29,7 @@ export class HeaderFooterUploadComponent {
   footerFile:any
   logoFile:any
 
-  constructor(private router: Router, private toastr: ToastrService, private doctorservice: DoctorServiceService) {
+  constructor(private router: Router, private toastr: ToastrService, private doctorservice: DoctorServiceService,private hospitalservice:HospitalServiceService) {
     this.GetHeaderFooter();
 
     this.headerFooterForm = new FormGroup({
@@ -96,7 +97,8 @@ export class HeaderFooterUploadComponent {
 
   onSubmit(flag:any) {
 
-    if(flag != 'I'){
+    if(flag != 'I')
+      {
       const confirmation = confirm("Are you sure to delete the file?")
       if(!confirmation) return;
     }
@@ -115,24 +117,30 @@ export class HeaderFooterUploadComponent {
       formData.append('footer', this.footerFile);
     }
 
-    if (this.logoFile instanceof File) {
+    if (this.logoFile instanceof File)
+       {
       formData.append('logo', this.logoFile);
-    }
+     }
     formData.append('flag', flag);
 
     try {
       this.doctorservice.UploadHeaderFooter(formData).subscribe({
         next: (response: any) => {
-          if (response.status == 200) {
+          if (response.status == 200)
+             {
             this.showToast('success', 'Upload successful','')
             setTimeout(()=>{
               location.reload()
             },1000)
           }
-          if (response.status == 500) {
+          if (response.status == 500) 
+            {
             this.showToast('error', "Internal server error", "");
           }
-
+          if(response.status == 404)
+          {
+            this.showToast('error',response.message, "");
+          }
 
         },
         error: (error: any) => {
@@ -153,7 +161,8 @@ export class HeaderFooterUploadComponent {
 
   }
 
-  onCancel() {
+  onCancel() 
+  {
     this.router.navigate(['/course']);
   }
 
@@ -178,10 +187,11 @@ export class HeaderFooterUploadComponent {
 
 
 
-  GetHeaderFooter() {
+  GetHeaderFooter()
+   {
     try {
       // Send formData to the backend API
-      const response = this.doctorservice.GetHeaderFooter().subscribe({
+      const response = this.hospitalservice.GetHeaderFooter().subscribe({
         next: (response: any) => {
           console.log(response);
           if (response.status == 200) {
@@ -203,17 +213,15 @@ export class HeaderFooterUploadComponent {
           if (error.status == 401) {
             this.router.navigate(['/login'])
           }
-        }
-
-
-      });
-
-
+        } 
+      }); 
     } catch (error: any) {
       console.error('Error:', error);
     }
 
   }
+
+
 
 
 

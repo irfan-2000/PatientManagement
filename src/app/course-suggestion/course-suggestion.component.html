@@ -5,7 +5,7 @@
         <div class="w-[793px] overflow-visible relative bg-white mx-auto" id="courseSuggestionDiv">
             <!-- Download button positioned relative to parent container -->
             <div class="no-print absolute top-[9%] right-[-50px] z-10">
-                <button (click)="generatePDF()"
+                <button (click)="generatePDF()" [disabled]="isGeneratingPDF"
                     class="bg-[#004867] hover:bg-[#336b9f] text-white rounded-full p-4 aspect-square flex items-center justify-center shadow-md hover:shadow-lg transition-all"
                     title="Download PDF">
                     <i class="fa-solid fa-download text-lg"></i>
@@ -115,7 +115,7 @@
                 </div>
             </div>
             <div class="hidden col-span-2 w-full h-[57px]" id="footer">
-                <img src="prescription/footer.jpeg" alt="header" class="h-[57px] w-[793px]">
+                <img src="prescription/footer.jpeg" alt="Footer not found" class="h-[57px] w-[793px]">
             </div>
 
 

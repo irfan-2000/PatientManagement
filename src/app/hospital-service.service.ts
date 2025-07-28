@@ -254,4 +254,17 @@ GetAppointments()
       withCredentials: true,
     });
   }
+
+
+    GetHeaderFooter(){
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<any>(`${this.baseurl}api/GetHeaderFooterLogo`, {
+      headers: headers,
+      withCredentials: true
+    });
+  }
 }

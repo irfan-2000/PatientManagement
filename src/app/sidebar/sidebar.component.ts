@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HospitalServiceService } from '../hospital-service.service';
 @Component({
   selector: 'app-sidebar',
   standalone: false,
@@ -13,7 +14,7 @@ export class SidebarComponent
   openSubmenu: string | null = null; // Tracks open submenu
   activeSubmenu: string | null = null; // Tracks active submenu item
 
-  constructor(){
+  constructor(private hospitalservice: HospitalServiceService) {
     const url = location.pathname
     const active = url.split('/')[1] || url.split('/')[0];
     this.activeMenu = active;
@@ -21,6 +22,7 @@ export class SidebarComponent
     this.openActiveMenuByDefault(active)
     this.getNavClasses(this.activeMenu)
     this.getNavClassesForSubmenu(this.activeSubmenu)
+    this.GetHeaderFooter();
   }
 
   toggleSidebar() {
@@ -73,4 +75,31 @@ export class SidebarComponent
       'bg-[#004687] text-white': this.activeSubmenu === submenu
     };
   }
+
+  LogoFile :any
+   GetHeaderFooter()
+   {
+    try {
+       const response = this.hospitalservice.GetHeaderFooter().subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200)
+             {
+               
+              this.LogoFile =  response.result[0]?.logoURL;
+           
+          }  
+        },
+        error: (error: any) => 
+          {
+          console.error('Error:', error);
+        
+        } 
+      }); 
+    } catch (error: any) {
+      console.error('Error:', error);
+    }
+
+  }
+
 }

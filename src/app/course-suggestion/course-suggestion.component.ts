@@ -3,6 +3,7 @@ import { DoctorServiceService } from '../doctor-service.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { PatientService } from '../patient.service';
+import { HospitalServiceService } from '../hospital-service.service';
 
 @Component({
   selector: 'app-course-suggestion',
@@ -11,12 +12,23 @@ import { PatientService } from '../patient.service';
   styleUrl: './course-suggestion.component.css',
 })
 export class CourseSuggestionComponent implements OnInit {
-  constructor(private doctorservice: DoctorServiceService, private router: Router, private toastr: ToastrService, private route:ActivatedRoute, private PatientService:PatientService) { }
-  patientDetails:any =  []
+  constructor(private doctorservice: DoctorServiceService, private router: Router, private toastr: ToastrService, 
+    private route:ActivatedRoute, private PatientService:PatientService,private hospitalservice:HospitalServiceService) {
 
-  ngOnInit(){
+    this.GetHeaderFooter();
+   }
+
+
+
+  patientDetails:any =  []
+  isGeneratingPDF = false;
+  PatientId:any = '';
+
+  ngOnInit()
+  {
     this.route.queryParamMap.subscribe(params => {
       const id = params.get('patientId');
+      this.PatientId = id;
       // Fetch patient details and put it in the patientDetails object
       this.GetPatientDetails(id)
     });
@@ -159,7 +171,11 @@ export class CourseSuggestionComponent implements OnInit {
 
 }
 
-  generatePDF(){
+  async generatePDF()
+  {
+       this.isGeneratingPDF = true;
+
+    
     const content:any = document.getElementById("courseSuggestionDiv");
     const element = content.cloneNode(true) as HTMLElement;
 
@@ -171,13 +187,22 @@ export class CourseSuggestionComponent implements OnInit {
     });
 
     // Replace description textarea with p element
-    const descriptionInput = element.querySelector('#descriptionInput');
-    if (descriptionInput) {
-      const p = document.createElement('p');
+   // const descriptionInput = element.querySelector('#descriptionInput');
+
+    //const descriptionInput = document.getElementById('descriptionInput');
+
+
+    // if (descriptionInput) 
+    //   {
+    
+    //   descriptionInput.replaceWith(p);
+    // }
+ 
+
+
+  const p = document.createElement('p');
       p.textContent = this.descriptionText;
       p.className = 'description-text';
-      descriptionInput.replaceWith(p);
-    }
 
     const descriptionBlock = document.createElement('div');
     descriptionBlock.className = 'description-text-container p-4 border-t mt-4';
@@ -188,26 +213,50 @@ export class CourseSuggestionComponent implements OnInit {
 
     // Append before footer or at end
     const footer = element.querySelector('#footer');
-    if (footer?.parentElement) {
+    if (footer?.parentElement) 
+      {
       footer.parentElement.insertBefore(descriptionBlock, footer);
-    } else {
+    } else 
+    {
       element.appendChild(descriptionBlock);
     }
 
-    const toBeSent = element.innerHTML;
-    // navigator.clipboard.writeText(toBeSent)
+  
+    if(!this.PatientId)
+    {
+      alert("Patient ID is not available. Please select a patient and come back");
+    }
+
+    //const toBeSent = element.innerHTML;
+
+const toBeSent = {
+    HeaderFilename:  this.headerFileName,
+    FooterFilename: this.footerFileName,
+    HtmlContent: element.innerHTML,
+    PopupContent:  descriptionBlock.innerHTML ,
+    PatientId:this.PatientId
+  };
+    
+  
+      debugger
     try {
       this.doctorservice.GeneratePDF(toBeSent).subscribe({
-        next: (blob: Blob) => {
+        next: (blob: Blob) =>
+           {
+            
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
           link.download = "Generated.pdf";
           link.click();
           window.URL.revokeObjectURL(url);
+                this.isGeneratingPDF = false;
+
         },
         error: err => {
           console.error("PDF download failed", err);
+                this.isGeneratingPDF = false;
+
         }
       });
 
@@ -226,6 +275,8 @@ export class CourseSuggestionComponent implements OnInit {
       // });
     } catch (error: any) {
       console.error('API error:', error);
+            this.isGeneratingPDF = false;
+
     }
   }
 
@@ -290,5 +341,40 @@ getFormattedDate(inputDate?: string, flag?: string): string {
 
   return `${dd}-${mm}-${yy}`;
 }
+
+
+headerFileName:any;
+footerFileName:any;
+
+ async GetHeaderFooter()
+   {
+    try {
+      // Send formData to the backend API
+      const response = this.hospitalservice.GetHeaderFooter().subscribe({
+        next: (response: any) => {
+          console.log(response);
+          if (response.status == 200) {
+           debugger
+            this.headerFileName = response.result[0]?.headerName;
+            
+            this.footerFileName = response.result[0]?.footerName;
+        
+          } else if (response.status == 500) {
+            this.showToast('error', 'Internal server error', '');
+          }
+        },
+        error: (error: any) => {
+          console.error('Error:', error);
+          if (error.status == 401) {
+            this.router.navigate(['/login'])
+          }
+        } 
+      }); 
+    } catch (error: any) {
+      console.error('Error:', error);
+    }
+
+  }
+
 
 }
