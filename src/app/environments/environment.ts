@@ -1,7 +1,7 @@
 export const environment = 
 {
   production: false,
- baseUrl: 'https://localhost:7203/'
+//  baseUrl: 'https://localhost:7203/'
 
   // baseUrl: ' https://b478-2405-201-d026-20f5-8843-81b8-dc57-97ad.ngrok-free.app/'
 //  baseUrl: 'https://admin.api.race-elearn.com:444/'
@@ -25,5 +25,5 @@ export const environment =
 //  baseUrl: "https://9c94-2405-201-d026-20f5-2921-a716-c562-2cc7.ngrok-free.app/"
 
   //baseUrl: 'https://7b3b81937b4c.ngrok-free.app/'
-  //baseUrl: 'https://pm.api.race-elearn.com:5005/'
+  baseUrl: 'https://pm.api.race-elearn.com:5005/'
 };

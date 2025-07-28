@@ -12,24 +12,20 @@ import { DoctorSessionsComponent } from './doctor-sessions/doctor-sessions.compo
 import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.component';
 import { HeaderFooterUploadComponent } from './header-footer-upload/header-footer-upload.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
-{path:'login',component:LoginComponent},
-{path:'adminlogin',component:AdminLoginComponent},
-{path:'doctors',component:DoctorComponent},
-{path:'services',component:ServicesComponent},
-{path:'patients',component:PatientsComponent},
-{path:'addeditpatient',component:AddEditPatientComponent},
-{path: 'Prescription', component: CourseSuggestionComponent},
-{path:'appointments', component: AppointmentsComponent},
-{path:'doctorSessions', component: DoctorSessionsComponent},
-{path:'doctorHolidays', component: DoctorHolidaysComponent},
-{path:'headerfooterupload', component: HeaderFooterUploadComponent},
-
-
-
-
-
+  { path: 'login', component: LoginComponent },
+  { path: 'adminlogin', component: AdminLoginComponent },
+  { path: 'doctors', component: DoctorComponent },
+  { path: 'services', component: ServicesComponent },
+  { path: 'patients', component: PatientsComponent },
+  { path: 'addeditpatient', component: AddEditPatientComponent },
+  { path: 'Prescription', component: CourseSuggestionComponent },
+  { path: 'appointments', component: AppointmentsComponent },
+  { path: 'doctorSessions', component: DoctorSessionsComponent },
+  { path: 'doctorHolidays', component: DoctorHolidaysComponent },
+  { path: 'headerfooterupload', component: HeaderFooterUploadComponent },
 ];
 
 @NgModule({

@@ -34,6 +34,7 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { TopStripComponent } from './top-strip/top-strip.component';
 import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.component';
 import { HeaderFooterUploadComponent } from './header-footer-upload/header-footer-upload.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 
 @NgModule({
@@ -55,6 +56,7 @@ import { HeaderFooterUploadComponent } from './header-footer-upload/header-foote
     TopStripComponent,
     DoctorHolidaysComponent,
     HeaderFooterUploadComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,

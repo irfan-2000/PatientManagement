@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HospitalServiceService } from '../hospital-service.service';
+import { TokenService } from '../services/token.service';
 @Component({
   selector: 'app-sidebar',
   standalone: false,
@@ -14,7 +15,7 @@ export class SidebarComponent
   openSubmenu: string | null = null; // Tracks open submenu
   activeSubmenu: string | null = null; // Tracks active submenu item
 
-  constructor(private hospitalservice: HospitalServiceService) {
+  constructor(private hospitalservice: HospitalServiceService, private tokenService: TokenService) {
     const url = location.pathname
     const active = url.split('/')[1] || url.split('/')[0];
     this.activeMenu = active;
@@ -27,6 +28,8 @@ export class SidebarComponent
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+    const decodedData = this.tokenService.decodeToken()
+    console.log("reh dec", decodedData)
   }
 
   openActiveMenuMapper = {
