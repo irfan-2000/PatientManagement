@@ -13,8 +13,10 @@ import { AdminLoginComponent } from './admin-login/admin-login.component';
 import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.component';
 import { HeaderFooterUploadComponent } from './header-footer-upload/header-footer-upload.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
+  { path: 'dashboard', component: DashboardComponent },
   { path: 'login', component: LoginComponent },
   { path: 'adminlogin', component: AdminLoginComponent },
   { path: 'doctors', component: DoctorComponent },
@@ -26,6 +28,9 @@ const routes: Routes = [
   { path: 'doctorSessions', component: DoctorSessionsComponent },
   { path: 'doctorHolidays', component: DoctorHolidaysComponent },
   { path: 'headerfooterupload', component: HeaderFooterUploadComponent },
+
+  // ANy new routes should be above this
+  { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({

@@ -6,6 +6,7 @@ import { from } from 'rxjs';
 import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { TokenService } from '../services/token.service';
 
 
 
@@ -26,7 +27,7 @@ export class PatientsComponent {
    PrescriptionForm: FormGroup;
   IsShowReportForm: boolean = false;
   IsShowPrescriptionForm: boolean = false;
-
+  currentLoggedInRole:any;
 
 PatientReportDetails:any = {}
    
@@ -82,10 +83,11 @@ ShowPatient:Boolean= false
     private fb: FormBuilder,
     private PatientService: PatientService,
     private router: Router,
-    private toastr: ToastrService // <-- Inject ToastrService here
+    private toastr: ToastrService, // <-- Inject ToastrService here
+    private tokenService:TokenService
   ) 
   {
-    
+    this.currentLoggedInRole = this.tokenService.decodeToken().Role
     this.patientForm = this.fb.group({
       patientId: [''],
       fullName: ['', Validators.required],

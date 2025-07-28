@@ -1,16 +1,16 @@
 <div class="w-full h-16 bg-[#99b5cf] shadow-sm flex justify-end gap-6 items-center px-6 relative py-2">
   
     <!-- Left side links (now on the right side with avatar) -->
-    <div class="flex space-x-6 text-gray-800 text-sm font-medium">
+    <!-- <div class="flex space-x-6 text-gray-800 text-sm font-medium">
       <a href="/qr" class="hover:underline hover:text-gray-900 transition duration-150">QR for App</a>
       <a href="/demo-user" class="hover:underline hover:text-gray-900 transition duration-150">Demo User</a>
       <a href="/docs" class="hover:underline hover:text-gray-900 transition duration-150">Documentation</a>
-    </div>
+    </div> -->
   
     <!-- Avatar and dropdown -->
-    <div class="flex items-center cursor-pointer hover:opacity-80 transition duration-200" (click)="toggleDropdown()">
-      <img [src]="avatarUrl" alt="User Avatar" class="w-10 h-10 rounded-full mr-2">
-      <span class="text-gray-800 font-medium">{{ username }}</span>
+    <div class="flex items-center cursor-pointer hover:opacity-80 transition duration-200 space-x-3" (click)="toggleDropdown()">
+      <img [src]="avatarUrl" alt="User Avatar" class="w-10 h-10 rounded-full">
+      <span class="text-gray-800 font-medium">{{ userName }}</span>
     </div>
   
     <!-- Dropdown menu -->

@@ -94,7 +94,7 @@
                         (click)="navigateToAddEditPatient(patient)">
                         <i class="fa-solid fa-pen"></i>
                       </button>
-                      <button class="text-white bg-green-600 hover:bg-green-700 text-xs px-3 py-1 rounded"
+                      <button *ngIf="currentLoggedInRole == 'Doctor' || currentLoggedInRole == 'Admin'" class="text-white bg-green-600 hover:bg-green-700 text-xs px-3 py-1 rounded"
                         title="Give Prescription" (click)="gotoPrescription(patient.patientId)">
                         <i class="fas fa-notes-medical"></i>
                       </button>

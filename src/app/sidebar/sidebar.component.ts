@@ -14,6 +14,7 @@ export class SidebarComponent
   activeMenu: string | null = null; // Tracks active menu
   openSubmenu: string | null = null; // Tracks open submenu
   activeSubmenu: string | null = null; // Tracks active submenu item
+  currentLoggedInRole: any = null;
 
   constructor(private hospitalservice: HospitalServiceService, private tokenService: TokenService) {
     const url = location.pathname
@@ -24,6 +25,7 @@ export class SidebarComponent
     this.getNavClasses(this.activeMenu)
     this.getNavClassesForSubmenu(this.activeSubmenu)
     this.GetHeaderFooter();
+    this.currentLoggedInRole = this.tokenService.decodeToken().Role
   }
 
   toggleSidebar() {
