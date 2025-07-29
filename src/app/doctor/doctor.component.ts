@@ -81,7 +81,7 @@ export class DoctorComponent {
         Validators.min(0),
         Validators.pattern('^[0-9]+$')
       ]),
-
+      Password: new FormControl('', Validators.required),
       Full_Address: new FormControl('', Validators.required),
 
       City: new FormControl('', Validators.required),
@@ -405,6 +405,7 @@ console.log("doctorForm",JSON.stringify(this.doctorForm.value));
       formData.append('Age', this.doctorForm.get('Age')?.value || '');
       formData.append('Gender', this.doctorForm.get('Gender')?.value || '');
       formData.append('Experience', this.doctorForm.get('Experience')?.value || '0');
+      formData.append('Password', this.doctorForm.get('Password')?.value || '');
       formData.append('Full_Address', this.doctorForm.get('Full_Address')?.value || '');
       formData.append('City', this.doctorForm.get('City')?.value || '');
       formData.append('Country', this.doctorForm.get('Country')?.value || '');
@@ -592,6 +593,12 @@ parseCustomDate(dateStr: string): Date | null
       errorcode = 1;
     }
 
+    const passwordValue = this.doctorForm.get('Password')?.value;
+    if (passwordValue === '' || passwordValue === null || passwordValue === undefined) {
+      this.errorMessages['Password'] = 'Password is a required field';
+      errorcode = 1;
+    }
+
     if (this.doctorForm.get('Full_Address')?.value == '' || this.doctorForm.get('Full_Address')?.value == undefined || this.doctorForm.get('Full_Address')?.value == null) {
       this.errorMessages['Full_Address'] = 'Full Address is required!';
       errorcode = 1;
@@ -716,6 +723,7 @@ parseCustomDate(dateStr: string): Date | null
           IsActive: doctordata.status,
           PostalCode: doctordata.postalCode,
           Experience: doctordata.experience,
+          Password: doctordata.password,
           Full_Address: doctordata.full_Address,
           City: doctordata.city 
           
