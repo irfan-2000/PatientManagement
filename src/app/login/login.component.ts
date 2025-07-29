@@ -33,6 +33,7 @@ export class LoginComponent {
  
   async ValidateLogin()
   {
+    debugger
     this.Showerror= true;
     this.ValidationErrorMsg = '';
     if(this.loginForm.invalid)
@@ -60,7 +61,7 @@ export class LoginComponent {
 
     localStorage.clear();
 
-
+debugger
     
     try
     {
@@ -74,7 +75,7 @@ export class LoginComponent {
        localStorage.setItem('token',response.token);
        setTimeout(()=>{
          this.loading = false;
-         this.router.navigate(['doctors']);
+         this.router.navigate(['appointments']);
        },1000)
       } else
       if(response.status == 401)
