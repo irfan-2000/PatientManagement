@@ -36,6 +36,7 @@ import { DoctorHolidaysComponent } from './doctor-holidays/doctor-holidays.compo
 import { HeaderFooterUploadComponent } from './header-footer-upload/header-footer-upload.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ReceptionistComponent } from './receptionist/receptionist.component';
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     HeaderFooterUploadComponent,
     NotFoundComponent,
     DashboardComponent,
+    ReceptionistComponent,
   ],
   imports: [
     BrowserModule,

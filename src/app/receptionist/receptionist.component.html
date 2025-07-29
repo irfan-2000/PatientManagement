@@ -1,0 +1,182 @@
+<!-- Receptionist Management Page -->
+<div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="w-full">
+        <app-top-strip></app-top-strip>
+        <div class="bg-gray-50 min-h-screen">
+            <!-- Header Section -->
+            <div class="bg-white p-6">
+                <div class="flex items-center justify-end mb-6">
+                    <button (click)="addReceptionist()"
+                        class="bg-[#004687] hover:bg-[#003566] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Receptionist
+                    </button>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="p-3 bg-gray-200">
+                    <div class="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
+                        <input type="text" [(ngModel)]="filters.id" placeholder="ID"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.firstName" placeholder="First Name"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.lastName" placeholder="Last name"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.email" placeholder="Email"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.mobile" placeholder="Mobile"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.qualification" placeholder="Qualification"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <select [(ngModel)]="filters.status" class="p-1 border rounded text-sm md:text-base md:p-2">
+                            <option value="" disabled>Select status</option>
+                            <option value="Active">Active</option>
+                            <option value="InActive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Table Section -->
+                <div class="p-6">
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <!-- Table Header -->
+                                <thead class="bg-[#004687] text-white">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">ID</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 3xl:table-cell">
+                                            Image</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">First Name</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden lg:table-cell">Last
+                                            Name</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden lg:table-cell">
+                                            Gender</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 2xl:table-cell">DOB
+                                        </th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Email</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden lg:table-cell">
+                                            Mobile</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden xl:table-cell">
+                                            Qualification</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 3xl:table-cell">
+                                            Country</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 3xl:table-cell">City
+                                        </th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 3xl:table-cell">
+                                            Postal Code</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 3xl:table-cell">Full
+                                            Address</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden xl:table-cell">
+                                            Joining Date</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden lg:table-cell">
+                                            Experience</th>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Action</th>
+                                    </tr>
+                                </thead>
+
+                                <!-- Table Body -->
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr *ngFor="let receptionist of receptionists; let i = index">
+
+                                        <!-- ID -->
+                                        <td class="px-4 py-4 text-sm text-gray-900">{{ receptionist.id }}</td>
+
+                                        <!-- Image -->
+                                        <td class="p-2 hidden 3xl:table-cell">
+                                            <img src="bg1.png" alt="Receptionist"
+                                                class="w-10 h-10 rounded-full hidden md:block" />
+                                        </td>
+
+                                        <!-- First Name -->
+                                        <td class="px-4 py-4 text-sm text-gray-900">{{ receptionist.firstName }}</td>
+
+                                        <!-- Last Name -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden lg:table-cell">{{
+                                            receptionist.lastName }}</td>
+
+                                        <!-- Gender -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden lg:table-cell">{{
+                                            receptionist.gender }}</td>
+
+                                        <!-- DOB -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden 2xl:table-cell">{{
+                                            formatDate(receptionist.dob) }}</td>
+
+                                        <!-- Email -->
+                                        <td
+                                            class="px-4 py-4 text-sm text-blue-600 hover:text-blue-800">
+                                            {{ receptionist.email }}</td>
+
+                                        <!-- Mobile -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden lg:table-cell">{{
+                                            receptionist.mobile }}</td>
+
+                                        <!-- Qualification -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden xl:table-cell">{{
+                                            receptionist.qualification }}</td>
+
+                                        <!-- Country -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden 3xl:table-cell">{{
+                                            receptionist.country }}</td>
+
+                                        <!-- City -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden 3xl:table-cell">{{
+                                            receptionist.city }}</td>
+
+                                        <!-- Postal Code -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden 3xl:table-cell">{{
+                                            receptionist.postalCode }}</td>
+
+                                        <!-- Full Address -->
+                                        <td class="hidden 3xl:table-cell px-4 py-4 text-sm text-gray-900 max-w-xs truncate"
+                                            [title]="receptionist.fullAddress">
+                                            {{ receptionist.fullAddress }}
+                                        </td>
+
+                                        <!-- Status -->
+                                        <td class="px-4 py-4">
+                                            <span
+                                                class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                                                [ngClass]="{
+                          'bg-green-100 text-green-800 hover:bg-green-200': receptionist.status === 'Active',
+                          'bg-red-100 text-red-800 hover:bg-red-200': receptionist.status === 'Inactive'
+                        }">
+                                                {{ receptionist.status }}
+                                            </span>
+                                        </td>
+
+                                        <!-- Joining Date -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden xl:table-cell">{{
+                                            formatDate(receptionist.joiningDate)
+                                            }}
+                                        </td>
+
+                                        <!-- Experience -->
+                                        <td class="px-4 py-4 text-sm text-gray-900 hidden lg:table-cell">{{
+                                            receptionist.experience }} Years</td>
+
+                                        <!-- Actions -->
+                                        <td class="p-3">
+                                            <div class="flex items-center">
+                                                <button title="Edit" (click)="editReceptionist(receptionist.id)"
+                                                    class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                                <button title="Delete" (click)="deleteReceptionist(receptionist.id)"
+                                                    class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
