@@ -15,6 +15,7 @@ import { HeaderFooterUploadComponent } from './header-footer-upload/header-foote
 import { NotFoundComponent } from './not-found/not-found.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReceptionistComponent } from './receptionist/receptionist.component';
+import { AdminComponent } from './admin/admin.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
   { path: 'doctorHolidays', component: DoctorHolidaysComponent },
   { path: 'headerfooterupload', component: HeaderFooterUploadComponent },
   { path: 'receptionist', component: ReceptionistComponent },
+  { path: 'admin', component: AdminComponent },
 
   // ANy new routes should be above this
   { path: '**', component: NotFoundComponent },

@@ -1,0 +1,261 @@
+<div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="w-full">
+        <app-top-strip></app-top-strip>
+        <div class="bg-gray-50">
+            <div class="flex gap-2 px-6">
+                <a href="/admin"
+                    class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 py-2 text-sm rounded-lg md:text-base md:px-3 self-start mt-3"
+                    *ngIf="showForm"> <i class="fa-solid fa-arrow-left"></i> Go Back</a>
+            </div>
+            <!-- Header Section -->
+            <div class="bg-white p-6" *ngIf="!showForm">
+                <div class="flex items-center justify-end mb-6" >
+                    <button (click)="addAdmin()"
+                        class="bg-[#004687] hover:bg-[#003566] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Admin
+                    </button>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="p-3 bg-gray-200" *ngIf="!showForm">
+                    <div class="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
+                        <input type="text" [(ngModel)]="filters.id" placeholder="ID"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.firstName" placeholder="First Name"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.lastName" placeholder="Last name"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.email" placeholder="Email"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.mobile" placeholder="Mobile"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <input type="text" [(ngModel)]="filters.qualification" placeholder="Qualification"
+                            class="p-1 border rounded text-sm md:text-base md:p-2" />
+                        <select [(ngModel)]="filters.status" class="p-1 border rounded text-sm md:text-base md:p-2">
+                            <option value="" disabled>Select status</option>
+                            <option value="Active">Active</option>
+                            <option value="InActive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="p-6">
+                <div class="bg-white rounded-lg overflow-hidden" *ngIf="!showForm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <!-- Table Header -->
+                            <thead class="bg-[#004687] text-white">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">ID</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Hospital Name</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">From Date</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">To Date</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold hidden 2xl:table-cell">Address
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold hidden 3xl:table-cell">
+                                        Description</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold hidden xl:table-cell">Contact
+                                        No</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold hidden lg:table-cell">Email
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold">Action</th>
+                                </tr>
+                            </thead>
+
+                            <!-- Table Body -->
+                            <tbody class="divide-y divide-gray-200">
+                                <tr *ngFor="let admin of admins; let i = index" class="">
+
+                                    <!-- ID -->
+                                    <td class="px-4 py-4 text-sm text-gray-900">{{ admin.id }}</td>
+
+                                    <td class="px-4 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm font-medium text-gray-900">
+                                                {{ admin.hospitalName }}
+                                            </span>
+                                        </div>
+                                    </td>
+
+                                    <!-- From Date -->
+                                    <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(admin.fromDate) }}</td>
+
+                                    <!-- To Date -->
+                                    <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(admin.toDate) }}</td>
+
+                                    <!-- Address -->
+                                    <td class="px-4 py-4 text-sm text-gray-900 max-w-xs truncate hidden 2xl:table-cell"
+                                        [title]="admin.address">
+                                        {{ admin.address }}
+                                    </td>
+
+                                    <!-- Description -->
+                                    <td class="px-4 py-4 text-sm text-gray-900 max-w-xs truncate hidden 3xl:table-cell"
+                                        [title]="admin.description">
+                                        {{ admin.description }}
+                                    </td>
+
+                                    <!-- Contact No -->
+                                    <td class="px-4 py-4 text-sm text-gray-900 hidden xl:table-cell">{{ admin.contactNo
+                                        }}</td>
+
+                                    <!-- Email -->
+                                    <td
+                                        class="hidden lg:table-cell px-4 py-4 text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200">
+                                        {{ admin.email }}</td>
+
+                                    <!-- Status (Radio Input) -->
+                                    <td class="px-4 py-4">
+                                        <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full" [ngClass]="{
+                                        'bg-green-100 text-green-800 hover:bg-green-200': admin.status === 'Active',
+                                        'bg-red-100 text-red-800 hover:bg-red-200': admin.status === 'Inactive'
+                                        }">
+                                            {{ admin.status }}
+                                        </span>
+                                    </td>
+                                    <!-- Actions -->
+                                    <td class="p-3">
+                                        <div class="flex items-center">
+                                            <button title="Edit" (click)="editAdmin(admin.id)"
+                                                class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 rounded-lg py-1 text-center text-sm md:text-base md:px-3">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <button title="Delete" (click)="deleteAdmin(admin.id)"
+                                                class="bg-red-500 text-white px-2 ml-2 rounded-lg py-1 hover:bg-red-700 text-center text-sm md:text-base md:px-3">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form [formGroup]="adminForm" 
+                    class="grid grid-cols-1 gap-x-10 gap-y-5 mt-4 p-3 md:grid-cols-2 lg:grid-cols-3 h-[80vh] overflow-y-auto "
+                    *ngIf="showForm">
+                    <!-- Activity status -->
+                    <div class="flex gap-8 mb-6">
+                        <p>Activity Status:</p>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" formControlName="IsActive" checked />
+                            <div
+                                class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-[#004687] dark:peer-focus:ring-[#004687] dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#004687] dark:peer-checked:bg-[#004687]">
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-[#004687]">
+                                {{ adminForm.get("IsActive")?.value ? "Active" : "Inactive" }}
+                            </span>
+                        </label>
+                    </div>
+                    <h2
+                        class="font-semibold col-span-full text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
+                        Personal details
+                    </h2>
+                    <!-- Hospital Name -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Hospital Name</label>
+                        <input type="text" formControlName="HospitalName"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['HospitalName']" class="text-red-500">{{
+                            errorMessages["HospitalName"]
+                            }}</span>
+
+                    </div>
+
+                    <!-- From Date -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base"> From Date</label>
+                        <input type="date" formControlName="FromDate" class="w-full p-2 border rounded">
+                        <span *ngIf="errorMessages['FromDate']" class="text-red-500">{{
+                            errorMessages["FromDate"]
+                            }}</span>
+                    </div>
+
+                    <!-- To Date -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base"> To Date</label>
+                        <input type="date" formControlName="ToDate" class="w-full p-2 border rounded">
+                        <span *ngIf="errorMessages['ToDate']" class="text-red-500">{{
+                            errorMessages["ToDate"]
+                            }}</span>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Email</label>
+                        <input type="email" formControlName="Email"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['Email']" class="text-red-500">{{
+                            errorMessages["Email"]
+                            }}</span>
+                    </div>
+
+                    <!-- Mobile -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Mobile</label>
+                        <input
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2"
+                            pattern="[0-9]*" formControlName="Mobile" type="text" (keypress)="numbersOnly($event)"
+                            maxlength="10" autocomplete="off" />
+                        <span *ngIf="errorMessages['Mobile']" class="text-red-500">{{
+                            errorMessages["Mobile"]
+                            }}</span>
+                    </div>
+
+                    <!--  Address details -->
+                    <h2
+                        class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
+                        Address details
+                    </h2>
+
+                    <!-- Full Address -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Full Address</label>
+                        <input type="text" formControlName="Full_Address"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['Full_Address']" class="text-red-500">{{
+                            errorMessages["Full_Address"]
+                            }}</span>
+                    </div>
+
+
+                    <!--  Professional Information -->
+                    <h2
+                        class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
+                        Professional Information
+                    </h2>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Password</label>
+                        <input type="text" formControlName="Password"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2"
+                            placeholder="This is used to sign in to your account" />
+                        <span *ngIf="errorMessages['Password']" class="text-red-500">{{
+                            errorMessages["Password"]
+                            }}</span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-span-full flex justify-end gap-3">
+                        <button (click)="showForm=false"
+                            class="px-2 text-red-500 rounded hover:bg-red-500 hover:text-white border border-red-500 text-sm md:text-base md:px-4 py-2">
+                            Cancel
+                        </button>
+                        <button (click)="submitAdminForm()"
+                            class="px-2 text-white rounded border-[#004687] bg-[#004687] hover:bg-[#336b9f] hover:border-[#336b9f] text-sm md:text-base md:px-4 py-2">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

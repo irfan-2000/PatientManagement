@@ -37,6 +37,7 @@ import { HeaderFooterUploadComponent } from './header-footer-upload/header-foote
 import { NotFoundComponent } from './not-found/not-found.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReceptionistComponent } from './receptionist/receptionist.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { ReceptionistComponent } from './receptionist/receptionist.component';
     NotFoundComponent,
     DashboardComponent,
     ReceptionistComponent,
+    AdminComponent,
   ],
   imports: [
     BrowserModule,

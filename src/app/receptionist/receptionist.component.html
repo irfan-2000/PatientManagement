@@ -51,7 +51,7 @@
                                 <thead class="bg-[#004687] text-white">
                                     <tr>
                                         <th class="px-4 py-3 text-left text-sm font-semibold">ID</th>
-                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 3xl:table-cell">
+                                        <th class="px-4 py-3 text-left text-sm font-semibold hidden 2xl:table-cell">
                                             Image</th>
                                         <th class="px-4 py-3 text-left text-sm font-semibold">First Name</th>
                                         <th class="px-4 py-3 text-left text-sm font-semibold hidden lg:table-cell">Last
@@ -90,7 +90,7 @@
                                         <td class="px-4 py-4 text-sm text-gray-900">{{ receptionist.id }}</td>
 
                                         <!-- Image -->
-                                        <td class="p-2 hidden 3xl:table-cell">
+                                        <td class="p-2 hidden 2xl:table-cell">
                                             <img src="bg1.png" alt="Receptionist"
                                                 class="w-10 h-10 rounded-full hidden md:block" />
                                         </td>
@@ -183,7 +183,8 @@
 
                 <!-- Form -->
                 <form [formGroup]="receptionistForm"
-                    class="grid grid-cols-1 gap-x-10 gap-y-5 mt-4 p-3 md:grid-cols-2 lg:grid-cols-3 h-[80vh] overflow-y-auto " *ngIf="showForm">
+                    class="grid grid-cols-1 gap-x-10 gap-y-5 mt-4 p-3 md:grid-cols-2 lg:grid-cols-3 h-[80vh] overflow-y-auto "
+                    *ngIf="showForm">
                     <!-- Activity status -->
                     <div class="flex gap-8 mb-6">
                         <p>Activity Status:</p>
