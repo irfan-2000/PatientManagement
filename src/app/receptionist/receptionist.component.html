@@ -3,10 +3,15 @@
     <app-sidebar></app-sidebar>
     <div class="w-full">
         <app-top-strip></app-top-strip>
-        <div class="bg-gray-50 min-h-screen">
+        <div class="bg-gray-50">
+            <div class="flex gap-2 px-6">
+                <a href="/receptionist"
+                    class="bg-[#004687] hover:bg-[#336b9f] text-white px-2 py-2 text-sm rounded-lg md:text-base md:px-3 self-start mt-3"
+                    *ngIf="showForm"> <i class="fa-solid fa-arrow-left"></i> Go Back</a>
+            </div>
             <!-- Header Section -->
             <div class="bg-white p-6">
-                <div class="flex items-center justify-end mb-6">
+                <div class="flex items-center justify-end mb-6" *ngIf="!showForm">
                     <button (click)="addReceptionist()"
                         class="bg-[#004687] hover:bg-[#003566] text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium">
                         <i class="fa-solid fa-plus"></i>
@@ -15,7 +20,7 @@
                 </div>
 
                 <!-- Filter Section -->
-                <div class="p-3 bg-gray-200">
+                <div class="p-3 bg-gray-200" *ngIf="!showForm">
                     <div class="grid gap-2 grid-cols-2 md:grid-cols-4 lg:grid-cols-8">
                         <input type="text" [(ngModel)]="filters.id" placeholder="ID"
                             class="p-1 border rounded text-sm md:text-base md:p-2" />
@@ -38,7 +43,7 @@
                 </div>
 
                 <!-- Table Section -->
-                <div class="p-6">
+                <div class="p-6" *ngIf="!showForm">
                     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                         <div class="overflow-x-auto">
                             <table class="w-full">
@@ -106,8 +111,7 @@
                                             formatDate(receptionist.dob) }}</td>
 
                                         <!-- Email -->
-                                        <td
-                                            class="px-4 py-4 text-sm text-blue-600 hover:text-blue-800">
+                                        <td class="px-4 py-4 text-sm text-blue-600 hover:text-blue-800">
                                             {{ receptionist.email }}</td>
 
                                         <!-- Mobile -->
@@ -138,8 +142,7 @@
 
                                         <!-- Status -->
                                         <td class="px-4 py-4">
-                                            <span
-                                                class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                                            <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
                                                 [ngClass]="{
                           'bg-green-100 text-green-800 hover:bg-green-200': receptionist.status === 'Active',
                           'bg-red-100 text-red-800 hover:bg-red-200': receptionist.status === 'Inactive'
@@ -177,6 +180,217 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Form -->
+                <form [formGroup]="receptionistForm"
+                    class="grid grid-cols-1 gap-x-10 gap-y-5 mt-4 p-3 md:grid-cols-2 lg:grid-cols-3 h-[80vh] overflow-y-auto " *ngIf="showForm">
+                    <!-- Activity status -->
+                    <div class="flex gap-8 mb-6">
+                        <p>Activity Status:</p>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer" formControlName="IsActive" checked />
+                            <div
+                                class="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-[#004687] dark:peer-focus:ring-[#004687] dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-[#004687] dark:peer-checked:bg-[#004687]">
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-[#004687]">
+                                {{ receptionistForm.get("IsActive")?.value ? "Active" : "Inactive" }}
+                            </span>
+                        </label>
+                    </div>
+                    <h2
+                        class="font-semibold col-span-full text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
+                        Personal details
+                    </h2>
+                    <!-- First Name -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">First Name</label>
+                        <input type="text" formControlName="FirstName"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['FirstName']" class="text-red-500">{{
+                            errorMessages["FirstName"]
+                            }}</span>
+
+                    </div>
+
+                    <!-- Last Name -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Last Name</label>
+                        <input type="text" formControlName="LastName"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['LastName']" class="text-red-500">{{
+                            errorMessages["LastName"]
+                            }}</span>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Email</label>
+                        <input type="email" formControlName="Email"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['Email']" class="text-red-500">{{
+                            errorMessages["Email"]
+                            }}</span>
+                    </div>
+
+                    <!-- Mobile -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Mobile</label>
+                        <input
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2"
+                            pattern="[0-9]*" formControlName="Mobile" type="text" (keypress)="numbersOnly($event)"
+                            maxlength="10" autocomplete="off" />
+                        <span *ngIf="errorMessages['Mobile']" class="text-red-500">{{
+                            errorMessages["Mobile"]
+                            }}</span>
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Date of Birth</label>
+                        <input type="date" formControlName="Dob"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['Dob']" class="text-red-500">{{
+                            errorMessages["Dob"]
+                            }}</span>
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Gender</label>
+                        <select formControlName="Gender"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2 bg-white">
+                            <option value="">Select Gender</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                            <option value="O">Other</option>
+                        </select>
+                        <span *ngIf="errorMessages['Gender']" class="text-red-500">{{
+                            errorMessages["Gender"]
+                            }}</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base"> Joining Date</label>
+                        <input type="date" formControlName="JoiningDate" class="w-full p-2 border rounded">
+                        <span *ngIf="errorMessages['JoiningDate']" class="text-red-500">{{
+                            errorMessages["JoiningDate"]
+                            }}</span>
+                    </div>
+
+                    <!-- Profile Picture -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Profile Picture</label>
+                        <div class="relative w-48 h-48 mx-auto">
+                            <input type="file" id="profileImage" (change)="onFileChange($event)"
+                                formControlName="ProfileImage"
+                                class="hidden w-full p-1 border rounded text-sm md:text-base md:p-2" />
+                            <label for="profileImage"
+                                class="absolute top-0 right-0 px-2 py-1 rounded-full bg-[#004687] text-white border cursor-pointer">
+                                <i class="fa-solid fa-pen"></i> </label>
+
+                            <img [src]="profileImagePreview" alt="Preview"
+                                class="mt-2 w-48 h-48 rounded-full shadow-md" />
+                            <span *ngIf="errorMessages['ProfileImage']" class="text-red-500">{{
+                                errorMessages["ProfileImage"]
+                                }}</span>
+                        </div>
+                    </div>
+
+                    <!--  Address details -->
+                    <h2
+                        class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
+                        Address details
+                    </h2>
+
+                    <!-- Full Address -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Full Address</label>
+                        <input type="text" formControlName="Full_Address"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['Full_Address']" class="text-red-500">{{
+                            errorMessages["Full_Address"]
+                            }}</span>
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">City</label>
+                        <input type="text" formControlName="City"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['City']" class="text-red-500">{{
+                            errorMessages["City"]
+                            }}</span>
+                    </div>
+
+                    <!-- Postal Code -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Postal Code</label>
+                        <input type="text" formControlName="PostalCode"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['PostalCode']" class="text-red-500">{{
+                            errorMessages["PostalCode"]
+                            }}</span>
+                    </div>
+
+                    <!-- Country -->
+                    <div class="flex flex-col">
+                        <label for="country">Country</label>
+                        <select id="country" formControlName="Country" class="form-control p-3 bg-white border rounded">
+                            <option value="" disabled>Select a country</option>
+                            <option *ngFor="let country of countries" [value]="country.code">
+                                {{ country.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!--  Professional Information -->
+                    <h2
+                        class="font-semibold col-span-full mt-10 text-gray-700 text-lg md:text-xl border-l-[4px] pl-2 border-[#004687]">
+                        Professional Information
+                    </h2>
+
+                    <!-- Experience -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Experience</label>
+                        <input type="number" formControlName="Experience" min="0"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['Experience']" class="text-red-500">{{
+                            errorMessages["Experience"]
+                            }}</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Qualification</label>
+                        <input type="text" formControlName="Qualification"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2" />
+                        <span *ngIf="errorMessages['Qualification']" class="text-red-500">{{
+                            errorMessages["Qualification"]
+                            }}</span>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="block text-gray-600 font-medium text-sm md:text-base">Password</label>
+                        <input type="text" formControlName="Password"
+                            class="w-full p-1 border rounded focus:ring-2 focus:ring-blue-500 text-sm md:text-base md:p-2"
+                            placeholder="This is used to sign in to your account" />
+                        <span *ngIf="errorMessages['Password']" class="text-red-500">{{
+                            errorMessages["Password"]
+                            }}</span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-span-full flex justify-end gap-3">
+                        <button (click)="showForm=false"
+                            class="px-2 text-red-500 rounded hover:bg-red-500 hover:text-white border border-red-500 text-sm md:text-base md:px-4 py-2">
+                            Cancel
+                        </button>
+                        <button (click)="submitReceptionistForm()"
+                            class="px-2 text-white rounded border-[#004687] bg-[#004687] hover:bg-[#336b9f] hover:border-[#336b9f] text-sm md:text-base md:px-4 py-2">
+                            Submit
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
